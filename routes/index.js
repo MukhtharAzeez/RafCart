@@ -6,6 +6,11 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('user/index-3');
+
+
+
+
+  
 });
 
 module.exports = router;
