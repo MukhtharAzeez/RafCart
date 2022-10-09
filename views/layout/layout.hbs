@@ -5,7 +5,14 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    
+    {{#if noHeader}}
+    {{else}}
+    {{>header}}
+    {{/if}}
     {{{body}}}
+    {{#if noFooter}}
+    {{else}}
+    {{>footer}}
+    {{/if}}
   </body>
 </html>

@@ -22,7 +22,9 @@
 <body>
 
     <!-- Preloader -->
-    
+     <div class="preloader">
+        <img src="images/preloader.gif" alt="preloader">
+    </div>
 
     <!-- breadcrumbs -->
     <div class="container">
@@ -40,18 +42,18 @@
                     <div class="register_form padding_default shadow_sm">
                         <h4 class="title_2">Login</h4>
                         <p class="mb-4 text_md">Login if you a a returing customer</p>
-                        <form action="">
+                        <form action="/login" method="post">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Email Address <span>*</span></label>
-                                        <input type="email" placeholder="example@mail.com">
+                                        <input type="email" placeholder="example@mail.com" name="email" required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Password <span>*</span></label>
-                                        <input type="password" placeholder="type password">
+                                        <input type="password" placeholder="type password" name="password" required>
                                     </div>
                                 </div>
                                 <div class="col-12 mt-2 d-flex justify-content-between align-items-center">
@@ -60,7 +62,7 @@
                                         <label for="save-default">Remember Me</label>
                                     </div>
 
-                                    <a href="forgot-password.html" class="text-color">Forgot Password?</a>
+                                    <a href="/forgot_password" class="text-color">Forgot Password?</a>
                                 </div>
                                 <div class="col-12 mt-3">
                                     <button type="submit" class="default_btn xs_btn rounded px-4 d-block w-100">Login</button>
@@ -82,7 +84,7 @@
                             </button>
                         </div>
 
-                        <p class="text-center mt-3 mb-0">Don't have an account.? <a href="register.html" class="text-color">Register Now</a></p>
+                        <p class="text-center mt-3 mb-0">Don't have an account.? <a href="/register" class="text-color">Register Now</a></p>
 
                     </div>
                 </div>
