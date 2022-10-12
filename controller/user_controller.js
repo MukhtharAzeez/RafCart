@@ -1,16 +1,26 @@
 const db = require('../config/connection');
 const bcrypt = require('bcrypt');
 const userSchema = require('../models/user_schema')
+const productSchema = require('../models/product_schema');
+const categorySchema = require('../models/category_schema')
 
 module.exports = {
     home : (req,res)=>{
-        res.render('user/index-3',{noHeader:true,noFooter:true});
+        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user});
     },
     login : (req,res)=>{
-        res.render('user/login',{noHeader:true,noFooter:true});
+        if(req.session.loggedIn){
+          res.redirect('/')
+        }else{
+            res.render('user/login',{noHeader:true,noFooter:true});
+        }
     },
     signup : (req,res)=>{
-        res.render('user/register',{noHeader:true,noFooter:true});
+        if(req.session.loggedIn){
+            res.redirect('/')
+        }else{
+            res.render('user/register',{noHeader:true,noFooter:true});
+        }
     },
     postSignup : async (req,res)=>{
        
@@ -18,12 +28,8 @@ module.exports = {
         
         if(user[0]){
             res.redirect('/register')
-            console.log("user exist");
-        }else 
-            if(req.body.password !== req.body.confirmPassword){
+        }else if(req.body.password !== req.body.confirmPassword){
             res.redirect('/register')
-            
-
         }else{
             return new Promise (async(resolve, reject) => {
                 const userName = req.body.userName;
@@ -35,11 +41,15 @@ module.exports = {
                     userName : userName,
                     email : email,
                     phone : phone,
-                    password : password
+                    password : password,
+                    status : true
                 });
+                req.session.user=user;
+                req.session.loggedIn = true;
                 user
                    .save()
                    .then((result)=>{
+                    
                     res.redirect('/')
                    })
                    .catch((error)=>{
@@ -50,15 +60,35 @@ module.exports = {
     },
     postLogin : (req,res)=>{
         userSchema.find({email:req.body.email}).then((result)=>{
-            console.log(result[0]);
+            
             bcrypt.compare(req.body.password,result[0].password).then((status)=>{
                 if(status){
+                    req.session.user=result[0];
+                    req.session.loggedIn = true;
+                    
                    res.redirect('/')
                 }else{
                    res.redirect('/login')
                 }
             })
         })
+    },
+    shop :async (req,res) => {
+        let products = await productSchema.find({}).lean()
+        let category = await categorySchema.find({}).lean()
+        res.render('user/shop-grid',{products,category})
+    },
+    shoplist : async(req,res) => {
+        let products = await productSchema.find({}).lean()
+        let category = await categorySchema.find({}).lean()
+        res.render('user/shop-list',{products,category})
+    },
+    logout : (req,res)=>{
+        req.session.destroy()
+        res.redirect('/')
+    },
+    getCategoryProduct : async(req,res)=>{
+        let products= await productSchema.find({name : req.params.name}).lean()
     },
     
 }

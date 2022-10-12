@@ -2,30 +2,19 @@
         <div class="container">
             <div class="d-flex align-items-center">
                 <div class="logo">
-                    <a href="index-1.html">
+                    <a href="">
                         <img loading="lazy"  src="images/svg/logo.svg" alt="logo">
                     </a>
                 </div>
 
                 <ul class="nav_bar flex-grow-1">
                     <li class="withsubs">
-                        <a href="index-1.html">Home <span><i class="las la-angle-down"></i></span></a>
-                        <ul class="subnav">
-                            <li><a href="index-1.html">Home page 1 </a></li>
-                            <li><a href="index-2.html">Home page 2</a></li>
-                            <li><a href="index-3.html">Home page 3</a></li>
-                        </ul>
+                        <a href="/">Home </a>
+                       
                     </li>
                     <li class="withsubs">
-                        <a href="shop-list.html">Shop <span><i class="las la-angle-down"></i></span></a>
-                        <ul class="subnav">
-                            <li><a href="shop-list.html">List view </a></li>
-                            <li><a href="shop-grid.html">Grid view</a></li>
-                            <li><a href="shop-grid-2.html">Grid view 2</a></li>
-                            
-                            <li><a href="shopping-cart.html">Shopping cart</a></li>
-                            <li><a href="product-view.html">Product view</a></li>
-                        </ul>
+                        <a href="/shop">Shop</a>
+                        
                     </li>
                     <li class="withsubs">
                         <a href="shop-list.html">Pages <span><i class="las la-angle-down"></i></span></a>
@@ -45,8 +34,8 @@
                                 <h5 class="text_lg ps-3 mb-2">Account pages</h5>
                                 <ul>
                                     <li><a href="account.html">My Account</a></li>
-                                    <li><a href="login.html">Login</a></li>
-                                    <li><a href="register.html">Register</a></li>
+                                    <li><a href="/login">Login</a></li>
+                                    <li><a href="/signup">Register</a></li>
                                     <li><a href="forgot-password.html">Forgot password</a></li>
                                 </ul>
                             </div>
@@ -64,8 +53,8 @@
                     <li><a href="contact-us.html">contact</a></li>
                     <li class="tophead_items ms-auto">
                         <div class="me-3">
-                            <a class="text-semibold me-0" href="login.html">login</a><span class="text_xs">/</span><a
-                                class="text-semibold" href="register.html">Register</a>
+                            <a class="text-semibold me-0" href="/login">login</a><span class="text_xs">/</span><a
+                                class="text-semibold" href="/register">Register</a>
                         </div>
                         <div>
                             <select class="nice_select">
@@ -440,13 +429,54 @@
                     </div>
                 </div>
                 <div class="header_icon d-flex align-items-center">
-                    <a href="wish-list.html" class="icon_wrp text-center wishlist ms-0">
-                                <span class="icon">
-                                    <i class="icon-heart"></i>
-                                </span>
+                    <div class="shopcart">
+                        <a href="wish-list.html" class="icon_wrp text-center wishlist ms-0">
+                        <span class="icon">
+                            <i class="icon-heart"></i>
+                        </span>
                         <span class="icon_text">Wish List</span>
                         <span class="pops">6</span>
                     </a>
+                        <div class="shopcart_dropdown">
+                            <div class="cart_droptitle">
+                                <h4 class="text_lg">2 Items</h4>
+                            </div>
+                            <div class="cartsdrop_wrap">
+                                <a href="product-view.html" class="single_cartdrop mb-3">
+                                    <span class="remove_cart"><i class="las la-times"></i></span>
+                                    <div class="cartdrop_img">
+                                        <img loading="lazy"  src="images/shoes-5.png" alt="product">
+                                    </div>
+                                    <div class="cartdrop_cont">
+                                        <h5 class="text_lg mb-0 default_link">
+                                            Men casual shoes
+                                        </h5>
+                                        <p class="mb-0 text_xs text_p">x1 <span class="ms-2">$450</span></p>
+                                    </div>
+                                </a>
+                                <a href="product-view.html" class="single_cartdrop">
+                                    <span class="remove_cart"><i class="las la-times"></i></span>
+                                    <div class="cartdrop_img">
+                                        <img loading="lazy"  src="images/headphone-2.png" alt="product">
+                                    </div>
+                                    <div class="cartdrop_cont">
+                                        <h5 class="text_lg mb-0 default_link">
+                                            Men casual shoes
+                                        </h5>
+                                        <p class="mb-0 text_xs text_p">x1 <span class="ms-2">$450</span></p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="total_cartdrop">
+                                <h4 class="text_lg text-uppercase mb-0">Sub Total:</h4>
+                                <h4 class="text_lg mb-0 ms-2">$980.00</h4>
+                            </div>
+                            <div class="cartdrop_footer d-flex mt-3">
+                                <a href="shopping-cart.html" class="default_btn w-50 text_xs px-1">View Cart</a>
+                                 <a href="checkout.html" class="default_btn second ms-3 w-50 text_xs px-1">Checkout</a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="shopcart">
                         <a href="shopping-cart.html" class="icon_wrp text-center d-none d-lg-block">
                                     <span class="icon">
@@ -500,14 +530,23 @@
                                     <span class="icon">
                                        <i class="icon-user-line"></i>
                                     </span>
-                            <span class="icon_text">Account</span>
+                                   {{#if user}}
+                                    <span class="icon_text">{{user.userName}}</span>
+                                   {{else}}
+                                    <span class="icon_text">Account</span>
+                                   {{/if}}
                         </a>
                         <div class="myacc_cont">
                             <div class="ac_join">
                                 <p>Welcome to RAFCART Shop</p>
                                 <div class="account_btn d-flex justify-content-between">
-                                   <a href="register.html" class="default_btn">Join</a>
-                                    <a href="login.html" class="default_btn second">Sing in</a>
+                                   
+                                   {{#if user}}
+                                    <a href="/logout" class="default_btn">Logout</a>
+                                    {{else}}
+                                   <a href="/register" class="default_btn">Signin</a>
+                                   <a href="/login" class="default_btn second">Login</a>
+                                    {{/if}}
                                 </div>
                             </div>
                             <div class="ac_links">

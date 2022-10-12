@@ -4,8 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs = require('express-handlebars');
-
+var session = require('express-session')
 var db= require('./config/connection');
+var fileUpload = require('express-fileupload');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
@@ -15,7 +16,17 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-app.engine('hbs', hbs.engine({extname : 'hbs',defaultLayout : 'layout',layoutsDir:__dirname+'/views/layout/',partialsDir : __dirname+'/views/partials/'}));
+app.engine('hbs', hbs.engine({extname : 'hbs',defaultLayout : 'layout',layoutsDir:__dirname+'/views/layout/',partialsDir : __dirname+'/views/partials/',
+helpers : {
+  isActiveOrNotActive : (activity,options)=>{
+    if(activity==="active"){
+      return options.fn(this)
+    }else{
+      return options.inverse(this)
+    }
+  }
+ }
+}));
 
 
 
@@ -24,9 +35,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'public')));
-
+app.use(fileUpload())
 
 db.database();
+
+app.use(session({
+  secret: 'secret',
+  cookie : {
+    maxAge : 3600 *10
+  },
+  saveUninitialized: true,
+  resave : true,
+}))
+
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
 
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
@@ -44,7 +69,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error',{noHeader:true,noFooter:true});
 });
 
 module.exports = app;

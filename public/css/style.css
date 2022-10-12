@@ -3573,7 +3573,7 @@ form.subscribe_form input {
     padding: 32px 24px;
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: (1fr)[4] 130px;
+    /* -ms-grid-columns: (1fr)[4] 130px; */
     grid-template-columns: repeat(4, 1fr) 130px;
     grid-row-gap: 24px;
     padding-bottom: 22px;
