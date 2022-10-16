@@ -377,15 +377,20 @@
 
                                 <form action="/admin/add-category" method="post" enctype="multipart/form-data">
                                     <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-12">
                                             <div class="mb-3">
-                                                
+
                                                 <label for="name" class="form-label">Category Name</label>
-                                                <input type="text" class="form-control" id="name" name="name">
-                                                
+                                                <input type="text" class="form-control" id="name" name="name" style="width: 248px;">
+
                                             </div>
                                         </div>
-                                        
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="categoryImage" class="form-label">Image</label>
+                                                <input type="file" id="categoryImage" name="image">
+                                            </div>
+                                        </div>
                                     </div>
                                     <button class="btn btn-info">Add Category</button>
                                 </form>

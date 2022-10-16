@@ -1016,6 +1016,24 @@ h2.section_title_3 {
     background-color: transparent;
     color: #FD3D57;
 }
+.full_atc_btn2 button {
+    width: 100%;
+    border: 1px solid #fd3d5781;
+    background: #fd3d5781;
+    border-radius: 0 0 3px 3px;
+    color: #fff;
+    font-size: 16px;
+    line-height: 19px;
+    padding: 8px 0;
+    text-transform: uppercase;
+    transition: .5s;
+    -webkit-transition: .5s;
+    -moz-transition: .5s;
+    -ms-transition: .5s;
+    -o-transition: .5s;
+}
+
+
 
 .topariv_cont .org_price {
     font-weight: 600;

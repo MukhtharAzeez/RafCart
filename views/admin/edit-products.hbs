@@ -391,7 +391,7 @@
                                                 <select name="category" class="form-control" id="category">
                                                     <option value="{{products.category}}">{{products.category}}</option>
                                                     {{#each category}}
-                                                    <option value="clothes">{{this.name}}</option>
+                                                    <option value="{{this.name}}">{{this.name}}</option>
                                                     {{/each}}
                                                 </select>
                                             </div>
@@ -427,13 +427,25 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="thumnail" class="form-label">Thumbnail</label>
-                                                <input type="file" id="thumnail" name="thumbnail_image">
+                                                <input type="file" id="thumnail" name="image1">
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="moreimage" class="form-label">More Image</label>
-                                                <input type="file" id="moreimage" multiple name="image">
+                                                <label for="thumnail" class="form-label">More Images</label>
+                                                <input type="file" id="thumnail1" name="image2">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="thumnail" class="form-label">More Images</label>
+                                                <input type="file" id="thumnail2" name="image3">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="thumnail" class="form-label">More Images</label>
+                                                <input type="file" id="thumnail3" name="image4">
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
@@ -447,7 +459,8 @@
                                         </div>
                                     </div>
                                     {{!-- <button class="btn btn-info" type="submit">Save Product</button> --}}
-                                    <input type="submit" name="" id="">
+                                    <button class="btn btn-info" type="submit">Save Product</button>
+                                 
                                 </form>
 
 

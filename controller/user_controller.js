@@ -5,8 +5,10 @@ const productSchema = require('../models/product_schema');
 const categorySchema = require('../models/category_schema')
 
 module.exports = {
-    home : (req,res)=>{
-        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user});
+    home : async(req,res)=>{
+        const category = await categorySchema.find({}).lean();
+        console.log(category);
+        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category});
     },
     login : (req,res)=>{
         if(req.session.loggedIn){
@@ -76,7 +78,7 @@ module.exports = {
     shop :async (req,res) => {
         let products = await productSchema.find({}).lean()
         let category = await categorySchema.find({}).lean()
-        res.render('user/shop-grid',{products,category})
+        res.render('user/shop-grid-2',{products,category})
     },
     shoplist : async(req,res) => {
         let products = await productSchema.find({}).lean()

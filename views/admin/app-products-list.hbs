@@ -758,7 +758,9 @@
                         <th>Category</th>
                         <th>Stock</th>
                         <th>Price</th>
+                        <th></th>
                         <th class="w-min" data-orderable="false"></th>
+                        
                       </tr>
                     </thead>
                     <tbody>
@@ -779,7 +781,7 @@
                                 class="sa-symbol sa-symbol--shape--rounded sa-symbol--size--lg"
                               >
                                 <img
-                                  src="/product_images/{{this._id}}.jpg"
+                                  src="{{this.images.0.image}}"
                                   width="40"
                                   height="40"
                                   alt=""
@@ -818,7 +820,11 @@
                           >
                         </td>
                         <td>
+                          {{#if this.onStock}}
                           <div class="badge badge-sa-success">{{this.stock}} In Stock</div>
+                          {{else}}
+                          <div class="badge badge-sa-danger">out of Stock</div>
+                          {{/if}}
                           {{!-- <div class="badge badge-sa-danger">Out of Stock</div> --}}
                         </td>
                         <td>
@@ -828,6 +834,14 @@
                             ><span class="sa-price__decimal">.00</span>
                           </div>
                         </td>
+                        <td>
+                        {{!-- <a href="/admin/user-status/{{this._id}}"><div class="badge badge-sa-success" >block</div></a> --}}
+                        {{#if this.isAvailable}}
+                        <a href="/admin/user-status/{{this._id}}"><div class="badge badge-sa-success" >Product available</div></a>
+                        {{else}}
+                         <a href="/admin/user-status/{{this._id}}"><div class="badge badge-sa-warning" >Product not available</div></a>
+                        {{/if}}
+                      </td>
                         <td>
                           <div class="dropdown">
                             <button
@@ -867,13 +881,20 @@
                               </li>
                               <li><hr class="dropdown-divider" /></li>
                               <li>
+                                {{#if this.isAvailable}}
                                 <a class="dropdown-item text-danger" href="/admin/delete-product/{{this._id}}"
                                   >Delete</a
                                 >
+                                {{else}}
+                                <a class="dropdown-item text-danger" href="/admin/undo-product/{{this._id}}"
+                                  >Make Available</a
+                                >
+                                {{/if}}
                               </li>
                             </ul>
                           </div>
                         </td>
+                        
                       </tr>
                       {{/each}}
 

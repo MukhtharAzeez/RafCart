@@ -31,6 +31,18 @@ const productSchema = new Schema({
         type : String,
         required : true
     },
+    onStock : {
+        type : Boolean,
+        required : true
+    },
+    images : {
+        type : Array,
+    },
+    isAvailable : {
+        type : Boolean,
+        required : true
+    }
+   
 })
 
 module.exports =mongoose.model('products',productSchema)

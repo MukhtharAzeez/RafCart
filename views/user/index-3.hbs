@@ -27,32 +27,7 @@
     </div>
 
     <!-- top header -->
-    <div class="top_heaeder">
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-end">
-                <div class="tophead_items">
-                    <a href="track-order.html">Track My Order</a>
-                    <div class="ms-3">
-                        <a class="me-0" href="/login">Login</a><span class="text_xs">/</span><a href="/register">Register</a>
-                    </div>
-                    <div class="ms-3">
-                        <select class="nice_select">
-                            <option>Language</option>
-                            <option>English</option>
-                            <option>Franch</option>
-                        </select>
-                    </div>
-                    <div class="ms-3">
-                        <select class="nice_select">
-                            <option>Currency</option>
-                            <option>Dollar</option>
-                            <option>Euro</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- top header -->
     <header class="home-3">
@@ -1466,126 +1441,24 @@
         <div class="container">
             <h2 class="section_title_3">Categories</h2>
             <div class="row gy-4">
+
+                {{#each category}}
                 <div class="col-xl-2 col-md-3 col-sm-4 col-6">
                     <a href="#">
                         <div class="single_category_2">
                             <div class="cat2_img">
-                                <img loading="lazy"  src="images/shoes-5.png" alt="">
+                                <img loading="lazy"  src="{{this.image}}" alt="">
                             </div>
-                            <h5>Shoes</h5>
+                            <h5>{{this.name}}</h5>
                         </div>
                     </a>
                 </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/phone-1.png" alt="category">
-                            </div>
-                            <h5>Mobile</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/microphone.png" alt="category">
-                            </div>
-                            <h5>Microphone</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/laptop-3.png" alt="category">
-                            </div>
-                            <h5>Laptop</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/aircondition.png" alt="category">
-                            </div>
-                            <h5>Air Conditioner</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/shirt-2.png" alt="category">
-                            </div>
-                            <h5>Clothing</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/headphone-3.png" alt="category">
-                            </div>
-                            <h5>Headphone</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/sofa-1.png" alt="category">
-                            </div>
-                            <h5>Furnitures</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/electronic.png" alt="category">
-                            </div>
-                            <h5>Electronics</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/table.png" alt="category">
-                            </div>
-                            <h5>Office</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/camera.png" alt="category">
-                            </div>
-                            <h5>Camera</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
-                        <div class="single_category_2">
-                            <div class="cat2_img">
-                                <img loading="lazy"  src="images/baby.png" alt="category">
-                            </div>
-                            <h5>Kids</h5>
-                        </div>
-                    </a>
-                </div>
+                {{/each}}
+
+
+               
+
+
             </div>
         </div>
     </div>

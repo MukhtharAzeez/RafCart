@@ -381,11 +381,16 @@
                                             <div class="mb-3">
                                                 
                                                 <label for="name" class="form-label">Category Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{category.name}}">
+                                                <input type="text" class="form-control" id="name" name="name" value="{{category.name}}" style="width: 248px;">
                                                 
                                             </div>
                                         </div>
-                                        
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="categoryImage" class="form-label">Image</label>
+                                                <input type="file" id="categoryImage" name="image">
+                                            </div>
+                                        </div>
                                     </div>
                                     <button class="btn btn-info">Save Category</button>
                                 </form>
