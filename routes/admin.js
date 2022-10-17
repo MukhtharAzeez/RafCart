@@ -8,6 +8,7 @@ const multer = require('../utils/multer');
 router.get('/',admin_controller.home)
 router.get('/customers',admin_controller.customers)
 router.get('/products',product_controller.products)
+router.get('/show-deleted',product_controller.deleted_products)
 router
     .route('/add-product')
     .get(product_controller.add_product)
