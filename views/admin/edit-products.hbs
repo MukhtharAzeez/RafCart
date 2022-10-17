@@ -359,11 +359,11 @@
                                                         <a href="app-categories-list.html">Categories</a>
                                                     </li>
                                                     <li class="breadcrumb-item active" aria-current="page">
-                                                        Edit Category
+                                                        Edit Product
                                                     </li>
                                                 </ol>
                                             </nav>
-                                            <h1 class="h3 m-0">Edit Category</h1>
+                                            <h1 class="h3 m-0">Edit Product</h1>
                                         </div>
                                         <div class="col-auto d-flex">
 
@@ -382,13 +382,13 @@
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Name</label>
                                                 <input type="text" class="form-control" id="name" name="name"
-                                                    value="{{products.name}}">
+                                                    value="{{products.name}}" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="category" class="form-label">Category</label>
-                                                <select name="category" class="form-control" id="category">
+                                                <select name="category" class="form-control" id="category" required>
                                                     <option value="{{products.category}}">{{products.category}}</option>
                                                     {{#each category}}
                                                     <option value="{{this.name}}">{{this.name}}</option>
@@ -399,29 +399,29 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="stock" class="form-label">Stock</label>
-                                                <input type="text" class="form-control" id="stock" name="stock"
-                                                    value="{{products.stock}}">
+                                                <input type="number" class="form-control" id="stock" name="stock"
+                                                    value="{{products.stock}}" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="tags" class="form-label">Tags</label>
                                                 <input type="text" class="form-control" id="tags" name="tags"
-                                                    value="{{products.tags}}">
+                                                    value="{{products.tags}}" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="price" class="form-label">Price</label>
-                                                <input type="text" class="form-control" id="price" name="price"
-                                                    value="{{products.price}}">
+                                                <input type="number" class="form-control" id="price" name="price"
+                                                    value="{{products.price}}" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="price" class="form-label">Discount Price</label>
-                                                <input type="text" class="form-control" id="price" name="discount_price"
-                                                    value="{{products.discount}}">
+                                                <input type="number" class="form-control" id="price" name="discount_price"
+                                                    value="{{products.discount}}" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -452,7 +452,7 @@
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description</label>
                                                 <input type="textfield" class="form-control" name="description"
-                                                    style="width: 100%;" value="{{products.description}}">
+                                                    style="width: 100%;" value="{{products.description}}" required>
                                                 {{!-- <textarea class="form-control" id="description" rows="6"
                                                     name="description"></textarea> --}}
                                             </div>
