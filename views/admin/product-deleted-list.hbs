@@ -473,7 +473,7 @@
                           <th>Stock</th>
                           <th>Price</th>
                           <th></th>
-                          <th></th>
+                          
                           <th class="w-min" data-orderable="false"></th>
 
                         </tr>
@@ -569,9 +569,9 @@
                                 </li>
                                 <li>
                                   {{#if this.isAvailable}}
-                                  <a class="dropdown-item text-danger" id="deleteButton" >Delete</a>
+                                  <a class="dropdown-item text-danger" onclick="deleteButton('{{this._id}}')" >Delete</a>
                                   {{else}}
-                                  <a class="dropdown-item text-danger" id="undoButton">Make
+                                  <a class="dropdown-item text-danger" onclick="undoButton('{{this._id}}')">Make
                                     Available</a>
                                   {{/if}}
 
@@ -579,9 +579,7 @@
                               </ul>
                             </div>
                           </td>
-                          <td>
-                            <h2 hidden id="productId">{{this._id}}</h2>
-                          </td>
+                          
 
                         </tr>
                         {{/each}}

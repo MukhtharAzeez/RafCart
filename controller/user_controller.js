@@ -7,7 +7,6 @@ const categorySchema = require('../models/category_schema')
 module.exports = {
     home : async(req,res)=>{
         const category = await categorySchema.find({}).lean();
-        console.log(category);
         res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category});
     },
     login : (req,res)=>{

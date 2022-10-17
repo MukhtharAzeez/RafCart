@@ -210,7 +210,7 @@ module.exports={
                 }
             }
             ).then(()=>{
-            res.redirect('/admin/products')
+            res.redirect('/admin/show-deleted')
         })
     },
 }
