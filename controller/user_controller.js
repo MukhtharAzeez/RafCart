@@ -2,12 +2,21 @@ const db = require('../config/connection');
 const bcrypt = require('bcrypt');
 const userSchema = require('../models/user_schema')
 const productSchema = require('../models/product_schema');
-const categorySchema = require('../models/category_schema')
-
+const categorySchema = require('../models/category_schema');
+const cartSchema = require('../models/cart_schema');
+const mongoose = require('mongoose');
 module.exports = {
     home : async(req,res)=>{
         const category = await categorySchema.find({}).lean();
-        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category});
+        let count = 0;
+        if(req.session.user){
+            const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
+            if(cart){
+                count = cart.products.length;
+            }
+        }
+       
+        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,count});
     },
     login : (req,res)=>{
         if(req.session.loggedIn){
@@ -75,14 +84,28 @@ module.exports = {
         })
     },
     shop :async (req,res) => {
+
         let products = await productSchema.find({}).lean()
         let category = await categorySchema.find({}).lean()
-        res.render('user/shop-grid-2',{products,category})
+        let count = 0;
+        if(req.session.user){
+            const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
+            if(cart){
+                count = cart.products.length;
+            }
+           
+        }
+        res.render('user/shop-grid-2',{products,category,"user":req.session.user,count})
     },
     shoplist : async(req,res) => {
         let products = await productSchema.find({}).lean()
         let category = await categorySchema.find({}).lean()
-        res.render('user/shop-list',{products,category})
+        let count = 0;
+        if(req.session.user){
+            const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
+            count = cart.products.length;
+        }
+        res.render('user/shop-list',{products,category,"user":req.session.user,count})
     },
     logout : (req,res)=>{
         req.session.destroy()

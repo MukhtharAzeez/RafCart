@@ -1,3 +1,30 @@
+
+   
+
+
+
+   <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RAFCART - Multipurpose eCommerce HTML Template">
+    <meta name="author" content="Programming Kit">
+    <title>RAFCART - Multipurpose eCommerce HTML Template</title>
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+
+    <!-- all css -->  
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/slick.css">
+    <link rel="stylesheet" href="css/line-awesome.css">
+    <link rel="stylesheet" href="css/nice-select.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
 <header class="home-2 d-none d-lg-block">
         <div class="container">
             <div class="d-flex align-items-center">
@@ -478,12 +505,12 @@
                         </div>
                     </div>
                     <div class="shopcart">
-                        <a href="shopping-cart.html" class="icon_wrp text-center d-none d-lg-block">
+                        <a href="/view-cart" class="icon_wrp text-center d-none d-lg-block">
                                     <span class="icon">
                                         <i class="icon-cart"></i>
                                     </span>
                             <span class="icon_text">Cart</span>
-                            <span class="pops">8</span>
+                            <span class="pops" id="cart-count">{{count}}</span>
                         </a>
                         <div class="shopcart_dropdown">
                             <div class="cart_droptitle">
@@ -520,7 +547,7 @@
                                 <h4 class="text_lg mb-0 ms-2">$980.00</h4>
                             </div>
                             <div class="cartdrop_footer d-flex mt-3">
-                                <a href="shopping-cart.html" class="default_btn w-50 text_xs px-1">View Cart</a>
+                                <a href="/view-cart" class="default_btn w-50 text_xs px-1">View Cart</a>
                                  <a href="checkout.html" class="default_btn second ms-3 w-50 text_xs px-1">Checkout</a>
                             </div>
                         </div>
@@ -562,7 +589,7 @@
                                     <i class="lar la-heart"></i>
                                     My Wishlist
                                 </a>
-                                <a href="shopping-cart.html">
+                                <a href="/view-cart">
                                      <i class="icon-cart"></i>
                                     My Cart
                                 </a>
@@ -719,7 +746,7 @@
                         <h4 class="text_lg mb-0 ms-2">$980.00</h4>
                     </div>
                     <div class="cartdrop_footer mt-3 d-flex">
-                        <a href="shopping-cart.html" class="default_btn w-50 text_xs px-1">View Cart</a>
+                        <a href="/view-cart" class="default_btn w-50 text_xs px-1">View Cart</a>
                          <a href="checkout.html" class="default_btn second ms-3 w-50 text_xs px-1">Checkout</a>
                     </div>
                 </div>
@@ -1065,3 +1092,8 @@
             </a>
         </div>
     </div>
+    
+    <script src="js/cartCount.js"></script>
+</body>
+
+</html>

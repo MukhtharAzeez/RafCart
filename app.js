@@ -44,7 +44,7 @@ db.database();
 app.use(session({
   secret: 'secret',
   cookie : {
-    maxAge : 3600 *10
+    maxAge : 1000*10*6*10
   },
   saveUninitialized: true,
   resave : true,

@@ -661,17 +661,18 @@
                                     {{/if}}
                                     {{#if this.onStock}}
                                     <div class="full_atc_btn">
-                                      
-                                        <button >
+                                     
+                                        <button onclick="addToCart('{{this._id}}')">
                                             <span class="me-1"><i class="icon-cart"></i></span>
                                             add to cart
                                         </button>
+                                    
                                     </div>
                                     {{else}}
                                     <div class="full_atc_btn2">
                                         <button >
                                             <span class="me-1"><i class="icon-cart"></i></span>
-                                            add to cart
+                                              add to cart
                                         </button>
                                     </div>
                                     {{/if}}
@@ -881,6 +882,7 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/cartCount.js"></script>
 </body>
 
 </html>

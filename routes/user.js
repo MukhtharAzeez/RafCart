@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controller/user_controller')
-
+const controller = require('../controller/user_controller');
+const cartController = require('../controller/cart_controller');
 
 /* GET home page. */
 router.get('/',controller.home);
@@ -18,7 +18,10 @@ router
 
 router.get('/shop',controller.shop)
 router.get('/shop-list',controller.shoplist)
-router.get('/logout',controller.logout)
 router.get('/get-category-product/:name',controller.getCategoryProduct)
+router.get('/view-cart',cartController.cart)
+router.get('/add-to-cart/:id',cartController.addToCart)
+router.get('/logout',controller.logout)
+
 
 module.exports = router;
