@@ -619,18 +619,19 @@
                                 
                                 
                                
-                                {{#each user.address}}
+                                {{#each userDetails.address}}
                                 <div class="col-lg-4">
                                     <div class="single_prof_info shadow_sm mb-0">
                                         <div class="prof_info_title">
                                             <h4>Billing Address</h4>
-                                            <a href="account-manage-address.html">Edit</a>
+                                            <a href="/account-edit-address/{{@index}}">Edit</a>
                                         </div>
                                         <div class="prfo_info_cont">
-                                            <p class="text-semibold">Ralph Bohner</p>
-                                            <p>3891 Ranchview Dr.</p>
-                                            <p>Richardson, Califora</p>
-                                            <p>(123) 456-789</p>
+                                            <p class="text-semibold">{{this.fullName}}</p>
+                                            <p>{{this.country}}</p>
+                                            <p>{{this.state}},{{this.city}}</p>
+                                            <p>{{this.address}}</p>
+                                            <p>{{this.phone}}</p>
                                         </div>
                                     </div>
                                 </div>

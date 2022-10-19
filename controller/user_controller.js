@@ -10,6 +10,8 @@ const country = require('country-state-city').Country
 const state = require('country-state-city').State
 const city = require('country-state-city').City
 
+let code
+let indexForAddress =-1
 module.exports = {
     home : async(req,res)=>{
         const category = await categorySchema.find({}).lean();
@@ -213,11 +215,95 @@ module.exports = {
     },
     addAddress : async(req,res)=>{
         let countries = await country.getAllCountries();
-        res.render('user/account-manage-address',{"user":req.session.user,countries})
+        let user = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)}).lean()
+        res.render('user/account-manage-address',{user,countries})
     },
+    
     getAllStates: async(req,res)=>{
-        let states = await state.getAllStates();
+        let countries = await country.getAllCountries();
+        for(var i=0; i<countries.length; i++){
+            if(countries[i].name==req.params.countryName){
+                code = countries[i].isoCode;
+            }
+        }
+        let states = await state.getStatesOfCountry(code);
         res.json(states)
+    },
+    getAllCities : async(req,res)=>{
+        let states = await state.getStatesOfCountry(code);
+        let stateCode
+        for(var i=0; i<states.length; i++){
+            if(states[i].name==req.params.stateName){
+                stateCode = states[i].isoCode;
+            }
+        }
+        let cities = await city.getCitiesOfState(code,stateCode)
+        res.json(cities)
+        
+    },
+    postAddAddress : async(req,res)=>{
+        indexForAddress=indexForAddress+1;
+       await userSchema.updateOne(
+        {
+            _id : mongoose.Types.ObjectId(req.params.id)
+        },
+        {
+            $push : {
+                address :{
+                    index : indexForAddress,
+                    fullName : req.body.fullName,
+                    phone : req.body.phone,
+                    country : req.body.country,
+                    state : req.body.state,
+                    city : req.body.city,
+                    address : req.body.address,
+                },
+            },
+            
+
+        }
+       ).then(()=>{
+        res.redirect('/view-account')
+       })
+    },
+    editAddress : async (req,res) => {
+        let userDetails = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)}).lean()
+        index=req.params.index
+        userDetails=userDetails.address[index]
+        let countries = await country.getAllCountries();
+        try {
+            res.render('user/account-edit-address',{userDetails,countries,"user":req.session.user,index})
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    postEditAddress : async(req,res)=>{
+        
+        index=parseInt(req.body.index)
+
+        await userSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.params.id),
+                'address.index':index,
+            },
+            {
+                $set : {
+                  
+                        'address.$.fullName' : req.body.fullName,
+                        'address.$.phone'  : req.body.phone,
+                        'address.$.country'  : req.body.country,
+                        'address.$.state'  : req.body.state,
+                        'address.$.city'  : req.body.city,
+                        'address.$.address'  : req.body.address,
+                   
+                },
+                
+    
+            }
+           ).then((response)=>{
+            console.log(response);
+            res.redirect('/view-account')
+           })
     },
     logout : (req,res)=>{
         req.session.destroy()

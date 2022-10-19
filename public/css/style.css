@@ -5088,3 +5088,10 @@ span.remove_cart:hover {
 /* #addAdress:hover{
 
 } */
+
+#state,#city{
+    width: 100%;
+    border-color: rgba(0, 0, 0, 0.085);
+    height: 44px;
+    border-radius: 4px;
+}

@@ -7,23 +7,23 @@
     <meta name="description" content="RAFCART - Multipurpose eCommerce HTML Template">
     <meta name="author" content="Programming Kit">
     <title>RAFCART - Multipurpose eCommerce HTML Template</title>
-    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
 
     <!-- all css -->  
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/slick.css">
-    <link rel="stylesheet" href="css/line-awesome.css">
-    <link rel="stylesheet" href="css/nice-select.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/jquery-ui.css">
+    <link rel="stylesheet" href="/css/slick.css">
+    <link rel="stylesheet" href="/css/line-awesome.css">
+    <link rel="stylesheet" href="/css/nice-select.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
 </head>
 
 <body>
 
     <!-- Preloader -->
     <div class="preloader">
-        <img src="images/preloader.gif" alt="preloader">
+        <img src="/images/preloader.gif" alt="preloader">
     </div>
 
     <!-- top header -->
@@ -533,11 +533,7 @@
                 <div class="col-lg-3">
                     <div class="account_sidebar">
                         <div class="account_profile position-relative shadow_sm">
-                            <div class="acprof_img">
-                                <a href="account.html">
-                                    <img loading="lazy"  src="images/avatar-2.png" alt="user">
-                                </a>
-                            </div>
+                            
                             <div class="acprof_cont">
                                 <p>Hello,</p>
                                 <h4>Russell Ahmed</h4>
@@ -598,21 +594,22 @@
                     </div>
                 </div>
                 <!-- account content -->
+                
                 <div class="col-lg-9">
                     <div class="acprof_info_wrap shadow_sm">
                         <h4 class="text_xl mb-3">Manage Address</h4>
-                        <form action="/add-address/{{user._id}}" method="post">
+                        <form action="/edit-address/{{user._id}}" method="post">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Full Name</label>
-                                        <input type="text" name="fullName">
+                                        <input type="text" name="fullName" value="{{userDetails.fullName}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Phone Number</label>
-                                        <input type="text" name="phone">
+                                        <input type="text" name="phone" value="{{userDetails.phone}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -620,7 +617,7 @@
                                         <label>Country</label>
                                         
                                         <select  class="nice_select country" name="country" id="country" >
-                                            <option value="" >Select Country</option>
+                                            <option value="{{userDetails.country}}" >{{userDetails.country}}</option>
                                           {{#each countries}}  
                                             
                                                 <option value="{{this.name}}">{{this.name}}</option>
@@ -633,7 +630,7 @@
                                     <div class="single_billing_inp">
                                         <label>State</label>
                                         <select  name="state" id="state" >
-                                           <option value="" >Select State</option>
+                                           <option value="{{userDetails.state}}" >{{userDetails.state}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -642,7 +639,7 @@
                                     <div class="single_billing_inp">
                                         <label>City</label>
                                         <select class="" name="city" id="city">
-                                        <option value="" >Select City</option>
+                                        <option value="{{userDetails.city}}" >{{userDetails.city}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -650,9 +647,10 @@
                                 <div class="col-md-12">
                                     <div class="single_billing_inp">
                                         <label>Address</label>
-                                        <input type="text" name="address">
+                                        <input type="text" name="address" value="{{userDetails.address}}">
                                     </div>
                                 </div>
+                                <input hidden type="text" name="index" id="" value="{{index}}">
                                 <div class="col-12 acprof_subbtn">
                                     <button  class="default_btn rounded small">Save Changes</button>
                                 </div>
@@ -660,6 +658,7 @@
                         </form>
                     </div>
                 </div>
+             
             </div>
         </div>
     </div>
@@ -684,14 +683,14 @@
     </div>
 
     <!-- all js -->
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/jquery-3.5.1.min.js"></script>
-    <script src="js/jquery-ui.min.js"></script>
-    <script src="js/slick.min.js"></script>
-    <script src="js/jquery.nice-select.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/address.js"></script>
-     <script src="js/getCities.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <script src="/js/jquery.nice-select.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/address.js"></script>
+     <script src="/js/getCities.js"></script>
 </body>
 
 </html>
