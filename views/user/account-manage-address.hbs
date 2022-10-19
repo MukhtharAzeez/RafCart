@@ -548,14 +548,14 @@
                         </div>
                         <div class="acprof_wrap shadow_sm">
                             <div class="acprof_links">
-                                <a href="account.html">
+                                <a href="/view-account">
                                     <h4 class="acprof_link_title">
                                         <i class="lar la-id-card"></i>
                                         Manage My Account
                                     </h4>
                                 </a>
-                                <a href="account-profile-info.html">Profile Information</a>
-                                <a href="account-manage-address.html" class="active">Manage Address</a>
+                                <a href="/edit-user-profile">Profile Information</a>
+                                <a href="/add-address" class="active">Manage Address</a>
                                 <a href="account-change-password.html">Change Password</a>
                             </div>
                             <div class="acprof_links">
@@ -606,67 +606,68 @@
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Full Name</label>
-                                        <input type="text" Value="John Doe">
+                                        <input type="text" name="name">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Phone Number</label>
-                                        <input type="text" Value="123 456-789">
+                                        <input type="text" name="phone">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Country</label>
-                                        <select class="nice_select">
-                                            <option>select country</option>
-                                            <option selected>Bangladesh</option>
-                                            <option>Female</option>
-                                            <option>Other</option>
+                                        <select  class="nice_select" name="country" id="classi" onchange="getAllStates()">
+                                            {{#each countries}}
+                                            
+                                                <option>{{this.name}}</option>
+                                            
+                                            {{/each}} 
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
-                                        <label>Region</label>
-                                        <select class="nice_select">
-                                            <option>select region</option>
-                                            <option selected>Dhaka</option>
-                                            <option>Comilla</option>
-                                            <option>Chittagong</option>
+                                        <label>State</label>
+                                        <select class="nice_select" name="state">
+                                           
+                                            <option></option>
+                                            <option></option>
+                                            <option></option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>City</label>
-                                        <select class="nice_select">
-                                            <option>select city</option>
-                                            <option selected>Dhaka-North</option>
-                                            <option>Dhaka-South</option>
-                                            <option>Badda</option>
+                                        <select class="nice_select" name="city">
+                                           
+                                            <option></option>
+                                            <option></option>
+                                            <option></option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Area</label>
-                                        <select class="nice_select">
-                                            <option>select area</option>
-                                            <option selected>Notun Bazar</option>
-                                            <option>Gulshan</option>
-                                            <option>Mirpur</option>
+                                        <select class="nice_select" name="area">
+                                          
+                                            <option></option>
+                                            <option></option>
+                                            <option></option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="single_billing_inp">
                                         <label>Address</label>
-                                        <input type="text" Value="Solmaid Eidgha Mosque">
+                                        <input type="text" name="address">
                                     </div>
                                 </div>
                                 <div class="col-12 acprof_subbtn">
-                                    <button type="submit" class="default_btn rounded small">Save Changes</button>
+                                    <button  class="default_btn rounded small">Save Changes</button>
                                 </div>
                             </div>
                         </form>
@@ -702,6 +703,7 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/address.js"></script>
 </body>
 
 </html>

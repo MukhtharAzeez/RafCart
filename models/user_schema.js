@@ -22,6 +22,12 @@ const userSchema = new Schema({
     status : {
         type : Boolean,
         required : true
+    },
+    address : {
+        type : Array,
+    },
+    gender: {
+        type : String,
     }
    
 })

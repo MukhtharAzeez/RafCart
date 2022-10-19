@@ -2031,7 +2031,7 @@ button.list_product_btn:hover {
 }
 
 .shop_cart_title.sopcart_ttl span:first-child {
-    width: 57%;
+    width: 53%;
 }
 
 .shop_cart_title.sopcart_ttl {
@@ -2039,7 +2039,7 @@ button.list_product_btn:hover {
 }
 
 .shop_cart_title.sopcart_ttl span:nth-child(2) {
-    width: 22%;
+    width: 25%;
 }
 
 /* breadcrums */
@@ -3875,6 +3875,8 @@ h4.od_title {
     line-height: 38px;
 }
 
+
+
 .single_retreq p {
     margin-left: 32px;
     line-height: 1.4;
@@ -5082,3 +5084,7 @@ span.remove_cart:hover {
     width: 80px;
     height: 80px;
 }
+
+/* #addAdress:hover{
+
+} */

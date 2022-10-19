@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
+const cart_schema = require('../models/cart_schema');
 const cartSchema = require('../models/cart_schema');
 const { login } = require('./user_controller');
+const userController = require('../controller/user_controller')
+
 
 
 module.exports = {
     cart : async(req,res)=>{
+        let count = 0;
+        if(req.session.user){
+            const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
+            count = cart.products.length;
+        }
         if(req.session.user){
             let cartExist = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
             if(cartExist){
@@ -15,7 +23,6 @@ module.exports = {
                     {
                         $project : {
                             products : 1,
-                            _id :0
                         }
                     },
                     {
@@ -37,6 +44,13 @@ module.exports = {
                             as : 'product'
                         }
                     },
+                    {
+                        $project : {
+                            item : 1,
+                            quantity : 1,
+                            product : {$arrayElemAt : ["$product",0]}
+                        }
+                    }
                     // {
                     //     $lookup : {
                     //         from : 'products',
@@ -54,8 +68,57 @@ module.exports = {
                     //     }
                     // }   
                 ])
-                // cartItems = cartItems[0].cartItems
-                res.render('user/shopping-cart',{cartItems,"user":req.session.user})
+                let total = await cartSchema.aggregate([
+                    {
+                        $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                    },
+                    {
+                        $project : {
+                            products : 1,
+                        }
+                    },
+                    {
+                        $unwind : {
+                            path : "$products"
+                        }
+                    },
+                    {
+                        $project :{
+                            item : "$products.item",
+                            quantity : "$products.quantity",
+                        }
+                    },
+                    {
+                        $lookup :{
+                            from : 'products',
+                            localField : 'item',
+                            foreignField : '_id',
+                            as : 'product'
+                        }
+                    },
+                    {
+                        $project : {
+                            item : 1,
+                            quantity : 1,
+                            product : {$arrayElemAt : ["$product",0]}
+                        }
+                    },
+                    {
+                        $group :{
+                            _id:null,
+                            total : {$sum:{$multiply :['$quantity','$product.discount']}},
+                           
+                        }
+                    },
+                ])
+                if(total[0]){
+                    total = total[0].total;
+                }else{
+                    total = 0
+                }
+               
+                
+                res.render('user/shopping-cart',{cartItems,"user":req.session.user,count,total})
             }else{
                 res.redirect('/shop')   
             }
@@ -78,6 +141,7 @@ module.exports = {
                   
                     cartSchema.updateOne(
                         {
+                            userId : mongoose.Types.ObjectId(req.session.user._id),
                             'products.item' : mongoose.Types.ObjectId(req.params.id)
                         },
                         {
@@ -115,8 +179,77 @@ module.exports = {
                 })
             }
         }else{
-            res.redirect('/shop')
+            res.json({status:false})
         }
         
     },
+    checkExistProductInCart : async(req,res)=>{
+        if(req.session.user){
+            let product = await cartSchema.findOne({'products.item' : mongoose.Types.ObjectId(req.params.id)})
+            if(product){
+                res.json({productExist : true})
+            }else{
+                res.json({productExist : false})
+            }
+        }else{
+            res.json({userExist : false})
+        }
+    },
+    
+    changeCartQuantity : async(req,res)=>{
+        
+        count = parseInt(req.body.count)
+        if(req.body.quantity == 1 && count===-1){
+            cart_schema.updateOne(
+                {
+                    _id:mongoose.Types.ObjectId(req.body.cartId)
+                },
+                {
+                    $pull : {
+                        products :{item : mongoose.Types.ObjectId(req.body.productId)},
+                    }
+                }
+            ).then(async()=>{
+                
+                let total =await userController.getTotalAmount(req.session.user._id)
+                res.json({status : false,total});
+            })
+        }else{
+            cartSchema.updateOne(
+                {
+                    _id : mongoose.Types.ObjectId(req.body.cartId),
+                    'products.item' : mongoose.Types.ObjectId(req.body.productId)
+                },
+                {
+                    $inc : {
+                        'products.$.quantity':count
+                    }
+                }
+            ).then(async(response)=>{
+                let total =await userController.getTotalAmount(req.session.user._id)
+                res.json({status:true,total})
+            })
+        }
+        
+        
+        
+    },
+    removeCartItem : async(req,res)=>{
+        cart_schema.updateOne(
+            {
+                _id:mongoose.Types.ObjectId(req.body.cartId)
+            },
+            {
+                $pull : {
+                    products :{item : mongoose.Types.ObjectId(req.body.productId)},
+                }
+            }
+        ).then(async()=>{
+            
+            let total =await userController.getTotalAmount(req.session.user._id)
+            
+            res.json({status : true,total});
+        })
+    },
+    
 }

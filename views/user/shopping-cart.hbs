@@ -524,45 +524,49 @@
                         <span>Total Price</span>
                     </h4>
                     <div class="shop_cart_wrap">
+                        
                         {{#each cartItems}}
-                        {{#each product}}
-                        <div class="single_shop_cart d-flex align-items-center flex-wrap">
+                        
+                        <div class="single_shop_cart d-flex align-items-center flex-wrap" id="remove{{this.product._id}}">
                             <div class="cart_img mb-4 mb-md-0">
-                                <img loading="lazy"  src="{{this.images.0.image}}" alt="product">
+                                <img loading="lazy"  src="{{this.product.images.0.image}}" alt="product" style="width: 100px;">
                             </div>
                             <div class="cart_cont">
                                 <a href="product-view.html">
-                                    <h5>{{this.name}}</h5>
+                                    <h5>{{this.product.name}}</h5>
                                 </a>
-                                <p class="price">{{this.category}}</p>
+                                <p class="price">{{this.product.category}}</p>
                                 
                             </div>
-                            <div class="cart_qnty d-flex align-items-center ms-md-auto">
-                                <div class="cart_qnty_btn">
+                          
+                            <div class="cart_qnty d-flex align-items-center ms-md-auto" >
+                                <div class="cart_qnty_btn" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)"  >
                                     <i class="las la-minus"></i>
                                 </div>
-                                <div class="cart_count">4</div>
-                                <div class="cart_qnty_btn">
+                                <div class="cart_count" id="{{this.product._id}}">{{this.quantity}}</div>
+                                <div class="cart_qnty_btn" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',+1)">
                                     <i class="las la-plus"></i>
                                 </div>
                             </div>
+                            
                             <div class="cart_price ms-auto">
-                                <p>₹{{this.discount}}</p>
+                                <p>₹{{this.product.discount}}</p>
                             </div>
-                            <div class="cart_remove ms-auto">
+                            <div class="cart_remove ms-auto" onclick="removeProduct('{{this._id}}','{{this.product._id}}')">
                                  <i class="icon-trash"></i>
                             </div>
                         </div>
-                        {{/each}}
+                        
                        {{/each}}
                     </div>
                 </div>
+          
                 <div class="col-lg-3 mt-4 mt-lg-0">
                     <div class="cart_summary">
                         <h4>Order Summary</h4>
                          <div class="cartsum_text d-flex justify-content-between">
                              <p class="text-semibold">Subtotal</p>
-                             <p class="text-semibold">$45.00</p>
+                             <p class="text-semibold">₹<span  id="subTotal">{{total}}</span>.00</p>
                          </div>
                          <div class="cartsum_text d-flex justify-content-between">
                             <p>Delivery</p>
@@ -574,7 +578,7 @@
                         </div>
                         <div class="cart_sum_total d-flex justify-content-between">
                             <p>Total</p>
-                             <p>$45.00</p>
+                             <p >₹<span id="totalAMount">{{total}}</span>.00</p>
                         </div>
                         <div class="cart_sum_coupon">
                             <input type="text" placeholder="Enter coupon">
@@ -614,5 +618,6 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/changeQuantity.js"></script>
 </body>
 </html>

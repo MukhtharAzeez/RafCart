@@ -204,8 +204,9 @@
                                     {{/if}}
                                 </div>
                             </div>
+                            {{#if user}}
                             <div class="ac_links">
-                                  <a href="account.html" class="myac">
+                                  <a href="/view-account" class="myac">
                                     <i class="lar la-id-card"></i>
                                     My Account
                                 </a>
@@ -226,6 +227,7 @@
                                     Log out
                                 </a>
                             </div>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
@@ -627,14 +629,10 @@
             </h5>
             <ul>
                 <li class="withsub">
-                    <a href="javascript:void(0)">
+                    <a href="/">
                         Home
                     </a>
-                    <div class="submn">
-                        <a href="index-1.html">Home 1</a>
-                        <a href="index-2.html">Home 2</a>
-                        <a href="index-3.html">Home 3</a>
-                    </div>
+            
                 </li>
 
                 <li class="withsub">
