@@ -6,18 +6,23 @@ function addToCart(id) {
         url: `/check-exist-product-in-cart/${id}`,
         method: 'get',
         success: (response) => {
-            if (response.productExist) {
+            if (response.productExist==true) {
                 Swal.fire({
-                    text: 'Product already exist in your cart',
+                    position: 'top-end',
                     icon: 'info',
-                    showCloseButton: true,
-                })
+                    text: 'Product already exist in your cart',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    
+                  })
             } else if (response.userExist == false) {
                 Swal.fire({
                     html:'<a href="/login">Login Now!</a> ' ,
                     title: 'Not loggined Yet?',
                     text : 'Login now to continue shopping',
-                    icon: 'question'
+                    icon: 'question',
+                    showConfirmButton: false,
+                    showCancelButton : true
                 }
                     
                     
@@ -32,11 +37,13 @@ function addToCart(id) {
                             let count = $('#cart-count').html()
                             count = parseInt(count) + 1
                             $('#cart-count').html(count)
-                            Swal.fire(
-                                'Sucess!',
-                                'Item added to Cart!',
-                                'success'
-                            )
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Product added to your cart',
+                                showConfirmButton: false,
+                                timer: 1000
+                              })
                         }
                     }
                 })

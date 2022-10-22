@@ -9,14 +9,14 @@ function deleteButton(id){
       buttonsStyling: false
     })
 
-    swalWithBootstrapButtons.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Make as unavailable product!",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'confirm',
-      cancelButtonText: 'cancel',
-      reverseButtons: true
+      cancelButtonColor: "#d33",
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "Confirm",
     }).then((result) => {
       if (result.isConfirmed) {
         
@@ -33,7 +33,7 @@ function deleteButton(id){
       ) {
         swalWithBootstrapButtons.fire(
           'Cancelled',
-          'Your imaginary file is safe :)',
+          '',
           'error'
         )
       }

@@ -562,13 +562,25 @@
               <div class="shop_filter">
                 <h4 class="filter_title">Categories</h4>
                 <div class="filter_list">
-                  {{#each category}}
-                    <div class="d-flex align-items-center">
-                      <input type="checkbox" class="check_inp" />
-                      <label for="cat-women">{{this.name}}</label>
-                      <p class="mb-0 ms-auto">(16)</p>
-                    </div>
-                  {{/each}}
+                 <div class=" d-flex align-items-center">
+                  <input type="checkbox" class="check_inp" id="all_category" onclick="getAllProductsByCategory()"
+                    />
+                  <label for="cat-women">All</label>
+                  <p class="mb-0 ms-auto">({{this.count}})</p>
+                  
+                </div>
+
+                {{!-- Each category --}}
+                {{#each category}}
+                <div class=" d-flex align-items-center">
+                  
+                  <input type="checkbox" class="check_inp" id="{{this.name}}"
+                    onclick="getProductsByCategory('{{this.name}}')" {{!--
+                    onfocus="getProductsByCategory('{{this.name}}')" onchange="" --}} />
+                  <label for="cat-women">{{this.name}}</label>
+                  <p class="mb-0 ms-auto">({{this.count}})</p>
+                </div>
+                {{/each}}
                 </div>
               </div>
               <div class="shop_filter">
@@ -759,7 +771,7 @@
               </div>
             </div>
             <div class="shop_products">
-              <div class="list_view_products">
+              <div class="list_view_products" id="divForHideWhenUsingFilterForList">
                 {{#each products}}
                   <div class="single_list_product">
                     <div class="row">
@@ -785,8 +797,8 @@
                             <div class="price">
                               <span
                                 class="org_price"
-                              >${{this.discount}}.00</span>
-                              <span class="prev_price">${{this.price}}.00</span>
+                              >₹{{this.discount}}.00</span>
+                              <span class="prev_price">₹{{this.price}}.00</span>
                             </div>
                             <div class="rating">
                               <div
@@ -817,10 +829,10 @@
                           {{/if}}
                           {{#if this.onStock}}
                             <div class="product_list_btns">
-                              <a href="/add-to-cart/{{this._id}}"><button class="list_product_btn"><span
+                             <button class="list_product_btn" onclick="addToCart('{{this._id}}')"><span
                                     class="icon"
                                   ><i class="icon-cart"></i></span>
-                                  Add to Cart</button></a>
+                                  Add to Cart</button>
                               <button class="list_product_btn wish"><span
                                   class="icon"
                                 ><i class="icon-heart"></i></span>
@@ -880,6 +892,8 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/cartCount.js"></script>
+    <script src="js/categoryCheckedForList.js"></script>
   </body>
 
 </html>

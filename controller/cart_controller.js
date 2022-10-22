@@ -3,18 +3,24 @@ const cart_schema = require('../models/cart_schema');
 const cartSchema = require('../models/cart_schema');
 const { login } = require('./user_controller');
 const userController = require('../controller/user_controller')
+const productSchema = require('../models/product_schema');
+
 
 
 
 module.exports = {
+    
     cart : async(req,res)=>{
         let count = 0;
         if(req.session.user){
             const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
-            count = cart.products.length;
+            if(cart){
+                count = cart.products.length;
+            }
         }
         if(req.session.user){
             let cartExist = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+
             if(cartExist){
                 let cartItems = await cartSchema.aggregate([
                     {
@@ -34,6 +40,7 @@ module.exports = {
                         $project :{
                             item : "$products.item",
                             quantity : "$products.quantity",
+                            total : "$products.total"
                         }
                     },
                     {
@@ -48,6 +55,7 @@ module.exports = {
                         $project : {
                             item : 1,
                             quantity : 1,
+                            total: 1,
                             product : {$arrayElemAt : ["$product",0]}
                         }
                     }
@@ -86,6 +94,7 @@ module.exports = {
                         $project :{
                             item : "$products.item",
                             quantity : "$products.quantity",
+                            total : "$products.total"
                         }
                     },
                     {
@@ -100,14 +109,14 @@ module.exports = {
                         $project : {
                             item : 1,
                             quantity : 1,
+                            total :1,
                             product : {$arrayElemAt : ["$product",0]}
                         }
                     },
                     {
                         $group :{
                             _id:null,
-                            total : {$sum:{$multiply :['$quantity','$product.discount']}},
-                           
+                            total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
                         }
                     },
                 ])
@@ -116,22 +125,24 @@ module.exports = {
                 }else{
                     total = 0
                 }
-               
-                
                 res.render('user/shopping-cart',{cartItems,"user":req.session.user,count,total})
             }else{
-                res.redirect('/shop')   
+                res.redirect('back')   
             }
             
         }else{
+           
             res.redirect('/shop')
         }
         
     },
     addToCart : async(req,res)=>{
+              
+        let product = await productSchema.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
         let productObj={
             item :mongoose.Types.ObjectId(req.params.id),
-            quantity : 1 
+            quantity : 1 ,
+            total:product.discount
         }
         if(req.session.user){
             let cartExist = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
@@ -139,19 +150,19 @@ module.exports = {
                 let productExist =  cartExist.products.findIndex(product=>product.item==req.params.id)
                 if(productExist!=-1){
                   
-                    cartSchema.updateOne(
-                        {
-                            userId : mongoose.Types.ObjectId(req.session.user._id),
-                            'products.item' : mongoose.Types.ObjectId(req.params.id)
-                        },
-                        {
-                            $inc : {
-                                'products.$.quantity':1
-                            }
-                        }
-                    ).then((response)=>{
-                        res.json({status:true})
-                    })
+                    // cartSchema.updateOne(
+                    //     {
+                    //         userId : mongoose.Types.ObjectId(req.session.user._id),
+                    //         'products.item' : mongoose.Types.ObjectId(req.params.id)
+                    //     },
+                    //     {
+                    //         $inc : {
+                    //             'products.$.quantity':1
+                    //         }
+                    //     }
+                    // ).then((response)=>{
+                        res.json({status:false})
+                    // })
                 }else{
                     cartSchema.updateOne(
                         {
@@ -185,7 +196,12 @@ module.exports = {
     },
     checkExistProductInCart : async(req,res)=>{
         if(req.session.user){
-            let product = await cartSchema.findOne({'products.item' : mongoose.Types.ObjectId(req.params.id)})
+            
+            let product = await cartSchema.findOne({userId:mongoose.Types.ObjectId(req.session.user._id),
+                'products.item' : mongoose.Types.ObjectId(req.params.id)},
+                
+            )
+         
             if(product){
                 res.json({productExist : true})
             }else{
@@ -211,7 +227,7 @@ module.exports = {
                 }
             ).then(async()=>{
                 
-                let total =await userController.getTotalAmount(req.session.user._id)
+                let total =await userController.getTotalAmount(req.body.productId)
                 res.json({status : false,total});
             })
         }else{
@@ -226,7 +242,7 @@ module.exports = {
                     }
                 }
             ).then(async(response)=>{
-                let total =await userController.getTotalAmount(req.session.user._id)
+                let total =await userController.getTotalAmount(req.body.productId)
                 res.json({status:true,total})
             })
         }
@@ -249,6 +265,22 @@ module.exports = {
             let total =await userController.getTotalAmount(req.session.user._id)
             
             res.json({status : true,total});
+        })
+    },
+    updateCart : async(req,res)=>{
+        total = parseInt(req.body.total)
+        await cartSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.body.cartId),
+                'products.item' : mongoose.Types.ObjectId(req.body.productId)
+            },
+            {
+                $set : {
+                    'products.$.total' : total,
+                }
+            }
+        ).then(()=>{
+            res.json({status:true})
         })
     },
     

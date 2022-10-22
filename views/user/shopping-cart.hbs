@@ -550,7 +550,7 @@
                             </div>
                             
                             <div class="cart_price ms-auto">
-                                <p>₹{{this.product.discount}}</p>
+                                <p>₹<span id="price{{this.product._id}}">{{this.total}}</span></p>
                             </div>
                             <div class="cart_remove ms-auto" onclick="removeProduct('{{this._id}}','{{this.product._id}}')">
                                  <i class="icon-trash"></i>
@@ -593,7 +593,7 @@
         </div>
     </div>
 
-  
+   
 
     <!-- copyright -->
     <div class="copyright_wrap">

@@ -1428,16 +1428,18 @@
             <div class="row gy-4">
 
                 {{#each category}}
+                
                 <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-                    <a href="#">
+                   <a href="/get-category-product/{{this.name}}">
                         <div class="single_category_2">
                             <div class="cat2_img">
                                 <img loading="lazy"  src="{{this.image}}" alt="">
                             </div>
                             <h5>{{this.name}}</h5>
                         </div>
-                    </a>
+                     </a>
                 </div>
+               
                 {{/each}}
 
 

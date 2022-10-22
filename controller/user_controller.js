@@ -5,13 +5,18 @@ const productSchema = require('../models/product_schema');
 const categorySchema = require('../models/category_schema');
 const cartSchema = require('../models/cart_schema');
 const mongoose = require('mongoose');
+const { response } = require('express');
 
 const country = require('country-state-city').Country
 const state = require('country-state-city').State
 const city = require('country-state-city').City
 
+
+let userSession={}
 let code
 let indexForAddress =-1
+let categoryProducts
+
 module.exports = {
     home : async(req,res)=>{
         const category = await categorySchema.find({}).lean();
@@ -63,6 +68,7 @@ module.exports = {
                 });
                 req.session.user=user;
                 req.session.loggedIn = true;
+                userSession=req.session.user
                 user
                    .save()
                    .then((result)=>{
@@ -84,7 +90,7 @@ module.exports = {
                         if(status){
                             req.session.user=result[0];
                             req.session.loggedIn = true;
-                            
+                            userSession=req.session.user
                            res.redirect('/')
                         }else{
                            res.redirect('/login')
@@ -109,11 +115,19 @@ module.exports = {
             if(cart){
                 count = cart.products.length;
             }
-           
         }
-        res.render('user/shop-grid-2',{products,category,"user":req.session.user,count})
+       
+        if(categoryProducts){  
+            products=categoryProducts
+            res.render('user/shop-grid-2',{products,category,"user":req.session.user,count})        
+        }else{
+            console.log("kafsjkdljsf");
+            res.render('user/shop-grid-2',{products,category,"user":req.session.user,count})
+        }
+        
     },
     shoplist : async(req,res) => {
+        
         let products = await productSchema.find({}).lean()
         let category = await categorySchema.find({}).lean()
         let count = 0;
@@ -124,13 +138,41 @@ module.exports = {
         res.render('user/shop-list',{products,category,"user":req.session.user,count})
     },
     getCategoryProduct : async(req,res)=>{
-        let products= await productSchema.find({name : req.params.name}).lean()
+        categoryProducts=null
+        let products= await productSchema.find({category : req.params.name}).lean()
+        categoryProducts = products;
+        res.redirect('/shop')
     },
-    getTotalAmount : async function (id) {
+    getProductsByFilter : async(req,res)=>{
+        let products
+       
+        if(Object.keys(req.body).length !== 0){
+            products = await productSchema.find(
+                {
+                    category:{
+                        $in : [
+                            ...req.body.category
+                        ]
+                    }
+                }
+            ).lean()
+            
+        }else{
+            products= await productSchema.find({}).lean()
+        }
+        res.json(products)
+        
+    },
+    getAllProducts : async(req,res)=>{
+        let products = await productSchema.find({}).lean()
+        res.json(products)     
+    },
+    getTotalAmount : async function (productId) {
         try {
+            //Get total amount
             let total = await cartSchema.aggregate([
                 {
-                    $match :{userId:mongoose.Types.ObjectId(id)} 
+                    $match :{userId:mongoose.Types.ObjectId(userSession._id)} 
                 },
                 {
                     $project : {
@@ -171,9 +213,59 @@ module.exports = {
                     }
                 },
             ])
+
+            // Get product total amount
+        
+         
+            let productTotal = await cartSchema.aggregate([
+                {
+                    $match :{
+                        userId:mongoose.Types.ObjectId(userSession._id),
+                    },
+                },
+                {
+                    $unwind :{
+                        path : "$products"
+                    }
+                },
+                {
+                    $match:{
+                        'products.item': mongoose.Types.ObjectId(productId)
+                    }
+                },
+                {
+                    $project :{ 
+                        products : 1,  
+                    }
+                },
+                {
+                    $lookup:{
+                        from : 'products',
+                        localField : 'products.item',
+                        foreignField : '_id',
+                        as : 'product'
+                    }
+                },
+                {
+                    $project:{
+                        products:1,
+                        product : {$arrayElemAt : ["$product",0]}
+                    }
+                },
+                {
+                    $project :{
+                        productTotal :{$multiply :['$products.quantity','$product.discount']}
+                    }
+                }
+            ]
+                
+            )
             if(total[0]){
-                console.log(total);
-                return total[0].total;
+                result = {
+                    total:total[0].total,
+                    productTotal : productTotal[0]
+                }
+                return result;
             }else{
                 let total=0
                 console.log(total);
@@ -188,8 +280,16 @@ module.exports = {
          
     },
     viewAccount : async(req,res)=>{
+        let count = 0;
+        if(req.session.user){
+            const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
+            if(cart){
+                count = cart.products.length;
+            }
+           
+        }
         let userDetails = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)}).lean()
-        res.render('user/account',{userDetails,"user":req.session.user})
+        res.render('user/account',{userDetails,"user":req.session.user,count})
     },
     editProfilePage : async(req,res)=>{
         let user = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)}).lean()
