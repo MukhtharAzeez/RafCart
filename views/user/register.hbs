@@ -44,36 +44,41 @@
                     <div class="register_form padding_default shadow_sm">
                         <h4 class="title_2">Create an account</h4>
                         <p class="mb-4 text_md">Register here if you are a new customer.</p>
-                        <form action="/register" method="post">
+                        <form action="/register" id="registrationForm" method="post">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Full Name <span>*</span></label>
-                                        <input type="text" placeholder="Jone Doe" name="userName" required>
+                                        <input type="text" placeholder="type username" name="userName" required id="fullName">
+                                        <span id="fullNameError" style="color: red; font-size: 11px;">Only characters are valid!</span>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Email Address <span>*</span></label>
-                                        <input type="email" placeholder="example@mail.com" name="email" required>
+                                        <input type="email" placeholder="example@mail.com" name="email" required id="email">
+                                        <span id="emailError" style="color: red; font-size: 11px;">type email!</span>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Phone Number <span>*</span></label>
-                                        <input type="text" placeholder="Jone Doe" name="phone" required>
+                                        <input type="text" placeholder="type phone number" name="phone" required id="phone">
+                                        <span id="phoneError" style="color: red; font-size: 11px;">enter valid phone number!</span>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Password <span>*</span></label>
-                                        <input type="password" placeholder="type password" name="password" required>
+                                        <input type="password" placeholder="type password" name="password" required id="password">
+                                        <span id="passwordError" style="color: red; font-size: 11px;">password must be atleast 8 & no special characters are allowed!</span>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Confirm Password <span>*</span></label>
-                                        <input type="password" placeholder="confirm your password" name="confirmPassword" required>
+                                        <input type="password" placeholder="confirm your password" name="confirmPassword" required id="confirmPassword">
+                                        <span id="confirmPasswordError" style="color: red; font-size: 11px;">Confirm password and password must be same!</span>
                                     </div>
                                 </div>
                                 <div class="col-12 mt-2">
@@ -83,8 +88,8 @@
                                                 class="text-color">terms & conditions</a> </label>
                                     </div>
                                 </div>
-                                <div class="col-12 mt-3">
-                                    <button type="submit" class="default_btn xs_btn rounded px-4 d-block w-100">create
+                                <div class="col-12 mt-3" id="SubmitButton">
+                                    <button type="submit"  class="default_btn xs_btn rounded px-4 d-block w-100">create
                                         account</button>
                                 </div>
 
@@ -137,6 +142,7 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/signupValidation.js"></script>
 </body>
 
 </html>

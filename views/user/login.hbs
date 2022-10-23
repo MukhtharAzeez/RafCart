@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/nice-select.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
+    
 </head>
 
 <body>
@@ -47,13 +48,15 @@
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Email Address <span>*</span></label>
-                                        <input type="email" placeholder="example@mail.com" name="email" required>
+                                        <input type="email" placeholder="example@mail.com" name="email" required id="email">
+                                        <span id="emailError" style="color: red; font-size: 11px;">type email!</span>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="single_billing_inp">
                                         <label>Password <span>*</span></label>
-                                        <input type="password" placeholder="type password" name="password" required>
+                                        <input type="password" placeholder="type password" name="password" required id="password">
+                                        <span id="passwordError" style="color: red; font-size: 11px;">password must be atleast 8 & no special characters are allowed!</span>
                                     </div>
                                 </div>
                                 <div class="col-12 mt-2 d-flex justify-content-between align-items-center">
@@ -64,7 +67,7 @@
 
                                     <a href="/forgot_password" class="text-color">Forgot Password?</a>
                                 </div>
-                                <div class="col-12 mt-3">
+                                <div class="col-12 mt-3" id="loginButton">
                                     <button type="submit" class="default_btn xs_btn rounded px-4 d-block w-100">Login</button>
                                 </div>
 
@@ -102,6 +105,7 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/loginValidation.js"></script>
 </body>
 
 </html>

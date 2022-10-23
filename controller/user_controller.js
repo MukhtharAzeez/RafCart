@@ -81,6 +81,30 @@ module.exports = {
             })
         }
     },
+    emailAndPasswordValidCheck : async(req,res)=>{
+        let validation={}
+        let user =await userSchema.findOne({email:req.body.email})
+        
+        if(user){
+        
+            validation.email=true
+            if(user.status){
+                let password = await  bcrypt.compare(req.body.password,user.password)
+                if(password){
+                    res.json({password:true,email:true}) 
+                }else{
+                    res.json({password:false,email:true})
+                }
+            }else{
+                res.json({userBlocked:true})
+            }
+           
+        }else{
+            res.json({email:false})       
+        }
+        
+        
+    },
     postLogin : (req,res)=>{
         userSchema.find({email:req.body.email}).then((result)=>{
          

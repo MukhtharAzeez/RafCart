@@ -22,10 +22,13 @@ router
   .get(controller.signup)
   .post(controller.postSignup)
 
+router.post('/email-password-check',controller.emailAndPasswordValidCheck);
+
 router
   .route('/login')
   .get(controller.login)
   .post(controller.postLogin)
+
 router.get('/view-account',verifyLogin,controller.viewAccount);
 router.get('/edit-user-profile',verifyLogin,controller.editProfilePage)
 router.post('/edit-user-profile/:id',verifyLogin,controller.editUserProfile)
