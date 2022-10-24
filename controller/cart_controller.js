@@ -76,6 +76,7 @@ module.exports = {
                     //     }
                     // }   
                 ])
+               
                 let total = await cartSchema.aggregate([
                     {
                         $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 

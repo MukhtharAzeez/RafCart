@@ -330,10 +330,7 @@
     })
 
     // product quick view
-    $('.open_quickview').on('click', function(){
-        $('.product_quickview').addClass('active');
-        $('body').css('overflow-y', 'hidden')
-    })
+    
 
     $('.close_quickview').on('click', function(){
         $('.product_quickview').removeClass('active');

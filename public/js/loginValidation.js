@@ -83,7 +83,6 @@ function check_passwordFocusout(){
 }
 
 function check_submission(){
-    console.log(emailSuccess,passwordSuccess)
     if(emailSuccess === true && passwordSuccess===true){
     
         var email =$('#email').val()
@@ -99,13 +98,21 @@ function check_submission(){
             success : (response)=>{
                 if(response.email && response.password){
                     $("#loginButton").show();  
-                }else{
+                }else if(response.email==false){
+                    document.getElementById('emailError').innerHTML='You didn not  signin yet!'
+                    $("#emailError").show()
                     $("#loginButton").hide();
-                    console.log("error");
+                  
+                }else if(response.password==false){
+                    $('#password').css("border","1px solid red")
+                    document.getElementById('passwordError').innerHTML='Entered password is incorrect'
+                    $("#passwordError").show()
+                }else if(response.userBlocked==true){
+                    document.getElementById('emailError').innerHTML='You did not have an access to login now'
+                    $("#emailError").show()
+                    $('#password').css("border","1px solid red")
                 }
-                // else{
-                //     console.log(response);
-                // }
+                
             }
         })
 

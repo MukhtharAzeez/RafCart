@@ -933,11 +933,11 @@
            object-position: right;
     }
     .home-2 .search_category {
-        border-right: 1px solid #FD3D57;
+        border-right: 1px solid #060e21;
     }
 
     .home-2 .search_subimt button {
-        background: #FD3D57;
+        background: #060e21;
     }
 
     .mobile_menwrap {
@@ -958,7 +958,7 @@
     }
 
     .sub_categories_wrp .subcats_title {
-        background: #FD3D57;
+        background: #060e21;
         text-align: center;
         color: #fff;
         padding: 14px 0px;
@@ -1049,7 +1049,7 @@
     }
 
     .mega_menu_wrap h4:hover {
-        color: #FD3D57;
+        color: #060e21;
     }
 
     .mega_menu_wrap h4::after {

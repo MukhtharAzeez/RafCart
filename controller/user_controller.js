@@ -187,6 +187,12 @@ module.exports = {
         res.json(products)
         
     },
+    quickViewProduct : async(req,res)=>{
+        
+        let products = await productSchema.find({_id:mongoose.Types.ObjectId(req.params.id)}).lean()
+        
+        res.json(products[0])
+    },
     getAllProducts : async(req,res)=>{
         let products = await productSchema.find({}).lean()
         res.json(products)     
