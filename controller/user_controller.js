@@ -28,14 +28,36 @@ module.exports = {
             subBanners= await bannerSchema.find({}).sort({_id : -1}).limit(2).lean();
         }
         let count = 0;
+        let userWishListCount = 0
         if(req.session.user){
             const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
             if(cart){
                 count = cart.products.length;
             }
+            userWishListCount = await userSchema.aggregate([
+                {
+                    $match : {_id : mongoose.Types.ObjectId(req.session.user._id)},
+                },
+                {
+                    $project : {
+                        
+                        wishListProducts : 1
+                    }
+                },
+                {
+                    $unwind : {
+                        path : "$wishListProducts"
+                    }
+                },
+                
+                { $group: { _id: null, count: { $sum: 1 } } }
+
+            ])
+            
+            userWishListCount[0]?userWishListCount=userWishListCount[0].count:userWishListCount=0 
         }
        
-        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,count,banners,subBanners});
+        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,count,banners,subBanners,userWishListCount});
     },
     login : (req,res)=>{
         if(req.session.loggedIn){
@@ -140,23 +162,81 @@ module.exports = {
     shop :async (req,res) => {
 
         let products = await productSchema.find({}).lean()
+        
         let category = await categorySchema.find({}).lean()
        
         
         let count = 0;
+        var userWishListCount=0
+        let user
         if(req.session.user){
             const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
             if(cart){
                 count = cart.products.length;
             }
+
+            // compare product and favourite product to set favourite icon
+            user = await userSchema.aggregate([
+                {
+                    $match : {
+                        _id: mongoose.Types.ObjectId(req.session.user._id)
+                    }
+                },
+                {
+                    $project : {
+                        
+                        wishListProducts : 1
+                    }
+                },
+                {
+                    $unwind : {
+                        path : "$wishListProducts"
+                    }
+                },
+            ])
+            
+            for(var i=0;i<user.length;i++){
+                for(var j=0;j<products.length;j++){
+                    // user[i].wishListProduct=user[i].wishListProducts.toString()
+                    // products[j].id=products[j]._id.toString()
+                    if(user[i].wishListProducts.toString()==products[j]._id.toString()){
+                        console.log("got it");
+                        products[j].favourite=true
+                    }
+                }
+            }
+
+            // aggregate to get count of wish list products
+            userWishListCount = await userSchema.aggregate([
+                {
+                    $match : {_id : mongoose.Types.ObjectId(req.session.user._id)},
+                },
+                {
+                    $project : {
+                        
+                        wishListProducts : 1
+                    }
+                },
+                {
+                    $unwind : {
+                        path : "$wishListProducts"
+                    }
+                },
+                {   
+                    $group: {
+                         _id: null, count: { $sum: 1 } 
+                    } 
+                }
+            ])
+            userWishListCount[0]?userWishListCount=userWishListCount[0].count:userWishListCount=0 
         }
-         
+        
         if(categoryProducts){  
             products=categoryProducts
-            res.render('user/shop-grid-2',{products,category,"user":req.session.user,count})        
-        }else{
-            console.log("kafsjkdljsf");
-            res.render('user/shop-grid-2',{products,category,"user":req.session.user,count})
+            categoryProducts=null
+            res.render('user/shop-grid-2',{products,category,user:req.session.user,count,userWishListCount})        
+        }else{      
+            res.render('user/shop-grid-2',{products,category,"user":req.session.user,count,userWishListCount})
         }
         
     },
@@ -172,10 +252,11 @@ module.exports = {
         res.render('user/shop-list',{products,category,"user":req.session.user,count})
     },
     getCategoryProduct : async(req,res)=>{
-        categoryProducts=null
+        
         let products= await productSchema.find({category : req.params.name}).lean()
         categoryProducts = products;
         res.redirect('/shop')
+        
     },
     getProductsByFilter : async(req,res)=>{
         let products

@@ -634,14 +634,24 @@
                       style="width: 100%; height:220px; padding: 40px;" />
                     <div class="persof bg-danger">HOT</div>
                     <div class="adto_wish" >
-                     <i class="fa-solid fa-heart" id="addToWishListFirst{{this.id}}"></i>
-                     <i class="fa-regular fa-heart" id="removeFromWishListFirst{{this.id}}"></i>
+                      {{#if this.favourite}}
+                     <i class="fa-solid fa-heart" id="addToWishListFirst{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart d-none" id="removeFromWishListFirst{{this._id}}"></i>
+                     {{else}}
+                     <i class="fa-solid fa-heart d-none" id="addToWishListFirst{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart" id="removeFromWishListFirst{{this._id}}"></i>
+                     {{/if}}
                     </div>
                     <div class="prod_soh">
                       <div class="adto_wish" onclick="addToWishList('{{this._id}}')">
                         {{!-- <i class="icon-heart"></i> --}}
-                        <i class="fa-solid fa-heart" id="addToWishListSecond{{this.id}}"></i>
-                        <i class="fa-regular fa-heart" id="removeFromWishListSecond{{this.id}}"></i>
+                          {{#if this.favourite}}
+                        <i class="fa-solid fa-heart" id="addToWishListSecond{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart  d-none" id="removeFromWishListSecond{{this._id}}"></i>
+                        {{else}}
+                        <i class="fa-solid fa-heart  d-none" id="addToWishListSecond{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart" id="removeFromWishListSecond{{this._id}}"></i>
+                        {{/if}}
                       </div>
                       <div class="qk_view open_quickview" onclick="quickProductView('{{this._id}}')">
                         <span><i class="las la-eye"></i></span>
@@ -695,7 +705,7 @@
                   </div>
                   {{else}}
                   <div class="full_atc_btn2">
-                    <button>
+                    <button class="disable">
                       <span class="me-1"><i class="icon-cart"></i></span>
                       add to cart
                     </button>

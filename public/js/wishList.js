@@ -6,19 +6,16 @@ function addToWishList(id){
         success: (response)=>{
             if(response.status){
                 document.getElementById('wishListCount').innerHTML=count+1
-                // console.log(document.getElementById('addToWishListFirst'+id))
-                // document.getElementById('addToWishListSecond'+id).classList.remove('d-none')
-                // document.getElementById('removeFromWishListFirst'+id).classList.add('d-none')
-                // document.getElementById('removeFromWishListSecond'+id).classList.add('d-none')
+                $('#addToWishListFirst'+id).removeClass("d-none");
+                $('#addToWishListSecond'+id).removeClass("d-none");
+                $('#removeFromWishListFirst'+id).addClass("d-none");
+                $('#removeFromWishListSecond'+id).addClass("d-none");
             }else if(response.productExist){
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'info',
-                    text: 'Product already exist in your wishlist',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    
-                  })
+              document.getElementById('wishListCount').innerHTML=count-1
+                $('#addToWishListFirst'+id).addClass("d-none");
+                $('#addToWishListSecond'+id).addClass("d-none");
+                $('#removeFromWishListFirst'+id).removeClass("d-none");
+                $('#removeFromWishListSecond'+id).removeClass("d-none");
             }else{
                 Swal.fire({
                     html:'<a href="/login">Login Now!</a> ' ,

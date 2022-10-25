@@ -39,16 +39,29 @@ module.exports = {
         res.render('user/wish-list.hbs',{wishListProducts,userDetails})
     },
     addToWishList : async(req,res)=>{
-        console.log(req.params.id);
         if(req.session.user){
             let productExist=await userSchema.findOne(
                 {
                     _id : mongoose.Types.ObjectId(req.session.user._id),
                     wishListProducts : mongoose.Types.ObjectId(req.params.id)
-                }
+                },
             )
+            
             if(productExist){
-                res.json({productExist:true})
+                await userSchema.updateOne(
+                    {
+                        _id : mongoose.Types.ObjectId(req.session.user._id),
+                        wishListProducts : mongoose.Types.ObjectId(req.params.id)
+                    },
+                    {
+                        $pull : {
+                            wishListProducts : mongoose.Types.ObjectId(req.params.id)
+                        }
+                    }
+                ).then(()=>{
+                    res.json({productExist:true})
+                })
+                
             }else{
                await userSchema.updateOne(
                 {
@@ -58,10 +71,6 @@ module.exports = {
                     $push : {
                         wishListProducts : mongoose.Types.ObjectId(req.params.id)
                     },
-                    $inc : {
-                        wishListCount : 1
-                    }
-                    
                 }
                 ).then(()=>{
                    res.json({status : true})
@@ -73,7 +82,6 @@ module.exports = {
         }
     },
     removeFromWishList : async(req,res)=>{
-        console.log(req.params.id);
         await userSchema.updateOne(
             {
                 _id : mongoose.Types.ObjectId(req.session.user._id),
@@ -82,9 +90,6 @@ module.exports = {
                 $pull : {
                     wishListProducts : mongoose.Types.ObjectId(req.params.id)
                 },
-                $inc :{
-                    wishListCount : -1
-                }
             }
         ).then(()=>{
             res.json({status:true})
