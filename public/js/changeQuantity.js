@@ -2,7 +2,9 @@ function changeQuantity(cartId, productId, count) {
   let quantity = parseInt(document.getElementById(productId).innerHTML);
   let removedProduct = document.getElementById("remove" + productId);
   count = parseInt(count);
-
+  document.getElementById("plusButtonCart").classList.add('d-none')
+  document.getElementById("minusButtonCart").classList.add('d-none')
+  document.getElementById(productId).style.width="110px"
   $.ajax({
     url: "/change-cart-quantity",
     data: {
@@ -15,11 +17,15 @@ function changeQuantity(cartId, productId, count) {
     method: "post",
     success: (response) => {
       if (response.status) {
+       
         document.getElementById(productId).innerHTML = quantity + count;
         document.getElementById("totalAMount").innerHTML = response.total.total;
         document.getElementById("price" + productId).innerHTML =
           response.total.productTotal.productTotal;
         document.getElementById("subTotal").innerHTML = response.total.total;
+        document.getElementById("plusButtonCart").classList.remove('d-none')
+        document.getElementById("minusButtonCart").classList.remove('d-none')
+        document.getElementById(productId).style.width="40px"
         $.ajax({
           url: "/change-product-total-price",
           data: {
@@ -32,7 +38,6 @@ function changeQuantity(cartId, productId, count) {
 
           method: "post",
           success : (response)=>{
-
           }
         });
       } else {

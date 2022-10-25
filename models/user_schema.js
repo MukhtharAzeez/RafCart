@@ -28,6 +28,12 @@ const userSchema = new Schema({
     },
     gender: {
         type : String,
+    },
+    wishListProducts : {
+        type : Array,
+    },
+    wishListCount : {
+        type : Number,
     }
    
 })

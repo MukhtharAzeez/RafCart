@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require('../controller/user_controller');
 const cartController = require('../controller/cart_controller');
 const cartSchema = require('../models/cart_schema');
+const wishListController = require('../controller/wishList_controller')
 const mongoose = require('mongoose')
 
 verifyLogin = (req,res,next)=>{
@@ -44,12 +45,19 @@ router.get('/get-category-product/:name',controller.getCategoryProduct)
 router.post('/category-filter',controller.getProductsByFilter)
 router.get('/get-all-products',controller.getAllProducts)
 router.get('/product-quick-view/:id',controller.quickViewProduct)
+
+// Cart
 router.get('/view-cart',verifyLogin,cartController.cart)
 router.post('/change-product-total-price',cartController.updateCart)
 router.get('/add-to-cart/:id',cartController.addToCart)
 router.get('/check-exist-product-in-cart/:id',cartController.checkExistProductInCart)
 router.post('/change-cart-quantity',cartController.changeCartQuantity)
 router.post('/removeCartItem',cartController.removeCartItem)
+
+// Wishlist
+router.get('/view-wishlist',verifyLogin,wishListController.wishlist)
+router.get('/add-to-wishList/:id',wishListController.addToWishList)
+router.get('/remove-from-wish-list/:id',verifyLogin,wishListController.removeFromWishList)
 
 
 router.get('/logout',controller.logout)

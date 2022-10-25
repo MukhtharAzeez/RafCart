@@ -99,7 +99,7 @@ function check_submission(){
                 if(response.email && response.password){
                     $("#loginButton").show();  
                 }else if(response.email==false){
-                    document.getElementById('emailError').innerHTML='You didn not  signin yet!'
+                    document.getElementById('emailError').innerHTML='You didn not create a account yet! do signup'
                     $("#emailError").show()
                     $("#loginButton").hide();
                   

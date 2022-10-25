@@ -86,12 +86,16 @@
                 <div class="header_icon d-flex align-items-center ms-auto ms-sm-0">
                     
                     <div class="shopcart">
-                        <a  class="icon_wrp text-center wishlist ms-0">
+                        <a href="/view-wishlist" class="icon_wrp text-center wishlist ms-0">
                         <span class="icon" >
-                            <i class="icon-heart" ></i>
+                            <i class="fa-regular fa-heart "></i>
                         </span>
                         <span class="icon_text">Wish List</span>
-                        <span class="pops">6</span>
+                        {{#if user}}
+                        <span class="pops">{{user.wishListCount}}</span>
+                        {{else}}
+                        <span class="pops">0</span>
+                        {{/if}}
                     </a>
 
                     
@@ -220,7 +224,7 @@
                                     <i class="lar la-heart"></i>
                                     My Wishlist
                                 </a>
-                                <a href="shopping-cart.html">
+                                <a href="/view-cart">
                                      <i class="icon-cart"></i>
                                     My Cart
                                 </a>
@@ -1077,87 +1081,44 @@
                 <div class="home_2_hero">
                     <div class="container">
                         <div class="hero_slider_active">
-                            <div class="single_hero_slider bg-3">
+                            {{#each banners}}
+                            <div class="single_hero_slider">
                                 <div class="container">
                                     <div class="row align-items-center">
                                         <div class="col-lg-6 col-sm-7">
                                             <div class="hero_content text-center text-sm-start ps-4">
-                                                <p>Get up to 50% off Today only</p>
-                                                <h1>Fanideaz Men's Regular <br class="d-block d-sm-none"> Fit Polo T-Shirt
+                                                <p>{{this.description}}</p>
+                                                <h1>{{this.title}}
                                                 </h1>
                                                 <div class="hero_btn">
-                                                    <a class="default_btn small rounded" href="shop-grid.html">View all</a>
+                                                    <a class="default_btn small rounded" href="/shop">View all</a>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-sm-5 d-none d-sm-block">
                                             <div class="hero_img">
-                                                <img loading="lazy"  src="images/men-1.png" alt="shirt">
+                                                <img loading="lazy"  src="{{this.image}}" alt="shirt">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="single_hero_slider bg-2">
-                                <div class="container">
-                                    <div class="row align-items-center">
-                                        <div class="col-sm-6">
-                                            <div class="hero_content text-center text-sm-start ps-4">
-                                                <p>Get up to 50% off Today only</p>
-                                                <h1>Fanideaz Men's Regular Fit Polo T-Shirt</h1>
-                                                <div class="hero_btn">
-                                                    <a class="default_btn small rounded" href="shop-grid.html">View all</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 d-none d-sm-block">
-                                            <div class="hero_img">
-                                                <img loading="lazy"  src="images/men-1.png" alt="shirt">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="single_hero_slider bg-1">
-                                <div class="container">
-                                    <div class="row align-items-center">
-                                        <div class="col-sm-6">
-                                            <div class="hero_content text-center text-sm-start ps-4">
-                                                <p>Get up to 50% off Today only</p>
-                                                <h1>Fanideaz Men's Regular Fit Polo T-Shirt</h1>
-                                                <div class="hero_btn">
-                                                    <a class="default_btn small rounded" href="shop-grid.html">View all</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 d-none d-sm-block">
-                                            <div class="hero_img">
-                                                <img loading="lazy"  src="images/men-1.png" alt="shirt">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {{/each}}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-3">
                 <div class="banner_collection mt-5 pt-2 pt-xl-0 mt-xl-0 d-flex flex-xl-column flex-row gap-3">
+                    {{#each subBanners}}
                     <a href="#" class="single_bannercol">
-                        <h4>Shoes Collection</h4>
-                        <h5>30% off</h5>
+                        <h4>{{this.title}}</h4>
+                        <h5>{{this.description}}</h5>
                         <div class="bancol_img">
-                            <img loading="lazy"  src="images/shoes-4.png" alt="shoes">
+                            <img loading="lazy"  src="{{this.image}}" alt="shoes">
                         </div>
                     </a>
-                    <a href="#" class="single_bannercol">
-                        <h4>Sunglasses Collection</h4>
-                        <h5>20% off</h5>
-                        <div class="bancol_img">
-                            <img loading="lazy"  src="images/glass.png" alt="shoes">
-                        </div>
-                    </a>
+                    {{/each}}
                 </div>
             </div>
         </div>
@@ -1222,7 +1183,7 @@
                         <img loading="lazy"  src="images/parse.png" alt="product">
                         <div class="prod_soh">
                             <div class="adto_wish">
-                                <i class="icon-heart"></i>
+                                <i class="fa-regular fa-heart "></i>
                             </div>
                             <div class="qk_view open_quickview">
                                 <span><i class="las la-eye"></i></span>
@@ -1262,7 +1223,7 @@
                         <img loading="lazy"  src="images/shirt-2.png" alt="product">
                         <div class="prod_soh">
                             <div class="adto_wish">
-                                <i class="icon-heart"></i>
+                                <i class="fa-regular fa-heart "></i>
                             </div>
                             <div class="qk_view open_quickview">
                                 <span><i class="las la-eye"></i></span>
@@ -1302,7 +1263,7 @@
                         <img loading="lazy"  src="images/toy.png" alt="product">
                         <div class="prod_soh">
                             <div class="adto_wish">
-                                <i class="icon-heart"></i>
+                                <i class="fa-regular fa-heart "></i>
                             </div>
                             <div class="qk_view open_quickview">
                                 <span><i class="las la-eye"></i></span>
@@ -1342,7 +1303,7 @@
                         <img loading="lazy"  src="images/shoes-5.png" alt="product">
                         <div class="prod_soh">
                             <div class="adto_wish">
-                                <i class="icon-heart"></i>
+                                <i class="fa-regular fa-heart "></i>
                             </div>
                             <div class="qk_view open_quickview">
                                 <span><i class="las la-eye"></i></span>
@@ -1382,7 +1343,7 @@
                         <img loading="lazy"  src="images/shoes-3.png" alt="product">
                         <div class="prod_soh">
                             <div class="adto_wish">
-                                <i class="icon-heart"></i>
+                                <i class="fa-regular fa-heart "></i>
                             </div>
                             <div class="qk_view open_quickview">
                                 <span><i class="las la-eye"></i></span>
@@ -1988,7 +1949,7 @@
                         <div class="product_buttons">
                             <a href="#" class="default_btn me-sm-3 me-2 px-2 px-lg-4"><i
                                     class="icon-cart me-2"></i> Add to Cart</a>
-                            <a href="#" class="default_btn second px-3 px-ms-4"><i class="icon-heart me-2"></i>
+                            <a href="#" class="default_btn second px-3 px-ms-4"><i class="fa-regular fa-heart "></i>
                                 Wishlist</a>
                         </div>
                         <div class="share_icons footer_icon d-flex">

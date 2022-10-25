@@ -633,18 +633,24 @@
                     <img loading="lazy" src="{{this.images.0.image}}" alt="product"
                       style="width: 100%; height:220px; padding: 40px;" />
                     <div class="persof bg-danger">HOT</div>
-                    <div class="adto_wish">
-                      <i class="icon-heart"></i>
+                    <div class="adto_wish" >
+                     <i class="fa-solid fa-heart" id="addToWishListFirst{{this.id}}"></i>
+                     <i class="fa-regular fa-heart" id="removeFromWishListFirst{{this.id}}"></i>
                     </div>
                     <div class="prod_soh">
-                      <div class="adto_wish">
-                        <i class="icon-heart"></i>
+                      <div class="adto_wish" onclick="addToWishList('{{this._id}}')">
+                        {{!-- <i class="icon-heart"></i> --}}
+                        <i class="fa-solid fa-heart" id="addToWishListSecond{{this.id}}"></i>
+                        <i class="fa-regular fa-heart" id="removeFromWishListSecond{{this.id}}"></i>
                       </div>
                       <div class="qk_view open_quickview" onclick="quickProductView('{{this._id}}')">
                         <span><i class="las la-eye"></i></span>
                         Quick View
                       </div>
                     </div>
+
+                   
+                    
                   </div>
                   <div class="topariv_cont">
                     <a href="product-view.html">
@@ -670,7 +676,7 @@
 
                   {{#if this.onStock}}
 
-                  <p style="color: green; padding-left: 110px;">{{this.stock}} In Stock</p>
+                  <p style="color: green; padding-left: 110px;">In Stock</p>
                   {{else}}
                   <p style="color: red; padding-left: 100px;">Out of Stock</p>
                   {{/if}}
@@ -877,7 +883,7 @@
                         <div class="product_buttons">
                             <div class="default_btn me-sm-3 me-2 px-2 px-lg-4" id="addToCartFunction"><i
                                     class="icon-cart me-2"></i> Add to Cart</div>
-                            <a href="#" class="default_btn second px-3 px-ms-4"><i class="icon-heart me-2"></i>
+                            <a href="#" class="default_btn second px-3 px-ms-4"><i class="fa-regular fa-heart "></i>
                                 Wishlist</a>
                         </div>
                         <div class="share_icons footer_icon d-flex">
@@ -920,7 +926,7 @@
       <script src="js/cartCount.js"></script>
       <script src="js/categoryChecked.js"></script>
       <script src="js/quickProductView.js"></script>
-
+      <script src="js/wishList.js"></script>
 </body>
 
 </html>

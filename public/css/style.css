@@ -5095,3 +5095,7 @@ span.remove_cart:hover {
     height: 44px;
     border-radius: 4px;
 }
+
+#addToWishListFirst,#addToWishListSecond{
+    color: red;
+}

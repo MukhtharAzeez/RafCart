@@ -356,14 +356,14 @@
                                                         <a href="index.html">Dashboard</a>
                                                     </li>
                                                     <li class="breadcrumb-item">
-                                                        <a href="app-categories-list.html">Categories</a>
+                                                        <a href="app-categories-list.html">Banners</a>
                                                     </li>
                                                     <li class="breadcrumb-item active" aria-current="page">
-                                                        Add Category
+                                                        Add Banner
                                                     </li>
                                                 </ol>
                                             </nav>
-                                            <h1 class="h3 m-0">Add Category</h1>
+                                            <h1 class="h3 m-0">Add Banner</h1>
                                         </div>
                                         <div class="col-auto d-flex">
 
@@ -375,13 +375,21 @@
 
 
 
-                                <form action="/admin/add-category" method="post" enctype="multipart/form-data">
+                                <form action="/admin/edit-banner/{{banner._id}}" method="post" enctype="multipart/form-data">
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="mb-3">
 
-                                                <label for="name" class="form-label">Category Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" style="width: 248px;" required>
+                                                <label for="name" class="form-label">Banner Title</label>
+                                                <input type="text" class="form-control" id="name" name="title" style="width: 248px;" required value="{{banner.title}}">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+
+                                                <label for="name" class="form-label">Banner escription</label>
+                                                <input type="text" class="form-control" id="description" name="description" style="width: 248px;" required value="{{banner.description}}">
 
                                             </div>
                                         </div>

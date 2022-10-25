@@ -4,6 +4,7 @@ const userSchema = require('../models/user_schema')
 const productSchema = require('../models/product_schema');
 const categorySchema = require('../models/category_schema');
 const cartSchema = require('../models/cart_schema');
+const bannerSchema = require('../models/banner_schema')
 const mongoose = require('mongoose');
 const { response } = require('express');
 
@@ -20,6 +21,12 @@ let categoryProducts
 module.exports = {
     home : async(req,res)=>{
         const category = await categorySchema.find({}).lean();
+        let banners = await bannerSchema.find({}).lean();
+        let subBanners
+        if(banners.length>=3){
+            banners = await bannerSchema.find({}).sort({_id : -1}).skip(2).lean();
+            subBanners= await bannerSchema.find({}).sort({_id : -1}).limit(2).lean();
+        }
         let count = 0;
         if(req.session.user){
             const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
@@ -28,7 +35,7 @@ module.exports = {
             }
         }
        
-        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,count});
+        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,count,banners,subBanners});
     },
     login : (req,res)=>{
         if(req.session.loggedIn){
@@ -64,7 +71,8 @@ module.exports = {
                     email : email,
                     phone : phone,
                     password : password,
-                    status : true
+                    status : true,
+                    wishListCount : 0
                 });
                 req.session.user=user;
                 req.session.loggedIn = true;
@@ -133,6 +141,8 @@ module.exports = {
 
         let products = await productSchema.find({}).lean()
         let category = await categorySchema.find({}).lean()
+       
+        
         let count = 0;
         if(req.session.user){
             const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
@@ -140,7 +150,7 @@ module.exports = {
                 count = cart.products.length;
             }
         }
-       
+         
         if(categoryProducts){  
             products=categoryProducts
             res.render('user/shop-grid-2',{products,category,"user":req.session.user,count})        

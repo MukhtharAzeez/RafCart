@@ -440,12 +440,16 @@
                 </div>
                 <div class="header_icon d-flex align-items-center">
                     <div class="shopcart">
-                        <a href="wish-list.html" class="icon_wrp text-center wishlist ms-0">
+                        <a href="/view-wishlist" class="icon_wrp text-center wishlist ms-0">
                         <span class="icon">
-                            <i class="icon-heart"></i>
+                            <i class="fa-regular fa-heart "></i>
                         </span>
                         <span class="icon_text">Wish List</span>
-                        <span class="pops">6</span>
+                        {{#if user}}
+                        <span class="pops" id="wishListCount">{{user.wishListCount}}</span>
+                        {{else}}
+                        <span class="pops" id="wishListCount">0</span>
+                        {{/if}}
                     </a>
                         <div class="shopcart_dropdown">
                             <div class="cart_droptitle">

@@ -540,11 +540,11 @@
                             </div>
                           
                             <div class="cart_qnty d-flex align-items-center ms-md-auto" >
-                                <div class="cart_qnty_btn" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)"  >
+                                <div class="cart_qnty_btn" id="minusButtonCart" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)"  >
                                     <i class="las la-minus"></i>
                                 </div>
                                 <div class="cart_count" id="{{this.product._id}}">{{this.quantity}}</div>
-                                <div class="cart_qnty_btn" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',+1)">
+                                <div class="cart_qnty_btn" id="plusButtonCart" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',+1)">
                                     <i class="las la-plus"></i>
                                 </div>
                             </div>
