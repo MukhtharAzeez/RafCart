@@ -99,9 +99,13 @@ router.get('/remove-from-wish-list/:id',verifyLogin,wishListController.removeFro
 // Checkout
 router.get('/checkout-page',verifyLogin,cartAndWishList,controller.checkout)
 router.get('/payment-page/:index',verifyLogin,cartAndWishList,controller.payment)
-router.post('/cod-place-order',verifyLogin,cartAndWishList,controller.CODPlaceOrder)
+router.post('/place-an-order',verifyLogin,cartAndWishList,controller.PlaceAnOrder)
 router.get('/order-successfully-placed',verifyLogin,cartAndWishList,orderController.orderPlacedSucessFully)
+router.post('/verify-payment',verifyLogin,cartAndWishList,orderController.verifyPayment)
 
+// View Orders
+router.get('/view-current-order',verifyLogin,cartAndWishList,orderController.viewCurrentOrder)
+router.get('/view-orders',verifyLogin,cartAndWishList,orderController.viewOrders)
 
 router.get('/logout',controller.logout)
 

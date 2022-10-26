@@ -736,7 +736,7 @@ module.exports = {
         userAddress=userAddress[0]
         res.render('user/payment',{count:res.count,userWishListCount:res.userWishListCount,user:req.session.user,cartItems,total,userAddress})
     },
-    CODPlaceOrder : async(req,res)=>{
+    PlaceAnOrder : async(req,res)=>{
         
         let total = await cartSchema.aggregate([
             {
@@ -788,10 +788,14 @@ module.exports = {
             total = 0
         }
         let cartItems =await cart_controller.getCartItems(req.session.user._id);
-        await order_controller.placeOrder(req.body,cartItems,total,req.session.user._id)
-        await cartSchema.deleteOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
-        
-        res.status(200).json({status:true})
+        let orderId =await order_controller.placeOrder(req.body,cartItems,total,req.session.user._id)
+        if(req.body.paymentMethod=='COD'){
+            await cartSchema.deleteOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+            res.json(orderId)
+        }else{
+            let order = await order_controller.generateRazorpay(orderId,total)
+            res.json(order)
+        }      
     },
     logout : (req,res)=>{
         req.session.destroy()
