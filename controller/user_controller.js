@@ -5,6 +5,8 @@ const productSchema = require('../models/product_schema');
 const categorySchema = require('../models/category_schema');
 const cartSchema = require('../models/cart_schema');
 const bannerSchema = require('../models/banner_schema')
+const cart_controller = require('../controller/cart_controller')
+const order_controller = require('../controller/order_controller')
 const mongoose = require('mongoose');
 const { response } = require('express');
 
@@ -18,6 +20,8 @@ let code
 let indexForAddress =-1
 let categoryProducts
 
+
+
 module.exports = {
     home : async(req,res)=>{
         const category = await categorySchema.find({}).lean();
@@ -27,37 +31,9 @@ module.exports = {
             banners = await bannerSchema.find({}).sort({_id : -1}).skip(2).lean();
             subBanners= await bannerSchema.find({}).sort({_id : -1}).limit(2).lean();
         }
-        let count = 0;
-        let userWishListCount = 0
-        if(req.session.user){
-            const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
-            if(cart){
-                count = cart.products.length;
-            }
-            userWishListCount = await userSchema.aggregate([
-                {
-                    $match : {_id : mongoose.Types.ObjectId(req.session.user._id)},
-                },
-                {
-                    $project : {
-                        
-                        wishListProducts : 1
-                    }
-                },
-                {
-                    $unwind : {
-                        path : "$wishListProducts"
-                    }
-                },
-                
-                { $group: { _id: null, count: { $sum: 1 } } }
-
-            ])
-            
-            userWishListCount[0]?userWishListCount=userWishListCount[0].count:userWishListCount=0 
-        }
+        
        
-        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,count,banners,subBanners,userWishListCount});
+        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
     },
     login : (req,res)=>{
         if(req.session.loggedIn){
@@ -173,6 +149,7 @@ module.exports = {
             const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
             if(cart){
                 count = cart.products.length;
+                cartCount = count
             }
 
             // compare product and favourite product to set favourite icon
@@ -229,6 +206,7 @@ module.exports = {
                 }
             ])
             userWishListCount[0]?userWishListCount=userWishListCount[0].count:userWishListCount=0 
+            userWishListCount[0]?wishListCount=userWishListCount[0].count:wishListCount=0
         }
         
         if(categoryProducts){  
@@ -463,7 +441,8 @@ module.exports = {
         
     },
     postAddAddress : async(req,res)=>{
-        indexForAddress=indexForAddress+1;
+        let addressIndex = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)})
+        indexForAddress = addressIndex.address.length
        await userSchema.updateOne(
         {
             _id : mongoose.Types.ObjectId(req.params.id)
@@ -525,6 +504,294 @@ module.exports = {
             console.log(response);
             res.redirect('/view-account')
            })
+    },
+    checkout : async(req,res)=>{
+        
+        let userAddresses= await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)})
+        let userAddress = userAddresses.address
+        for(var i=0;i<userAddress.length;i++){
+            userAddress[i].index=userAddress[i].index+1
+        }        
+        //  cartItems to list
+        let cartItems = await cartSchema.aggregate([
+            {
+                $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+            },
+            {
+                $project : {
+                    products : 1,
+                }
+            },
+            {
+                $unwind : {
+                    path : "$products"
+                }
+            },
+            {
+                $project :{
+                    item : "$products.item",
+                    quantity : "$products.quantity",
+                    total : "$products.total"
+                }
+            },
+            {
+                $lookup :{
+                    from : 'products',
+                    localField : 'item',
+                    foreignField : '_id',
+                    as : 'product'
+                }
+            },
+            {
+                $project : {
+                    item : 1,
+                    quantity : 1,
+                    total: 1,
+                    product : {$arrayElemAt : ["$product",0]}
+                }
+            }
+            // {
+            //     $lookup : {
+            //         from : 'products',
+            //         let : {prodList : '$products'},
+            //         pipeline : [
+            //             {
+            //                 $match : {
+            //                     $expr :{
+            //                         $in : ["$_id","$$prodList"]
+            //                     }
+            //                 }
+            //             }
+            //         ],
+            //         as : "cartItems"
+            //     }
+            // }   
+        ])
+       
+        let total = await cartSchema.aggregate([
+            {
+                $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+            },
+            {
+                $project : {
+                    products : 1,
+                }
+            },
+            {
+                $unwind : {
+                    path : "$products"
+                }
+            },
+            {
+                $project :{
+                    item : "$products.item",
+                    quantity : "$products.quantity",
+                    total : "$products.total"
+                }
+            },
+            {
+                $lookup :{
+                    from : 'products',
+                    localField : 'item',
+                    foreignField : '_id',
+                    as : 'product'
+                }
+            },
+            {
+                $project : {
+                    item : 1,
+                    quantity : 1,
+                    total :1,
+                    product : {$arrayElemAt : ["$product",0]}
+                }
+            },
+            {
+                $group :{
+                    _id:null,
+                    total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                }
+            },
+        ])
+        if(total[0]){
+            total = total[0].total;
+        }else{
+            total = 0
+        }
+
+
+        res.render('user/checkout',{count:res.count,userWishListCount:res.userWishListCount,userAddress,user:req.session.user,cartItems,total})
+    },
+    payment : async(req,res)=>{
+        let cartItems = await cartSchema.aggregate([
+            {
+                $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+            },
+            {
+                $project : {
+                    products : 1,
+                }
+            },
+            {
+                $unwind : {
+                    path : "$products"
+                }
+            },
+            {
+                $project :{
+                    item : "$products.item",
+                    quantity : "$products.quantity",
+                    total : "$products.total"
+                }
+            },
+            {
+                $lookup :{
+                    from : 'products',
+                    localField : 'item',
+                    foreignField : '_id',
+                    as : 'product'
+                }
+            },
+            {
+                $project : {
+                    item : 1,
+                    quantity : 1,
+                    total: 1,
+                    product : {$arrayElemAt : ["$product",0]}
+                }
+            }  
+        ])
+       
+        let total = await cartSchema.aggregate([
+            {
+                $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+            },
+            {
+                $project : {
+                    products : 1,
+                }
+            },
+            {
+                $unwind : {
+                    path : "$products"
+                }
+            },
+            {
+                $project :{
+                    item : "$products.item",
+                    quantity : "$products.quantity",
+                    total : "$products.total"
+                }
+            },
+            {
+                $lookup :{
+                    from : 'products',
+                    localField : 'item',
+                    foreignField : '_id',
+                    as : 'product'
+                }
+            },
+            {
+                $project : {
+                    item : 1,
+                    quantity : 1,
+                    total :1,
+                    product : {$arrayElemAt : ["$product",0]}
+                }
+            },
+            {
+                $group :{
+                    _id:null,
+                    total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                }
+            },
+        ])
+        if(total[0]){
+            total = total[0].total;
+        }else{
+            total = 0
+        }
+        index=parseInt(req.params.index)
+        let userAddress = await userSchema.aggregate([
+            {
+                $match :{
+                    _id : mongoose.Types.ObjectId(req.session.user._id),
+                },
+            },
+            {
+                $project : {
+                    address : 1
+                }
+            },
+            {
+                $unwind :{
+                    path : "$address"
+                }
+            },
+            {
+                $match : {
+                    'address.index' : index-1
+                }
+            }
+        ])
+        userAddress=userAddress[0]
+        res.render('user/payment',{count:res.count,userWishListCount:res.userWishListCount,user:req.session.user,cartItems,total,userAddress})
+    },
+    CODPlaceOrder : async(req,res)=>{
+        
+        let total = await cartSchema.aggregate([
+            {
+                $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+            },
+            {
+                $project : {
+                    products : 1,
+                }
+            },
+            {
+                $unwind : {
+                    path : "$products"
+                }
+            },
+            {
+                $project :{
+                    item : "$products.item",
+                    quantity : "$products.quantity",
+                    total : "$products.total"
+                }
+            },
+            {
+                $lookup :{
+                    from : 'products',
+                    localField : 'item',
+                    foreignField : '_id',
+                    as : 'product'
+                }
+            },
+            {
+                $project : {
+                    item : 1,
+                    quantity : 1,
+                    total :1,
+                    product : {$arrayElemAt : ["$product",0]}
+                }
+            },
+            {
+                $group :{
+                    _id:null,
+                    total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                }
+            },
+        ])
+        if(total[0]){
+            total = total[0].total;
+        }else{
+            total = 0
+        }
+        let cartItems =await cart_controller.getCartItems(req.session.user._id);
+        await order_controller.placeOrder(req.body,cartItems,total,req.session.user._id)
+        await cartSchema.deleteOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+        
+        res.status(200).json({status:true})
     },
     logout : (req,res)=>{
         req.session.destroy()

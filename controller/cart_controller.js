@@ -228,7 +228,50 @@ module.exports = {
                 }
             ).then(async()=>{
                 
-                let total =await userController.getTotalAmount(req.body.productId)
+                let total = await cartSchema.aggregate([
+                    {
+                        $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                    },
+                    {
+                        $project : {
+                            products : 1,
+                        }
+                    },
+                    {
+                        $unwind : {
+                            path : "$products"
+                        }
+                    },
+                    {
+                        $project :{
+                            item : "$products.item",
+                            quantity : "$products.quantity",
+                            total : "$products.total"
+                        }
+                    },
+                    {
+                        $lookup :{
+                            from : 'products',
+                            localField : 'item',
+                            foreignField : '_id',
+                            as : 'product'
+                        }
+                    },
+                    {
+                        $project : {
+                            item : 1,
+                            quantity : 1,
+                            total :1,
+                            product : {$arrayElemAt : ["$product",0]}
+                        }
+                    },
+                    {
+                        $group :{
+                            _id:null,
+                            total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                        }
+                    },
+                ])
                 res.json({status : false,total});
             })
         }else{
@@ -243,8 +286,109 @@ module.exports = {
                     }
                 }
             ).then(async(response)=>{
-                let total =await userController.getTotalAmount(req.body.productId)
-                res.json({status:true,total})
+                let total = await cartSchema.aggregate([
+                    {
+                        $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                    },
+                    {
+                        $project : {
+                            products : 1,
+                        }
+                    },
+                    {
+                        $unwind : {
+                            path : "$products"
+                        }
+                    },
+                    {
+                        $project :{
+                            item : "$products.item",
+                            quantity : "$products.quantity",
+                            total : "$products.total"
+                        }
+                    },
+                    {
+                        $lookup :{
+                            from : 'products',
+                            localField : 'item',
+                            foreignField : '_id',
+                            as : 'product'
+                        }
+                    },
+                    {
+                        $project : {
+                            item : 1,
+                            quantity : 1,
+                            total :1,
+                            product : {$arrayElemAt : ["$product",0]}
+                        }
+                    },
+                    {
+                        $group :{
+                            _id:null,
+                            total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                        }
+                    },
+                ])
+    
+                // get product Total
+                let productTotal = await cartSchema.aggregate([
+                    {
+                        $match :{
+                            userId:mongoose.Types.ObjectId(req.session.user._id),
+                        },
+                    },
+                    {
+                        $unwind :{
+                            path : "$products"
+                        }
+                    },
+                    {
+                        $match:{
+                            'products.item': mongoose.Types.ObjectId(req.body.productId)
+                        }
+                    },
+                    {
+                        $project :{ 
+                            products : 1,  
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from : 'products',
+                            localField : 'products.item',
+                            foreignField : '_id',
+                            as : 'product'
+                        }
+                    },
+                    {
+                        $project:{
+                            products:1,
+                            product : {$arrayElemAt : ["$product",0]}
+                        }
+                    },
+                    {
+                        $project :{
+                            productTotal :{$multiply :['$products.quantity','$product.discount']}
+                        }
+                    }
+                ]
+                    
+                )
+                let result
+    
+                if(total[0]){
+                    result = {
+                        total:total[0].total,
+                        productTotal : productTotal[0]
+                    }
+                  
+                }else{
+                    result.total=0
+                    
+                }
+               
+                res.json({status:true,result})
             })
         }
         
@@ -263,9 +407,112 @@ module.exports = {
             }
         ).then(async()=>{
             
-            let total =await userController.getTotalAmount(req.session.user._id)
+            let total = await cartSchema.aggregate([
+                {
+                    $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                },
+                {
+                    $project : {
+                        products : 1,
+                    }
+                },
+                {
+                    $unwind : {
+                        path : "$products"
+                    }
+                },
+                {
+                    $project :{
+                        item : "$products.item",
+                        quantity : "$products.quantity",
+                        total : "$products.total"
+                    }
+                },
+                {
+                    $lookup :{
+                        from : 'products',
+                        localField : 'item',
+                        foreignField : '_id',
+                        as : 'product'
+                    }
+                },
+                {
+                    $project : {
+                        item : 1,
+                        quantity : 1,
+                        total :1,
+                        product : {$arrayElemAt : ["$product",0]}
+                    }
+                },
+                {
+                    $group :{
+                        _id:null,
+                        total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                    }
+                },
+            ])
+
+            // get product Total
+            let productTotal = await cartSchema.aggregate([
+                {
+                    $match :{
+                        userId:mongoose.Types.ObjectId(req.session.user._id),
+                    },
+                },
+                {
+                    $unwind :{
+                        path : "$products"
+                    }
+                },
+                {
+                    $match:{
+                        'products.item': mongoose.Types.ObjectId(req.body.productId)
+                    }
+                },
+                {
+                    $project :{ 
+                        products : 1,  
+                    }
+                },
+                {
+                    $lookup:{
+                        from : 'products',
+                        localField : 'products.item',
+                        foreignField : '_id',
+                        as : 'product'
+                    }
+                },
+                {
+                    $project:{
+                        products:1,
+                        product : {$arrayElemAt : ["$product",0]}
+                    }
+                },
+                {
+                    $project :{
+                        productTotal :{$multiply :['$products.quantity','$product.discount']}
+                    }
+                }
+            ]
+                
+            )
+            let result
+
+            if(total[0]){
+                result = {
+                    total:total[0].total,
+                    productTotal : productTotal[0]
+                }
+              
+            }else{
+                result={
+                    total:0
+                }
+            }
+
             
-            res.json({status : true,total});
+            
+            res.json({status : true,result});
         })
     },
     updateCart : async(req,res)=>{
@@ -283,6 +530,47 @@ module.exports = {
         ).then(()=>{
             res.json({status:true})
         })
+    },
+    getCartItems: async(id)=>{
+        let cartItems = await cartSchema.aggregate([
+            {
+                $match :{userId:mongoose.Types.ObjectId(id)} 
+            },
+            {
+                $project : {
+                    products : 1,
+                }
+            },
+            {
+                $unwind : {
+                    path : "$products"
+                }
+            },
+            {
+                $project :{
+                    item : "$products.item",
+                    quantity : "$products.quantity",
+                    total : "$products.total"
+                }
+            },
+            {
+                $lookup :{
+                    from : 'products',
+                    localField : 'item',
+                    foreignField : '_id',
+                    as : 'product'
+                }
+            },
+            {
+                $project : {
+                    item : 1,
+                    quantity : 1,
+                    total: 1,
+                    product : {$arrayElemAt : ["$product",0]}
+                }
+            }
+        ])
+        return cartItems
     },
     
 }
