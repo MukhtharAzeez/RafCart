@@ -31,24 +31,43 @@ function getProductsByCategory(name){
             console.log(response);
             response.forEach(function(item, index) {  
                 if(html==null){
+
                     html=`<div class="col-md-4 col-sm-6 ">
                     <div class="single_toparrival">
                       <div class="topariv_img">
                         <img loading="lazy" src=${item.images[0].image} alt="product"
                           style="width: 100%; height:220px; padding: 40px;" />
                         <div class="persof bg-danger">HOT</div>
-                        <div class="adto_wish">
-                          <i class="icon-heart"></i>
-                        </div>
-                        <div class="prod_soh">
-                          <div class="adto_wish">
-                            <i class="icon-heart"></i>
-                          </div>
-                          <div class="qk_view open_quickview">
-                            <span><i class="las la-eye"></i></span>
-                            Quick View
-                          </div>
-                        </div>
+                        <div class="adto_wish" >
+
+                      ${item.favourite?
+                     `<i class="fa-solid fa-heart" id="addToWishListFirst${item._id}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart d-none" id="removeFromWishListFirst${item._id}"></i>`
+                     :
+                     `<i class="fa-solid fa-heart d-none" id="addToWishListFirst{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart" id="removeFromWishListFirst${item._id}"></i>`
+                      }
+
+                    </div>
+                    <div class="prod_soh">
+                      <div class="adto_wish" onclick="addToWishList('${item._id}')">
+                        
+                          ${item.favourite ?
+                        `<i class="fa-solid fa-heart" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart  d-none" id="removeFromWishListSecond${item._id}"></i>`
+                        :
+                        `<i class="fa-solid fa-heart  d-none" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart" id="removeFromWishListSecond${item._id}"></i>`
+                          }
+                      </div>
+
+                      <div class="qk_view open_quickview" onclick="quickProductView('${item._id}')">
+                        <span><i class="las la-eye"></i></span>
+                        Quick View
+                      </div>
+                      
+                    </div>
+
                       </div>
                       <div class="topariv_cont">
                         <a href="product-view.html">
@@ -102,24 +121,43 @@ function getProductsByCategory(name){
                     </div>
                   </div>`    
                 }else{
+
                     html+=`<div class="col-md-4 col-sm-6 ">
                     <div class="single_toparrival">
                       <div class="topariv_img">
                         <img loading="lazy" src=${item.images[0].image} alt="product"
                           style="width: 100%; height:220px; padding: 40px;" />
                         <div class="persof bg-danger">HOT</div>
-                        <div class="adto_wish">
-                          <i class="icon-heart"></i>
-                        </div>
-                        <div class="prod_soh">
-                          <div class="adto_wish">
-                            <i class="icon-heart"></i>
-                          </div>
-                          <div class="qk_view open_quickview">
-                            <span><i class="las la-eye"></i></span>
-                            Quick View
-                          </div>
-                        </div>
+                        <div class="adto_wish" >
+
+                      ${item.favourite?
+                     `<i class="fa-solid fa-heart" id="addToWishListFirst${item._id}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart d-none" id="removeFromWishListFirst${item._id}"></i>`
+                     :
+                     `<i class="fa-solid fa-heart d-none" id="addToWishListFirst{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart" id="removeFromWishListFirst${item._id}"></i>`
+                      }
+
+                    </div>
+                    <div class="prod_soh">
+                      <div class="adto_wish" onclick="addToWishList('${item._id}')">
+                        
+                          ${item.favourite ?
+                        `<i class="fa-solid fa-heart" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart  d-none" id="removeFromWishListSecond${item._id}"></i>`
+                        :
+                        `<i class="fa-solid fa-heart  d-none" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart" id="removeFromWishListSecond${item._id}"></i>`
+                          }
+                      </div>
+
+                      <div class="qk_view open_quickview" onclick="quickProductView('${item._id}')">
+                        <span><i class="las la-eye"></i></span>
+                        Quick View
+                      </div>
+                      
+                    </div>
+
                       </div>
                       <div class="topariv_cont">
                         <a href="product-view.html">
@@ -166,8 +204,12 @@ function getProductsByCategory(name){
                            add to cart
                          </button>
                          </div>`}
+
+
+                     
+                    
                     </div>
-                  </div>`    
+                  </div>` 
                 }
                     
                 // document.getElementById('filterPrice').innerHTML=item.discount
@@ -194,18 +236,36 @@ function getAllProductsByCategory (){
                         <img loading="lazy" src=${item.images[0].image} alt="product"
                           style="width: 100%; height:220px; padding: 40px;" />
                         <div class="persof bg-danger">HOT</div>
-                        <div class="adto_wish">
-                          <i class="icon-heart"></i>
-                        </div>
-                        <div class="prod_soh">
-                          <div class="adto_wish">
-                            <i class="icon-heart"></i>
-                          </div>
-                          <div class="qk_view open_quickview">
-                            <span><i class="las la-eye"></i></span>
-                            Quick View
-                          </div>
-                        </div>
+                        <div class="adto_wish" >
+
+                      ${item.favourite?
+                     `<i class="fa-solid fa-heart" id="addToWishListFirst${item._id}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart d-none" id="removeFromWishListFirst${item._id}"></i>`
+                     :
+                     `<i class="fa-solid fa-heart d-none" id="addToWishListFirst{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart" id="removeFromWishListFirst${item._id}"></i>`
+                      }
+
+                    </div>
+                    <div class="prod_soh">
+                      <div class="adto_wish" onclick="addToWishList('${item._id}')">
+                        
+                          ${item.favourite ?
+                        `<i class="fa-solid fa-heart" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart  d-none" id="removeFromWishListSecond${item._id}"></i>`
+                        :
+                        `<i class="fa-solid fa-heart  d-none" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart" id="removeFromWishListSecond${item._id}"></i>`
+                          }
+                      </div>
+
+                      <div class="qk_view open_quickview" onclick="quickProductView('${item._id}')">
+                        <span><i class="las la-eye"></i></span>
+                        Quick View
+                      </div>
+                      
+                    </div>
+
                       </div>
                       <div class="topariv_cont">
                         <a href="product-view.html">
@@ -265,18 +325,36 @@ function getAllProductsByCategory (){
                         <img loading="lazy" src=${item.images[0].image} alt="product"
                           style="width: 100%; height:220px; padding: 40px;" />
                         <div class="persof bg-danger">HOT</div>
-                        <div class="adto_wish">
-                          <i class="icon-heart"></i>
-                        </div>
-                        <div class="prod_soh">
-                          <div class="adto_wish">
-                            <i class="icon-heart"></i>
-                          </div>
-                          <div class="qk_view open_quickview">
-                            <span><i class="las la-eye"></i></span>
-                            Quick View
-                          </div>
-                        </div>
+                        <div class="adto_wish" >
+
+                      ${item.favourite?
+                     `<i class="fa-solid fa-heart" id="addToWishListFirst${item._id}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart d-none" id="removeFromWishListFirst${item._id}"></i>`
+                     :
+                     `<i class="fa-solid fa-heart d-none" id="addToWishListFirst{{this._id}}" style="color: rgb(212, 10, 10);"></i>
+                     <i class="fa-regular fa-heart" id="removeFromWishListFirst${item._id}"></i>`
+                      }
+
+                    </div>
+                    <div class="prod_soh">
+                      <div class="adto_wish" onclick="addToWishList('${item._id}')">
+                        
+                          ${item.favourite ?
+                        `<i class="fa-solid fa-heart" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart  d-none" id="removeFromWishListSecond${item._id}"></i>`
+                        :
+                        `<i class="fa-solid fa-heart  d-none" id="addToWishListSecond${item._id}" style="color: rgb(212, 10, 10);"></i>
+                        <i class="fa-regular fa-heart" id="removeFromWishListSecond${item._id}"></i>`
+                          }
+                      </div>
+
+                      <div class="qk_view open_quickview" onclick="quickProductView('${item._id}')">
+                        <span><i class="las la-eye"></i></span>
+                        Quick View
+                      </div>
+                      
+                    </div>
+
                       </div>
                       <div class="topariv_cont">
                         <a href="product-view.html">
@@ -323,6 +401,10 @@ function getAllProductsByCategory (){
                            add to cart
                          </button>
                          </div>`}
+
+
+                     
+                    
                     </div>
                   </div>`    
                 }

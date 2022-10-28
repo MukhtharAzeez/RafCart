@@ -12,7 +12,7 @@ dotenv.config();
 
 const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
-const { log } = require('console');
+
 
 const app = express();
 
