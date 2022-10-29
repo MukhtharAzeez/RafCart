@@ -5,6 +5,7 @@ const cartController = require('../controller/cart_controller');
 const cartSchema = require('../models/cart_schema');
 const wishListController = require('../controller/wishList_controller')
 const orderController=require('../controller/order_controller')
+const productController = require('../controller/product_controller')
 const userSchema = require('../models/user_schema')
 const mongoose = require('mongoose')
 
@@ -89,6 +90,7 @@ router.get('/add-to-cart/:id',cartController.addToCart)
 router.get('/check-exist-product-in-cart/:id',cartController.checkExistProductInCart)
 router.post('/change-cart-quantity',cartController.changeCartQuantity)
 router.post('/removeCartItem',cartController.removeCartItem)
+router.post('/product-stock-check',productController.checkStockLeft)
 
 // Wishlist
 router.get('/view-wishlist',verifyLogin,wishListController.wishlist)
@@ -103,7 +105,7 @@ router.post('/place-an-order',verifyLogin,cartAndWishList,controller.PlaceAnOrde
 router.get('/order-successfully-placed',verifyLogin,cartAndWishList,orderController.orderPlacedSucessFully)
 router.post('/verify-payment',verifyLogin,cartAndWishList,orderController.verifyPayment)
 
-// View Orders
+// Orders
 router.get('/view-current-order',verifyLogin,cartAndWishList,orderController.viewCurrentOrder)
 router.get('/view-orders',verifyLogin,cartAndWishList,orderController.viewOrders)
 

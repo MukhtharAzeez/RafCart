@@ -213,6 +213,19 @@ module.exports={
             res.redirect('/admin/show-deleted')
         })
     },
+    checkStockLeft : async(req,res)=>{
+       let product=await productSchema.findOne({_id:mongoose.Types.ObjectId(req.body.productId)})
+       if(req.body.count==1){
+        if(product.stock>req.body.quantity){
+            res.json({status:true})
+           }else{
+            res.json({status:false})
+           }
+       }else{
+        res.json({status:true})
+       }
+       
+    },
 }
 
 

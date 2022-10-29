@@ -25,6 +25,7 @@ function deleteButton(id){
             icon: 'success',
             title: 'Success',
             showConfirmButton: false,
+            background : 'black',
             
           })
       } else if (
@@ -58,7 +59,8 @@ function deleteButton(id){
        showCancelButton: true,
        confirmButtonText: 'confirm',
        cancelButtonText: 'cancel',
-       reverseButtons: true
+       reverseButtons: true,
+       background : 'black',
      }).then((result) => {
        if (result.isConfirmed) {
          

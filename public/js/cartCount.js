@@ -13,6 +13,7 @@ function addToCart(id) {
                     text: 'Product already exist in your cart',
                     showConfirmButton: false,
                     timer: 1000,
+                    background : 'black',
                     
                   })
             } else if (response.userExist == false) {
@@ -22,7 +23,8 @@ function addToCart(id) {
                     text : 'Login now to continue shopping',
                     icon: 'question',
                     showConfirmButton: false,
-                    showCancelButton : true
+                    showCancelButton : true,
+                    background : 'black',
                 }
                     
                     
@@ -42,7 +44,8 @@ function addToCart(id) {
                                 icon: 'success',
                                 title: 'Product added to your cart',
                                 showConfirmButton: false,
-                                timer: 1000
+                                timer: 1000,
+                                background : 'black',
                               })
                         }
                     }

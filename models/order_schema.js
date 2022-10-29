@@ -27,7 +27,10 @@ const orderSchema = new Schema({
         type : Array,
         required : true
     },
-    date: {
+    purchaseDate: {
+        type : Date,
+    }, 
+    expectedDeliveryDate: {
         type : Date,
     }, 
 })

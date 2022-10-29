@@ -598,11 +598,18 @@
                 <!-- account content -->
                 <div class="col-lg-9">
                     <div class="acorder_wrapper">
+                        {{#each orders}}
                         <div class="single_prof_recorder mt-0 mb-4 shadow_sm">
+                            
                             <div class="prorder_img">
-                                <img loading="lazy"  src="images/tv.png" alt="product">
-                                <img loading="lazy"  src="images/tv.png" alt="product">
+                                {{#each this.products}}
+                                <div>
+                                    <img loading="lazy"  src="{{this.product.images.0.image}}" alt="product">
+                                    <p class="ps-4">x{{this.quantity}}</p>
+                                </div>
+                                {{/each}}
                             </div>
+                            
                             <div class="prorder_btn">
                                 <a href="account-order-details.html">View Order</a>
                             </div>
@@ -610,24 +617,25 @@
                                 <h5>Order Number</h5>
                                 <p>23E34RT3</p>
                             </div>
-                            <div class="prorder_txt prorder_purchased">
-                                <h5>Purchased</h5>
-                                <p>01 March 2021</p>
-                            </div>
-                            <div class="prorder_txt prorder_qnty d-none d-sm-block">
-                                <h5>Quantity</h5>
-                                <p>x3</p>
-                            </div>
                             <div class="prorder_txt prorder_total">
                                 <h5>Total</h5>
-                                <p>$120</p>
+                                <p>₹{{this.total}}</p>
+                            </div>
+                            <div class="prorder_txt prorder_purchased">
+                                <h5>Purchased</h5>
+                                <p>{{this.purchaseDate}}</p>
+                            </div>
+                            <div class="prorder_txt prorder_qnty d-none d-sm-block">
+                                <h5>Expected to deliver</h5>
+                                <p>{{this.expectedDeliveryDate}}</p>
                             </div>
                             <div class="prorder_txt prorder_status">
                                 <h5 class="d-none d-md-block">Status</h5>
                                 <h5 class="d-block d-md-none"><span class="text_md me-2">Qty: x3</span> $120</h5>
-                                <p class="text-color">Cancelled</p>
+                                <p class="text-color">{{this.status}}</p>
                             </div>
                         </div>
+                        {{/each}}
                     </div>
                 </div>
             </div>

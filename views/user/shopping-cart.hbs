@@ -584,9 +584,15 @@
                             <input type="text" placeholder="Enter coupon">
                             <button>apply</button>
                         </div>
-                        <div class="cart_sum_pros">
+                        {{#if cartItems}}
+                        <div class="cart_sum_pros" id="proceedButton">
                             <a href="/checkout-page"><button>Procceed to checkout</button></a>
                         </div>
+                        {{else}}
+                        <div class="cart_sum_pros">
+                            <a href="/shop"><button>Browse Some Products</button></a>
+                        </div>
+                        {{/if}}
                     </div>
                 </div>
             </div>

@@ -73,8 +73,8 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   // console.log(err);
-  // res.render('error',{noHeader:true,noFooter:true});
-  res.render('user/404',{error:true})
+  res.render('error',{noHeader:true,noFooter:true});
+  // res.render('user/404',{error:true})
 });
 
 module.exports = app;
