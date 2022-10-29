@@ -113,6 +113,14 @@ module.exports = {
         }
         res.render('user/order-completed',{"user" : req.session.user,"count":res.count,orderId:req.query.orderId,"userWishListCount":res.userWishListCount})
     },
+    checkForOrders : async(req,res)=>{
+        let orders=await orderSchema.find({userId : mongoose.Types.ObjectId(req.session.user._id)})
+        if(orders[0]){
+            res.json({staus:true})
+        }else{
+            res.json({status:false})
+        }
+    },
     viewCurrentOrder : async(req,res)=>{
         let order = await orderSchema.aggregate([
             {
@@ -130,7 +138,7 @@ module.exports = {
                     userId : 1,
                     total :1,
                     status :1,
-                    date : { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
                     quantity : '$products.quantity',
                     price : '$products.total',
                     product : '$products.product',

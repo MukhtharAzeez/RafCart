@@ -106,6 +106,7 @@ router.get('/order-successfully-placed',verifyLogin,cartAndWishList,orderControl
 router.post('/verify-payment',verifyLogin,cartAndWishList,orderController.verifyPayment)
 
 // Orders
+router.get('/check-for-orders',verifyLogin,orderController.checkForOrders)
 router.get('/view-current-order',verifyLogin,cartAndWishList,orderController.viewCurrentOrder)
 router.get('/view-orders',verifyLogin,cartAndWishList,orderController.viewOrders)
 
