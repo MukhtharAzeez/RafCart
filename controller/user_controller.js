@@ -174,10 +174,7 @@ module.exports = {
             
             for(var i=0;i<user.length;i++){
                 for(var j=0;j<products.length;j++){
-                    // user[i].wishListProduct=user[i].wishListProducts.toString()
-                    // products[j].id=products[j]._id.toString()
                     if(user[i].wishListProducts.toString()==products[j]._id.toString()){
-                        console.log("got it");
                         products[j].favourite=true
                     }
                 }
@@ -209,7 +206,17 @@ module.exports = {
             userWishListCount[0]?wishListCount=userWishListCount[0].count:wishListCount=0
         }
         
-        if(categoryProducts){  
+        if(categoryProducts){
+            if(req.session.user){
+                for(var i=0;i<user.length;i++){
+                    for(var j=0;j<categoryProducts.length;j++){
+                        if(user[i].wishListProducts.toString()==categoryProducts[j]._id.toString()){
+                            categoryProducts[j].favourite=true
+                        }
+                    }
+                }
+            }
+            console.log(categoryProducts);
             products=categoryProducts
             categoryProducts=null
             res.render('user/shop-grid-2',{products,category,user:req.session.user,count,userWishListCount})        
@@ -238,7 +245,8 @@ module.exports = {
     },
     getProductsByFilter : async(req,res)=>{
         let products
-       
+        
+
         if(Object.keys(req.body).length !== 0){
             products = await productSchema.find(
                 {
@@ -253,6 +261,37 @@ module.exports = {
         }else{
             products= await productSchema.find({}).lean()
         }
+
+        // To set favourite icon if user add any product as favourite
+        if(req.session.user){
+            let user = await userSchema.aggregate([
+                {
+                    $match : {
+                        _id: mongoose.Types.ObjectId(req.session.user._id)
+                    }
+                },
+                {
+                    $project : {
+                        
+                        wishListProducts : 1
+                    }
+                },
+                {
+                    $unwind : {
+                        path : "$wishListProducts"
+                    }
+                },
+            ])
+            
+            for(var i=0;i<user.length;i++){
+                for(var j=0;j<products.length;j++){
+                    if(user[i].wishListProducts.toString()==products[j]._id.toString()){
+                        products[j].favourite=true
+                    }
+                }
+            }
+        }
+       
         res.json(products)
         
     },
