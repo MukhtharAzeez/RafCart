@@ -60,12 +60,16 @@ router
   .get(controller.signup)
   .post(controller.postSignup)
 
+router.get('/verify-through-otp')
+router.post('/verify-through-otp',verifyLogin,controller.otpVerification)
 router.post('/email-password-check',controller.emailAndPasswordValidCheck);
+
 
 router
   .route('/login')
   .get(controller.login)
   .post(controller.postLogin)
+
 
 router.get('/view-account',verifyLogin,controller.viewAccount);
 router.get('/edit-user-profile',verifyLogin,controller.editProfilePage)
@@ -84,18 +88,18 @@ router.get('/get-all-products',controller.getAllProducts)
 router.get('/product-quick-view/:id',controller.quickViewProduct)
 
 // Cart
-router.get('/view-cart',verifyLogin,cartController.cart)
-router.post('/change-product-total-price',cartController.updateCart)
-router.get('/add-to-cart/:id',cartController.addToCart)
-router.get('/check-exist-product-in-cart/:id',cartController.checkExistProductInCart)
-router.post('/change-cart-quantity',cartController.changeCartQuantity)
-router.post('/removeCartItem',cartController.removeCartItem)
-router.post('/product-stock-check',productController.checkStockLeft)
+router.get('/view-cart',verifyLogin,cartAndWishList,cartController.cart)
+router.post('/change-product-total-price',verifyLogin,cartAndWishList,cartController.updateCart)
+router.get('/add-to-cart/:id',verifyLogin,cartAndWishList,cartController.addToCart)
+router.get('/check-exist-product-in-cart/:id',verifyLogin,cartAndWishList,cartController.checkExistProductInCart)
+router.post('/change-cart-quantity',verifyLogin,cartAndWishList,cartController.changeCartQuantity)
+router.post('/removeCartItem',verifyLogin,cartAndWishList,cartController.removeCartItem)
+router.post('/product-stock-check',verifyLogin,cartAndWishList,productController.checkStockLeft)
 
 // Wishlist
-router.get('/view-wishlist',verifyLogin,wishListController.wishlist)
-router.get('/add-to-wishList/:id',wishListController.addToWishList)
-router.get('/remove-from-wish-list/:id',verifyLogin,wishListController.removeFromWishList)
+router.get('/view-wishlist',verifyLogin,cartAndWishList,wishListController.wishlist)
+router.get('/add-to-wishList/:id',verifyLogin,cartAndWishList,wishListController.addToWishList)
+router.get('/remove-from-wish-list/:id',verifyLogin,cartAndWishList,wishListController.removeFromWishList)
 
 
 // Checkout

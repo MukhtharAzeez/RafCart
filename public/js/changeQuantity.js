@@ -48,10 +48,10 @@ function changeQuantity(cartId, productId, count) {
                 .getElementById("minusButtonCart" + productId)
                 .classList.remove("d-none");
               document.getElementById(productId).style.width = "40px";
-              
-              
 
-              
+
+
+
               $.ajax({
                 url: "/change-product-total-price",
                 data: {
@@ -63,21 +63,48 @@ function changeQuantity(cartId, productId, count) {
                 },
 
                 method: "post",
-                success: (response) => {},
+                success: (response) => { },
               });
             } else {
-              removedProduct.remove();
-              document.getElementById("totalAMount").innerHTML = response.total;
-              document.getElementById("subTotal").innerHTML = response.total;
-              if(response.total.length==0){
-                document.getElementById('proceedButton').innerHTML= `<a href="/shop"><button>Browse Some Products</button></a>` 
-              }
+
+              // Alert to confirm delete
               Swal.fire({
-                icon: "error",
-                title: "Deleted!",
-                text: "Product Deleted from Cart!",
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
                 background: "black",
-              });
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  removedProduct.remove();
+                  let count = parseInt(document.getElementById("cart-count").innerHTML)
+                  document.getElementById("cart-count").innerHTML = count - 1
+                  document.getElementById("totalAMount").innerHTML = response.total;
+                  document.getElementById("subTotal").innerHTML = response.total;
+                  if (response.total.length == 0) {
+                    document.getElementById('proceedButton').innerHTML = `<a href="/shop"><button>Browse Some Products</button></a>`
+                  }
+                  Swal.fire({
+                    icon: "error",
+                    title: "Deleted!",
+                    text: "Product Deleted from Cart!",
+                    background: "black",
+                  });
+                } else {
+                  document
+                    .getElementById("plusButtonCart" + productId)
+                    .classList.remove("d-none");
+                  document
+                    .getElementById("minusButtonCart" + productId)
+                    .classList.remove("d-none");
+                  document.getElementById(productId).style.width = "40px";
+                }
+              })
+
+
             }
           },
         });
@@ -117,15 +144,17 @@ function removeProduct(cartId, productId) {
         method: "post",
         success: (response) => {
           if (response.status) {
+            let count = parseInt(document.getElementById("cart-count").innerHTML)
             removedProduct.remove();
             document.getElementById("totalAMount").innerHTML =
               response.result.total;
             document.getElementById("subTotal").innerHTML =
               response.result.total;
+            document.getElementById("cart-count").innerHTML = count - 1
 
-              if(response.result.total==0){
-                document.getElementById('proceedButton').innerHTML= `<a href="/shop"><button>Browse Some Products</button></a>` 
-              }
+            if (response.result.total == 0) {
+              document.getElementById('proceedButton').innerHTML = `<a href="/shop"><button>Browse Some Products</button></a>`
+            }
           }
         },
       }).then(() => {

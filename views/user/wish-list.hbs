@@ -616,7 +616,7 @@
                             </div>
                             <div class="wish_cart_btn ms-md-auto ms-0 mt-3 mt-md-0">
                                 {{#if this.product.onStock}}
-                                <button class="list_product_btn"><span class="icon"><i class="icon-cart"></i></span> Add to Cart</button>
+                                <button class="list_product_btn" onclick="addToCart('{{this.product._id}}')"><span class="icon"><i class="icon-cart"></i></span> Add to Cart</button>
                                 {{else}}
                                 <button class="list_product_btn disable"><span class="icon"><i class="icon-cart"></i></span> Add to Cart</button>
                                 {{/if}}
@@ -658,5 +658,6 @@
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/wishList.js"></script>
+    <script src="js/cartCount.js"></script>
 </body>
 </html>

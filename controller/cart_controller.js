@@ -126,7 +126,7 @@ module.exports = {
                 }else{
                     total = 0
                 }
-                res.render('user/shopping-cart',{cartItems,"user":req.session.user,count,total})
+                res.render('user/shopping-cart',{cartItems,"user":req.session.user,count,total,"userWishListCount":res.userWishListCount})
             }else{
                 res.redirect('back')   
             }

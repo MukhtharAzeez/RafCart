@@ -36,7 +36,7 @@ module.exports = {
             }
         ])
         let userDetails = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)})
-        res.render('user/wish-list.hbs',{wishListProducts,userDetails})
+        res.render('user/wish-list.hbs',{wishListProducts,userDetails,"count":res.count,"userWishListCount":res.userWishListCount})
     },
     addToWishList : async(req,res)=>{
         if(req.session.user){

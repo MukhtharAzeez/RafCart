@@ -41,6 +41,7 @@ function removeFromWishList(id){
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
+        background : 'black'
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
@@ -48,7 +49,10 @@ function removeFromWishList(id){
             method: "get",
             success: (response) => {
               if (response.status) {
+               
                 divToRemove.remove();
+                let count=parseInt(document.getElementById("wishListCount").innerHTML)
+                document.getElementById("wishListCount").innerHTML =count-1
               }
             },
           })

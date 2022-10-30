@@ -23,6 +23,10 @@ const userSchema = new Schema({
         type : Boolean,
         required : true
     },
+    verification : {
+        type : String,
+        required : true
+    },
     address : {
         type : Array,
     },

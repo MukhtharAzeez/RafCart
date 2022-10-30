@@ -7,8 +7,10 @@ const cartSchema = require('../models/cart_schema');
 const bannerSchema = require('../models/banner_schema')
 const cart_controller = require('../controller/cart_controller')
 const order_controller = require('../controller/order_controller')
+const OtpCheck = require('../utils/twilio')
 const mongoose = require('mongoose');
 const { response } = require('express');
+const { AddOnResultInstance } = require('twilio/lib/rest/api/v2010/account/recording/addOnResult');
 
 const country = require('country-state-city').Country
 const state = require('country-state-city').State
@@ -31,8 +33,6 @@ module.exports = {
             banners = await bannerSchema.find({}).sort({_id : -1}).skip(2).lean();
             subBanners= await bannerSchema.find({}).sort({_id : -1}).limit(2).lean();
         }
-        
-       
         res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
     },
     login : (req,res)=>{
@@ -49,6 +49,7 @@ module.exports = {
             res.render('user/register',{noHeader:true,noFooter:true});
         }
     },
+
     postSignup : async (req,res)=>{
        
         let user =await userSchema.find({email:req.body.email})
@@ -63,23 +64,27 @@ module.exports = {
                 const email = req.body.email;
                 const phone = req.body.phone;
                 const password = await bcrypt.hash(req.body.password,10);
-
+                let number=parseInt(phone)
+                console.log(number);
                 const user = new userSchema({
                     userName : userName,
                     email : email,
                     phone : phone,
                     password : password,
                     status : true,
+                    verification : 'pending',
                     wishListCount : 0
                 });
-                req.session.user=user;
-                req.session.loggedIn = true;
+                
+                req.session.mobileNumber=number;
                 userSession=req.session.user
                 user
                    .save()
                    .then((result)=>{
-                    
-                    res.redirect('/')
+                    req.session.user=result;
+                    req.session.loggedIn = true;
+                    OtpCheck.sendOtp(number)
+                    res.render('user/otp-verification')
                    })
                    .catch((error)=>{
                     console.log(error);
@@ -113,11 +118,12 @@ module.exports = {
     },
     postLogin : (req,res)=>{
         userSchema.find({email:req.body.email}).then((result)=>{
-         
+         if(result[0].verification=='success'){
             if(result[0]){
                 if(result[0].status){
                     bcrypt.compare(req.body.password,result[0].password).then((status)=>{
                         if(status){
+                            
                             req.session.user=result[0];
                             req.session.loggedIn = true;
                             userSession=req.session.user
@@ -132,8 +138,41 @@ module.exports = {
             }else{
                 res.redirect('/login')
             }
+         }else{
+            req.session.user=result[0];
+            req.session.loggedIn = true;
+            req.session.mobileNumber=result[0].phone
+            OtpCheck.sendOtp(result[0].phone)
+            res.render('user/check-user-verification')
+         }
+            
             
         })
+    },
+    otpVerification : async(req,res)=>{
+        console.log(req.body)
+        let otp=Object.values(req.body)
+        otp = otp.join()
+        otp = otp.replaceAll(',','');
+        otp=parseInt(otp)
+        let otpStatus=await OtpCheck.verifyOtp(req.session.mobileNumber,otp)
+        console.log(otpStatus)
+        if(otpStatus.valid){
+            await userSchema.updateOne(
+                {
+                    _id : mongoose.Types.ObjectId(req.session.user._id)
+                },
+                {
+                    $set :{
+                        verification : 'success'
+                    }
+                }
+            )
+            res.json({status:true})
+        }else{
+            req.session.destroy();
+            res.json({status:false})
+        }
     },
     shop :async (req,res) => {
 
