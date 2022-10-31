@@ -21,8 +21,8 @@ let userSession={}
 let code
 let indexForAddress =-1
 let categoryProducts
-
-
+let mobileNumber
+let userDetails
 
 module.exports = {
     home : async(req,res)=>{
@@ -33,6 +33,7 @@ module.exports = {
             banners = await bannerSchema.find({}).sort({_id : -1}).skip(2).lean();
             subBanners= await bannerSchema.find({}).sort({_id : -1}).limit(2).lean();
         }
+        
         res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
     },
     login : (req,res)=>{
@@ -76,13 +77,13 @@ module.exports = {
                     wishListCount : 0
                 });
                 
-                req.session.mobileNumber=number;
-                userSession=req.session.user
+                mobileNumber=number;
+                
                 user
                    .save()
                    .then((result)=>{
-                    req.session.user=result;
-                    req.session.loggedIn = true;
+                    userSession=result
+                    userDetails=result;
                     OtpCheck.sendOtp(number)
                     res.render('user/otp-verification')
                    })
@@ -139,9 +140,7 @@ module.exports = {
                 res.redirect('/login')
             }
          }else{
-            req.session.user=result[0];
-            req.session.loggedIn = true;
-            req.session.mobileNumber=result[0].phone
+            userDetails=result[0];
             OtpCheck.sendOtp(result[0].phone)
             res.render('user/check-user-verification')
          }
@@ -150,14 +149,13 @@ module.exports = {
         })
     },
     otpVerification : async(req,res)=>{
-        console.log(req.body)
         let otp=Object.values(req.body)
-        otp = otp.join()
-        otp = otp.replaceAll(',','');
-        otp=parseInt(otp)
-        let otpStatus=await OtpCheck.verifyOtp(req.session.mobileNumber,otp)
-        console.log(otpStatus)
+        otp = otp.join()   
+        otp = otp.replaceAll(',','');     
+        let otpStatus=await OtpCheck.verifyOtp(mobileNumber,otp)     
         if(otpStatus.valid){
+            req.session.user=userDetails
+            req.session.loggedIn = true;
             await userSchema.updateOne(
                 {
                     _id : mongoose.Types.ObjectId(req.session.user._id)
@@ -168,6 +166,7 @@ module.exports = {
                     }
                 }
             )
+           
             res.json({status:true})
         }else{
             req.session.destroy();

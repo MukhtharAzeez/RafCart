@@ -61,7 +61,7 @@ router
   .post(controller.postSignup)
 
 router.get('/verify-through-otp')
-router.post('/verify-through-otp',verifyLogin,controller.otpVerification)
+router.post('/verify-through-otp',controller.otpVerification)
 router.post('/email-password-check',controller.emailAndPasswordValidCheck);
 
 
