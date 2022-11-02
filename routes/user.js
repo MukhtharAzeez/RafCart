@@ -22,7 +22,9 @@ cartAndWishList = async(req,res,next)=>{
         if(req.session.user){
             const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
             if(cart){
-                res.count = cart.products.length>0?cart.products.length:0;
+                res.count = cart.products.length
+            }else{
+                res.count=0
             }
             userWishListCount = await userSchema.aggregate([
                 {

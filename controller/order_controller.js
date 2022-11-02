@@ -10,6 +10,8 @@ var instance = new Razorpay({
     });
 
 module.exports = {
+
+    // User Side
     placeOrder : (address,cartItems,total,userID)=>{
         let placedOrPending
         if(address.paymentMethod=='COD'){
@@ -115,8 +117,9 @@ module.exports = {
     },
     checkForOrders : async(req,res)=>{
         let orders=await orderSchema.find({userId : mongoose.Types.ObjectId(req.session.user._id)})
+        console.log(orders)
         if(orders[0]){
-            res.json({staus:true})
+            res.json({status:true})
         }else{
             res.json({status:false})
         }
@@ -176,4 +179,84 @@ module.exports = {
 
         
     },
+
+    // Admin Side
+    getAllOrders : async(req,res)=>{
+        let orders=await orderSchema.aggregate([
+            {
+                $lookup:{
+                    from : 'users',
+                    localField : 'userId',
+                    foreignField : '_id',
+                    as : 'userDetails',
+                },
+            },
+            {
+                $project : {
+                    paymentMethod : 1,
+                    total : 1,
+                    status : 1,
+                    products : 1,
+                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                    expectedDeliveryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expectedDeliveryDate" } },
+                    userDetails : {$arrayElemAt : ["$userDetails",0]}
+                }
+            },
+        ])
+        for(var i=0;i<orders.length;i++){
+            orders[i].items=orders[i].products.length
+            if(orders[i].paymentMethod=='COD'){
+                orders[i].paid=false
+             }else{
+                 orders[i].paid=true
+             }
+        }
+        res.render('admin/app-orders-list',{noHeader:true,noFooter:true,orders});
+    },
+    edit_a_product : async(req,res)=>{
+        let orderDetails=await orderSchema.aggregate([
+            {
+                $match : {
+                    _id : mongoose.Types.ObjectId(req.query.orderId)
+                }
+            },
+            {
+                $lookup : {
+                    from : 'users',
+                    localField : 'userId',
+                    foreignField : '_id',
+                    as : 'userDetails',
+                }
+            },
+            {
+                $project : {
+                    paymentMethod : 1,
+                    products :1,
+                    total : 1,
+                    status : 1,
+                    deliveryAddress : 1,
+                    userDetails : {$arrayElemAt : ['$userDetails',0]},
+                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                    expectedDeliveryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expectedDeliveryDate" } },
+                }
+            },
+        ])
+        // orderDetails=orderDetails[0]
+        res.render('admin/app-order',{noHeader:true,noFooter:true,orderDetails})
+    },
+    changeCurrentStatus : async(req,res)=>{
+        console.log(req.body)
+        let order=await orderSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.body.orderId),
+            },
+            {
+                $set : {
+                    status : req.body.changeStatus
+                },
+            }
+        )
+        console.log(order)
+        res.json({status:true})
+    }
 }

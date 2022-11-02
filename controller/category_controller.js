@@ -96,9 +96,15 @@ module.exports = {
     
     delete_category : async(req,res)=>{
         let category=await categorySchema.findById(req.params.id)   
-        await cloudinary.uploader.destroy(category.cloudinary_id)  
-        categorySchema.deleteOne({_id : req.params.id}).then(()=>{
+        console.log(category)
+        if(category.count>0){
             res.redirect('/admin/categories')
-        })
+        }else{
+            await cloudinary.uploader.destroy(category.cloudinary_id)  
+            categorySchema.deleteOne({_id : req.params.id}).then(()=>{
+            res.redirect('/admin/categories')
+            })
+        }
+       
     },
 }

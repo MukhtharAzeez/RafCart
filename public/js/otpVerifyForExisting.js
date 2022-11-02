@@ -1,5 +1,4 @@
 $('#otpForm').submit((e)=>{
-    console.log("hiiii")
     e.preventDefault();
     $.ajax({
         url : '/verify-through-otp',

@@ -1,9 +1,9 @@
 function CheckForOrders(){
-    console.log("lkjkaljkas")
     $.ajax({
         url : '/check-for-orders',
         method : 'get',
         success : (response)=>{
+            console.log(response)
             if(response.status){
                 location.href='/view-orders'
             }else{

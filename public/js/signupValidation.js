@@ -135,7 +135,7 @@ function check_password(){
  var pattern = /^[0-9a-zA-Z]*$/;
  var password =$('#password').val()
  
- if(pattern.test(password) && password.length>=8){
+ if(pattern.test(password) && password.length>=8 && password.length<=14){
     $('#password').css("border","1px solid #34F458")
     $("#passwordError").hide();
     passwordSuccess =true 
