@@ -555,6 +555,24 @@ module.exports = {
             console.log(error);
         }
     },
+    deleteAddress : async(req,res)=>{
+        
+        req.query.index=parseInt(req.query.index)
+        await userSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.session.user._id),
+            },
+            {
+                $pull : {
+                    address : {
+                        index : req.query.index
+                    }
+                },
+            }
+        )
+        res.redirect('/view-account')
+           
+    },
     postEditAddress : async(req,res)=>{
         
         index=parseInt(req.body.index)

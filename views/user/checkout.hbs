@@ -529,20 +529,38 @@
             <div class="row">
                 <div class="col-xl-8 col-lg-7 col-md-6">
                     <h4 class="shop_cart_title mb-4 ps-3">Billing details</h4>
-                {{#each userAddress}}
+                    {{#if userAddress}}
+
+                    {{#each userAddress}}
                     <div class="card" style="margin-bottom: 20px;">
                         <div class="card-header">
-                            <input type="radio" id="{{userAddress}}" name="address" value="{{this.index}}" >
-                            Address {{this.index}} , <span id="fullName" style="font-weight: bold;">{{this.fullName}}</span>
+                            <input type="radio" id="{{userAddress}}" name="address" value="{{this.index}}">
+                            Address {{this.index}} , <span id="fullName"
+                                style="font-weight: bold;">{{this.fullName}}</span>
                         </div>
                         <div class="card-body">
                             <blockquote class="blockquote mb-0">
-                                <p style="font-size: 16px;" id="address">Mobile : {{this.phone}} <br>{{this.address}}   {{this.city}}   {{this.state}}(State)  {{this.country}}
+                                <p style="font-size: 16px;" id="address">Mobile : {{this.phone}} <br>{{this.address}}
+                                    {{this.city}} {{this.state}}(State) {{this.country}}
                                 </p>
                             </blockquote>
                         </div>
                     </div>
-                {{/each}}
+                    {{/each}}
+                    {{else}}
+                    <div class="col-lg-4">
+                        <div class="single_prof_info shadow_sm mb-0">
+                            <div class="prof_info_title" style="padding-top: 80px;">
+                                <a href="/add-address">
+                                    <span class="icon" style="margin-left: 90px; color: red; font-size: 40px;"
+                                        id="addAdress">
+                                        <i class="la la-plus-circle" oooooooooooooooooooooooooooo></i>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {{/if}}
                 </div>
 
                 <div class="col-xl-4 col-lg-5 col-md-6">
@@ -555,7 +573,7 @@
                                 <h5>{{this.product.name}}</h5>
                                 <p>x {{this.quantity}}</p>
                             </div>
-                            
+
                             <p class="checkorder_price">₹{{this.total}}.00</p>
                         </div>
                         {{/each}}
@@ -582,10 +600,12 @@
                             <label for="save-default">Agree to our <a href="#" class="text-color">terms &
                                     conditions</a></label>
                         </div>
-{{!-- onclick="saveAddress('{{this.fullName}}','{{this.phone}}','{{this.address}}','{{this.city}}','{{this.state}}','{{this.country}}')" --}}
+                        {{!--
+                        onclick="saveAddress('{{this.fullName}}','{{this.phone}}','{{this.address}}','{{this.city}}','{{this.state}}','{{this.country}}')"
+                        --}}
 
                         <div class="checkorder_btn">
-                         <button class="default_btn rounded w-100" onclick="placeOrder()">place order</button>
+                            <button class="default_btn rounded w-100" onclick="placeOrder()">place order</button>
                         </div>
                     </div>
                 </div>

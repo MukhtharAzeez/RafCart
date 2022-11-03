@@ -540,20 +540,20 @@
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Full Name</label>
-                                        <input type="text" name="fullName">
+                                        <input type="text" name="fullName" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Phone Number</label>
-                                        <input type="text" name="phone">
+                                        <input type="text" name="phone" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Country</label>
                                         
-                                        <select  class="nice_select country" name="country" id="country" >
+                                        <select  class="nice_select country" name="country" id="country">
                                             <option value="" >Select Country</option>
                                           {{#each countries}}  
                                             
@@ -566,7 +566,7 @@
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>State</label>
-                                        <select  name="state" id="state" >
+                                        <select  name="state" id="state" required>
                                            <option value="" >Select State</option>
                                         </select>
                                     </div>
@@ -584,7 +584,7 @@
                                 <div class="col-md-12">
                                     <div class="single_billing_inp">
                                         <label>Address</label>
-                                        <input type="text" name="address">
+                                        <input type="text" name="address" required>
                                     </div>
                                 </div>
                                 <div class="col-12 acprof_subbtn">

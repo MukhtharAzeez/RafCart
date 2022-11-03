@@ -73,6 +73,7 @@ router
   .get(controller.login)
   .post(controller.postLogin)
 
+// Account
 
 router.get('/view-account',verifyLogin,controller.viewAccount);
 router.get('/edit-user-profile',verifyLogin,controller.editProfilePage)
@@ -83,6 +84,10 @@ router.get('/getAllCities/:stateName',controller.getAllCities)
 router.post('/add-address/:id',verifyLogin,controller.postAddAddress)
 router.get('/account-edit-address/:index',verifyLogin,controller.editAddress)
 router.post('/edit-address/:id',verifyLogin,controller.postEditAddress)
+router.get('/account-delete-address',verifyLogin,controller.deleteAddress)
+
+
+// Shop
 router.get('/shop',controller.shop)
 router.get('/shop-list',controller.shoplist)
 router.get('/get-category-product/:name',controller.getCategoryProduct)
