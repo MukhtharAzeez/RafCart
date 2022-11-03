@@ -131,14 +131,14 @@ module.exports={
                      onStock = false;
                  }
             if(req.files[0]){
-                await categorySchema.updateOne(
-                    {
-                        name : req.body.category
-                    },
-                    {
-                        $inc:{count: 1 } 
-                    }
-                )
+                // await categorySchema.updateOne(
+                //     {
+                //         name : req.body.category
+                //     },
+                //     {
+                //         $inc:{count: 1 } 
+                //     }
+                // )
                 productSchema.updateOne(
                     {
                         _id : mongoose.Types.ObjectId(req.params.id)
