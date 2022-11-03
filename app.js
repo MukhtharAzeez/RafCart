@@ -73,7 +73,15 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   // console.log(err);
-  res.render('error',{noHeader:true,noFooter:true});
+  
+  if(req.session.user){
+    res.render('user/404');
+  }else if(req.session.admin){
+    res.render('admin/page-404',{noHeader:true,noFooter:true});
+  }else{
+    res.render('user/404');
+  }
+ 
   // res.render('user/404',{error:true})
 });
 

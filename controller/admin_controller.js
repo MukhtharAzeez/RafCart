@@ -1,4 +1,5 @@
 const userSchema = require('../models/user_schema')
+const adminSchema = require('../models/admin_schema')
 const productSchema = require('../models/product_schema')
 const categorySchema = require('../models/category_schema')
 const cloudinary = require('../utils/cloudinary');
@@ -8,14 +9,24 @@ const mongoose = require('mongoose');
 
 var path = require('path');
 
-const category_schema = require('../models/category_schema');
-const { request } = require('http');
-const { log } = require('console');
-const { array } = require('../utils/multer');
+
 module.exports = {
 
     home : (req,res)=>{
-        res.render('admin/index',{noHeader:true,noFooter:true})
+            res.render('admin/index',{noHeader:true,noFooter:true})        
+    },
+    login : async(req,res)=>{
+        res.render('admin/auth-sign-in',{noHeader:true,noFooter:true})
+    },
+    postSignup : async(req,res)=>{
+        let adminDetails=await adminSchema.findOne({email:req.body.email,password : req.body.password})
+        if(adminDetails){
+            req.session.admin=adminDetails
+            req.session.adminLoggedIn=true
+            res.redirect('/admin')
+        }else{
+            res.redirect('/admin/admin-auth')
+        }
     },
     customers : async (req,res)=>{
         let customers = await userSchema.find({}).lean()
@@ -52,5 +63,9 @@ module.exports = {
             })
         }
         
+    },
+    logout : async(req,res)=>{
+        req.session.destroy();
+        res.redirect('/admin')
     },
 }
