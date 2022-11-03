@@ -68,18 +68,7 @@ function changeQuantity(cartId, productId, count) {
               });
             } else {
 
-              // Alert to confirm delete
-              Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!",
-                background: "black",
-              }).then((result) => {
-                if (result.isConfirmed) {
+              
                   removedProduct.remove();
                   let count = parseInt(document.getElementById("cart-count").innerHTML)
                   document.getElementById("cart-count").innerHTML = count - 1
@@ -96,18 +85,6 @@ function changeQuantity(cartId, productId, count) {
                     text: "Product Deleted from Cart!",
                     background: "black",
                   });
-                } else {
-                  document
-                    .getElementById("plusButtonCart" + productId)
-                    .classList.remove("d-none");
-                  document
-                    .getElementById("minusButtonCart" + productId)
-                    .classList.remove("d-none");
-                  document.getElementById(productId).style.width = "40px";
-                }
-              })
-
-
             }
           },
         });

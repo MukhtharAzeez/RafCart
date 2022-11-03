@@ -131,8 +131,11 @@ module.exports = {
                 } else {
                     total = 0
                 }
-
-                let couponCheck = await couponSchema.findOne({ code: cartItems[0].coupon })
+                let couponCheck
+                if(cartItems[0]){
+                    couponCheck = await couponSchema.findOne({ code: cartItems[0].coupon })
+                }
+                
                 let discount
                 if (couponCheck) {
                     if (couponCheck.type == 'Percentage') {

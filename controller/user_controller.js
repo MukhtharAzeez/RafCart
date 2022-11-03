@@ -10,8 +10,7 @@ const order_controller = require('../controller/order_controller')
 const OtpCheck = require('../utils/twilio')
 const couponSchema = require('../models/coupon_schema')
 const mongoose = require('mongoose');
-const { response } = require('express');
-const { AddOnResultInstance } = require('twilio/lib/rest/api/v2010/account/recording/addOnResult');
+
 
 const country = require('country-state-city').Country
 const state = require('country-state-city').State
@@ -27,7 +26,8 @@ let userDetails
 
 module.exports = {
     home : async(req,res)=>{
-        const category = await categorySchema.find({}).lean();
+        try {
+            const category = await categorySchema.find({}).lean();
         let banners = await bannerSchema.find({}).lean();
         let subBanners
         if(banners.length>=3){
@@ -36,6 +36,9 @@ module.exports = {
         }
         
         res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
+        } catch (error) {
+            
+        }
     },
     login : (req,res)=>{
         if(req.session.loggedIn){
