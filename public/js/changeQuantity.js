@@ -1,4 +1,5 @@
 function changeQuantity(cartId, productId, count) {
+  
   let quantity = parseInt(document.getElementById(productId).innerHTML);
 
   // Product Stock Check
@@ -82,10 +83,12 @@ function changeQuantity(cartId, productId, count) {
                   removedProduct.remove();
                   let count = parseInt(document.getElementById("cart-count").innerHTML)
                   document.getElementById("cart-count").innerHTML = count - 1
-                  document.getElementById("totalAMount").innerHTML = response.total;
-                  document.getElementById("subTotal").innerHTML = response.total;
+                  document.getElementById("totalAMount").innerHTML = response.total[0].total;
+                  document.getElementById("subTotal").innerHTML = response.total[0].total;
                   if (response.total.length == 0) {
                     document.getElementById('proceedButton').innerHTML = `<a href="/shop"><button>Browse Some Products</button></a>`
+                    $('#couponButton').hide();
+                    $('#couponBox').hide();
                   }
                   Swal.fire({
                     icon: "error",
@@ -154,6 +157,8 @@ function removeProduct(cartId, productId) {
 
             if (response.result.total == 0) {
               document.getElementById('proceedButton').innerHTML = `<a href="/shop"><button>Browse Some Products</button></a>`
+              $('#couponButton').hide();
+              $('#couponBox').hide();
             }
           }
         },
@@ -169,4 +174,35 @@ function removeProduct(cartId, productId) {
       });
     }
   });
+}
+
+
+function applyCoupon(code){
+  $.ajax({
+    url : `/check-for-coupon?code=${code}`,
+    method : 'get',
+    success : (response)=>{
+      if(response.status){
+        $.ajax({
+          url : `/apply-coupon?code=${code}`,
+          method : 'get',
+          success : (response)=>{
+            if(response.status){
+              document.getElementById("totalAMount").innerHTML =
+              response.total;
+              document.getElementById("discountOnCoupon").innerHTML =
+              response.discount;
+              $('#couponBox').hide();
+              $('#couponBox2').hide();
+              $('#couponButton').hide();
+            }else{
+      
+            }
+           
+          }
+        })
+      }
+    }
+  })
+  
 }

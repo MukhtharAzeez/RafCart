@@ -38,6 +38,9 @@ const userSchema = new Schema({
     },
     wishListCount : {
         type : Number,
+    },
+    usedCoupons : {
+        type : Array,
     }
    
 })

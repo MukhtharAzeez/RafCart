@@ -11,6 +11,9 @@ const cartSchema = new Schema({
     products : {
         type : Array,
     },
+    coupon : {
+        type : String,
+    }
     
     
 });

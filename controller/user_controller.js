@@ -8,6 +8,7 @@ const bannerSchema = require('../models/banner_schema')
 const cart_controller = require('../controller/cart_controller')
 const order_controller = require('../controller/order_controller')
 const OtpCheck = require('../utils/twilio')
+const couponSchema = require('../models/coupon_schema')
 const mongoose = require('mongoose');
 const { response } = require('express');
 const { AddOnResultInstance } = require('twilio/lib/rest/api/v2010/account/recording/addOnResult');
@@ -596,6 +597,7 @@ module.exports = {
             },
             {
                 $project : {
+                    coupon : 1,
                     products : 1,
                 }
             },
@@ -608,7 +610,8 @@ module.exports = {
                 $project :{
                     item : "$products.item",
                     quantity : "$products.quantity",
-                    total : "$products.total"
+                    total : "$products.total",
+                    coupon : 1,
                 }
             },
             {
@@ -621,28 +624,13 @@ module.exports = {
             },
             {
                 $project : {
+                    coupon : 1,
                     item : 1,
                     quantity : 1,
                     total: 1,
                     product : {$arrayElemAt : ["$product",0]}
                 }
             }
-            // {
-            //     $lookup : {
-            //         from : 'products',
-            //         let : {prodList : '$products'},
-            //         pipeline : [
-            //             {
-            //                 $match : {
-            //                     $expr :{
-            //                         $in : ["$_id","$$prodList"]
-            //                     }
-            //                 }
-            //             }
-            //         ],
-            //         as : "cartItems"
-            //     }
-            // }   
         ])
        
         let total = await cartSchema.aggregate([
@@ -695,10 +683,25 @@ module.exports = {
             total = 0
         }
 
+        let couponCheck = await couponSchema.findOne({code : cartItems[0].coupon})
+        let discount
+        if(couponCheck){
+            if(couponCheck.type=='Percentage'){
+                total=total-(total*couponCheck.discountValue)/100
+                discount=(total*couponCheck.discountValue)/100
+            }else if(couponCheck.type=='Flat Discount'){
+                total=total-couponCheck.discountValue
+                discount=couponCheck.discountValue
+            }else{
+            }
+        }
+        
+
 
         res.render('user/checkout',{count:res.count,userWishListCount:res.userWishListCount,userAddress,user:req.session.user,cartItems,total})
     },
     payment : async(req,res)=>{
+        let cartItemsCoupon = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
         let cartItems = await cartSchema.aggregate([
             {
                 $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
@@ -787,6 +790,18 @@ module.exports = {
         }else{
             total = 0
         }
+        let couponCheck = await couponSchema.findOne({ code: cartItemsCoupon.coupon })
+                let discount
+                if (couponCheck) {
+                    if (couponCheck.type == 'Percentage') {
+                        total = total - (total * couponCheck.discountValue) / 100
+                        discount = (total * couponCheck.discountValue) / 100
+                    } else if (couponCheck.type == 'Flat Discount') {
+                        total = total - couponCheck.discountValue
+                        discount = couponCheck.discountValue
+                    } else {
+                    }
+                }
         index=parseInt(req.params.index)
         let userAddress = await userSchema.aggregate([
             {
@@ -864,6 +879,34 @@ module.exports = {
         }else{
             total = 0
         }
+        
+        let cart=await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+        let couponCheck = await couponSchema.findOne({ code: cart.coupon })
+        
+        let discount
+        if (couponCheck) {
+            if (couponCheck.type == 'Percentage') {
+                total = total - (total * couponCheck.discountValue) / 100
+                discount = (total * couponCheck.discountValue) / 100
+            } else if (couponCheck.type == 'Flat Discount') {
+                total = total - couponCheck.discountValue
+                discount = couponCheck.discountValue
+            } else {
+            }
+
+            await userSchema.updateOne(
+                {
+                    _id : mongoose.Types.ObjectId(req.session.user._id)
+                },
+                {
+                    $push : {
+                        usedCoupons : cart.coupon
+                    },
+                }
+            )
+        }
+
+
         let cartItems =await cart_controller.getCartItems(req.session.user._id);
         let orderId =await order_controller.placeOrder(req.body,cartItems,total,req.session.user._id)
         if(req.body.paymentMethod=='COD'){

@@ -6,6 +6,7 @@ const cartSchema = require('../models/cart_schema');
 const wishListController = require('../controller/wishList_controller')
 const orderController=require('../controller/order_controller')
 const productController = require('../controller/product_controller')
+const couponController = require('../controller/coupon_controller')
 const userSchema = require('../models/user_schema')
 const mongoose = require('mongoose')
 
@@ -111,10 +112,17 @@ router.post('/place-an-order',verifyLogin,cartAndWishList,controller.PlaceAnOrde
 router.get('/order-successfully-placed',verifyLogin,cartAndWishList,orderController.orderPlacedSucessFully)
 router.post('/verify-payment',verifyLogin,cartAndWishList,orderController.verifyPayment)
 
+// Coupons
+router.get('/available_coupons',verifyLogin,cartAndWishList,couponController.couponsPage)
+router.get('/check-for-coupon',verifyLogin,cartAndWishList,couponController.checkForAvailablity)
+router.get('/apply-coupon',verifyLogin,cartAndWishList,couponController.applyCoupon)
+
 // Orders
 router.get('/check-for-orders',verifyLogin,orderController.checkForOrders)
 router.get('/view-current-order',verifyLogin,cartAndWishList,orderController.viewCurrentOrder)
 router.get('/view-orders',verifyLogin,cartAndWishList,orderController.viewOrders)
+
+
 
 router.get('/logout',controller.logout)
 

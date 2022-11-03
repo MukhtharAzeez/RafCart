@@ -4,59 +4,62 @@ const cartSchema = require('../models/cart_schema');
 const { login } = require('./user_controller');
 const userController = require('../controller/user_controller')
 const productSchema = require('../models/product_schema');
-
+const couponSchema = require('../models/coupon_schema')
 
 
 
 module.exports = {
-    
-    cart : async(req,res)=>{
+
+    cart: async (req, res) => {
         let count = 0;
-        if(req.session.user){
-            const cart = await cartSchema.findOne({userId: mongoose.Types.ObjectId(req.session.user._id)})
-            if(cart){
+        if (req.session.user) {
+            const cart = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
+            if (cart) {
                 count = cart.products.length;
             }
         }
-        if(req.session.user){
-            let cartExist = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+        if (req.session.user) {
+            let cartExist = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
 
-            if(cartExist){
+            if (cartExist) {
                 let cartItems = await cartSchema.aggregate([
                     {
-                        $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                        $match: { userId: mongoose.Types.ObjectId(req.session.user._id) }
                     },
                     {
-                        $project : {
-                            products : 1,
+                        $project: {
+                            products: 1,
+                            coupon: 1,
                         }
                     },
                     {
-                        $unwind : {
-                            path : "$products"
+                        $unwind: {
+                            path: "$products"
                         }
                     },
                     {
-                        $project :{
-                            item : "$products.item",
-                            quantity : "$products.quantity",
-                            total : "$products.total"
+                        $project: {
+                            item: "$products.item",
+                            quantity: "$products.quantity",
+                            total: "$products.total",
+                            coupon: 1
                         }
                     },
                     {
-                        $lookup :{
-                            from : 'products',
-                            localField : 'item',
-                            foreignField : '_id',
-                            as : 'product'
+                        $lookup: {
+                            from: 'products',
+                            localField: 'item',
+                            foreignField: '_id',
+                            as: 'product'
                         }
                     },
                     {
-                        $project : {
-                            item : 1,
-                            quantity : 1,
+                        $project: {
+                            coupon: 1,
+                            item: 1,
+                            quantity: 1,
                             total: 1,
-                            product : {$arrayElemAt : ["$product",0]}
+                            product: { $arrayElemAt: ["$product", 0] }
                         }
                     }
                     // {
@@ -76,81 +79,96 @@ module.exports = {
                     //     }
                     // }   
                 ])
-               
                 let total = await cartSchema.aggregate([
                     {
-                        $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                        $match: { userId: mongoose.Types.ObjectId(req.session.user._id) }
                     },
                     {
-                        $project : {
-                            products : 1,
+                        $project: {
+                            coupon: 1,
+                            products: 1,
                         }
                     },
                     {
-                        $unwind : {
-                            path : "$products"
+                        $unwind: {
+                            path: "$products"
                         }
                     },
                     {
-                        $project :{
-                            item : "$products.item",
-                            quantity : "$products.quantity",
-                            total : "$products.total"
+                        $project: {
+                            item: "$products.item",
+                            quantity: "$products.quantity",
+                            total: "$products.total",
+                            coupon: 1
                         }
                     },
                     {
-                        $lookup :{
-                            from : 'products',
-                            localField : 'item',
-                            foreignField : '_id',
-                            as : 'product'
+                        $lookup: {
+                            from: 'products',
+                            localField: 'item',
+                            foreignField: '_id',
+                            as: 'product'
                         }
                     },
                     {
-                        $project : {
-                            item : 1,
-                            quantity : 1,
-                            total :1,
-                            product : {$arrayElemAt : ["$product",0]}
+                        $project: {
+                            coupon: 1,
+                            item: 1,
+                            quantity: 1,
+                            total: 1,
+                            product: { $arrayElemAt: ["$product", 0] }
                         }
                     },
                     {
-                        $group :{
-                            _id:null,
-                            total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                        $group: {
+                            _id: null,
+                            total: { $sum: { $multiply: ['$quantity', '$product.discount'] } },
                         }
                     },
                 ])
-                if(total[0]){
+                if (total[0]) {
                     total = total[0].total;
-                }else{
+                } else {
                     total = 0
                 }
-                res.render('user/shopping-cart',{cartItems,"user":req.session.user,count,total,"userWishListCount":res.userWishListCount})
-            }else{
-                res.redirect('back')   
+
+                let couponCheck = await couponSchema.findOne({ code: cartItems[0].coupon })
+                let discount
+                if (couponCheck) {
+                    if (couponCheck.type == 'Percentage') {
+                        total = total - (total * couponCheck.discountValue) / 100
+                        discount = (total * couponCheck.discountValue) / 100
+                    } else if (couponCheck.type == 'Flat Discount') {
+                        total = total - couponCheck.discountValue
+                        discount = couponCheck.discountValue
+                    } else {
+                    }
+                }
+                res.render('user/shopping-cart', { cartItems, "user": req.session.user, count, total, "userWishListCount": res.userWishListCount, code: req.query.code })
+            } else {
+                res.redirect('back')
             }
-            
-        }else{
-           
+
+        } else {
+
             res.redirect('/shop')
         }
-        
+
     },
-    addToCart : async(req,res)=>{
-              
-        let product = await productSchema.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
-        let productObj={
-            item :mongoose.Types.ObjectId(req.params.id),
-            quantity : 1 ,
-            total:product.discount
+    addToCart: async (req, res) => {
+
+        let product = await productSchema.findOne({ _id: mongoose.Types.ObjectId(req.params.id) })
+        let productObj = {
+            item: mongoose.Types.ObjectId(req.params.id),
+            quantity: 1,
+            total: product.discount
         }
-        if(req.session.user){
-            let cartExist = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
-            if(cartExist){
-                let productExist =  cartExist.products.findIndex(product=>product.item==req.params.id)
-                if(productExist!=-1){
-                  
+        if (req.session.user) {
+            let cartExist = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
+            if (cartExist) {
+                let productExist = cartExist.products.findIndex(product => product.item == req.params.id)
+                if (productExist != -1) {
+
                     // cartSchema.updateOne(
                     //     {
                     //         userId : mongoose.Types.ObjectId(req.session.user._id),
@@ -162,292 +180,326 @@ module.exports = {
                     //         }
                     //     }
                     // ).then((response)=>{
-                        res.json({status:false})
+                    res.json({ status: false })
                     // })
-                }else{
+                } else {
                     cartSchema.updateOne(
                         {
-                            userId : mongoose.Types.ObjectId(req.session.user._id)
+                            userId: mongoose.Types.ObjectId(req.session.user._id)
                         },
                         {
-                            $push : {
-                                products :productObj
-                            }, 
+                            $push: {
+                                products: productObj
+                            },
                         },
-                        
-                    ).then(()=>{
-                        res.json({status:true})
+
+                    ).then(() => {
+                        res.json({ status: true })
                     })
                 }
-                
-            }else{
+
+            } else {
                 const cartItems = new cartSchema({
-                    userId : req.session.user._id,
-                    products : [productObj],
+                    userId: req.session.user._id,
+                    products: [productObj],
                 })
-                
-                cartItems.save().then((response)=>{
-                    res.json({status:true})
+
+                cartItems.save().then((response) => {
+                    res.json({ status: true })
                 })
             }
-        }else{
-            res.json({status:false})
+        } else {
+            res.json({ status: false })
         }
-        
+
     },
-    checkExistProductInCart : async(req,res)=>{
-        if(req.session.user){
-            
-            let product = await cartSchema.findOne({userId:mongoose.Types.ObjectId(req.session.user._id),
-                'products.item' : mongoose.Types.ObjectId(req.params.id)},
-                
+    checkExistProductInCart: async (req, res) => {
+
+        if (req.session.user) {
+
+            let product = await cartSchema.findOne({
+                userId: mongoose.Types.ObjectId(req.session.user._id),
+                'products.item': mongoose.Types.ObjectId(req.params.id)
+            },
+
             )
-         
-            if(product){
-                res.json({productExist : true})
-            }else{
-                res.json({productExist : false})
+
+            if (product) {
+                res.json({ productExist: true })
+            } else {
+                res.json({ noProductExist: true })
             }
-        }else{
-            res.json({userExist : false})
+        } else {
+            res.json()
         }
     },
-    
-    changeCartQuantity : async(req,res)=>{
-        
+
+    changeCartQuantity: async (req, res) => {
+        let cartItems = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
         count = parseInt(req.body.count)
-        if(req.body.quantity == 1 && count===-1){
+        if (req.body.quantity == 1 && count === -1) {
             cart_schema.updateOne(
                 {
-                    _id:mongoose.Types.ObjectId(req.body.cartId)
+                    _id: mongoose.Types.ObjectId(req.body.cartId)
                 },
                 {
-                    $pull : {
-                        products :{item : mongoose.Types.ObjectId(req.body.productId)},
+                    $pull: {
+                        products: { item: mongoose.Types.ObjectId(req.body.productId) },
                     }
                 }
-            ).then(async()=>{
-                
+            ).then(async () => {
+
                 let total = await cartSchema.aggregate([
                     {
-                        $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                        $match: { userId: mongoose.Types.ObjectId(req.session.user._id) }
                     },
                     {
-                        $project : {
-                            products : 1,
+                        $project: {
+
+                            products: 1,
                         }
                     },
                     {
-                        $unwind : {
-                            path : "$products"
+                        $unwind: {
+                            path: "$products"
                         }
                     },
                     {
-                        $project :{
-                            item : "$products.item",
-                            quantity : "$products.quantity",
-                            total : "$products.total"
+                        $project: {
+                            item: "$products.item",
+                            quantity: "$products.quantity",
+                            total: "$products.total"
                         }
                     },
                     {
-                        $lookup :{
-                            from : 'products',
-                            localField : 'item',
-                            foreignField : '_id',
-                            as : 'product'
+                        $lookup: {
+                            from: 'products',
+                            localField: 'item',
+                            foreignField: '_id',
+                            as: 'product'
                         }
                     },
                     {
-                        $project : {
-                            item : 1,
-                            quantity : 1,
-                            total :1,
-                            product : {$arrayElemAt : ["$product",0]}
+                        $project: {
+                            item: 1,
+                            quantity: 1,
+                            total: 1,
+                            product: { $arrayElemAt: ["$product", 0] }
                         }
                     },
                     {
-                        $group :{
-                            _id:null,
-                            total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                        $group: {
+                            _id: null,
+                            total: { $sum: { $multiply: ['$quantity', '$product.discount'] } },
                         }
                     },
                 ])
-                res.json({status : false,total});
+                
+                let couponCheck = await couponSchema.findOne({ code: cartItems.coupon })
+                let discount
+                if (couponCheck && total[0]) {
+                    if (couponCheck.type == 'Percentage') {
+                        total[0].total = total[0].total  - (total[0].total  * couponCheck.discountValue) / 100
+                        discount = (total[0].total  * couponCheck.discountValue) / 100
+                    } else if (couponCheck.type == 'Flat Discount') {
+                        total[0].total  = total[0].total  - couponCheck.discountValue
+                        discount = couponCheck.discountValue
+                    } else {
+                    }
+                }else{
+                    total=[{_id:null,total:0}]
+                }
+                console.log(total)
+                
+                res.json({ status: false, total });
             })
-        }else{
+        } else {
             cartSchema.updateOne(
                 {
-                    _id : mongoose.Types.ObjectId(req.body.cartId),
-                    'products.item' : mongoose.Types.ObjectId(req.body.productId)
+                    _id: mongoose.Types.ObjectId(req.body.cartId),
+                    'products.item': mongoose.Types.ObjectId(req.body.productId)
                 },
                 {
-                    $inc : {
-                        'products.$.quantity':count
+                    $inc: {
+                        'products.$.quantity': count
                     }
                 }
-            ).then(async(response)=>{
+            ).then(async (response) => {
                 let total = await cartSchema.aggregate([
                     {
-                        $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                        $match: { userId: mongoose.Types.ObjectId(req.session.user._id) }
                     },
                     {
-                        $project : {
-                            products : 1,
+                        $project: {
+                            products: 1,
                         }
                     },
                     {
-                        $unwind : {
-                            path : "$products"
+                        $unwind: {
+                            path: "$products"
                         }
                     },
                     {
-                        $project :{
-                            item : "$products.item",
-                            quantity : "$products.quantity",
-                            total : "$products.total"
+                        $project: {
+                            item: "$products.item",
+                            quantity: "$products.quantity",
+                            total: "$products.total"
                         }
                     },
                     {
-                        $lookup :{
-                            from : 'products',
-                            localField : 'item',
-                            foreignField : '_id',
-                            as : 'product'
+                        $lookup: {
+                            from: 'products',
+                            localField: 'item',
+                            foreignField: '_id',
+                            as: 'product'
                         }
                     },
                     {
-                        $project : {
-                            item : 1,
-                            quantity : 1,
-                            total :1,
-                            product : {$arrayElemAt : ["$product",0]}
+                        $project: {
+                            item: 1,
+                            quantity: 1,
+                            total: 1,
+                            product: { $arrayElemAt: ["$product", 0] }
                         }
                     },
                     {
-                        $group :{
-                            _id:null,
-                            total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                        $group: {
+                            _id: null,
+                            total: { $sum: { $multiply: ['$quantity', '$product.discount'] } },
                         }
                     },
                 ])
-    
+
                 // get product Total
                 let productTotal = await cartSchema.aggregate([
                     {
-                        $match :{
-                            userId:mongoose.Types.ObjectId(req.session.user._id),
+                        $match: {
+                            userId: mongoose.Types.ObjectId(req.session.user._id),
                         },
                     },
                     {
-                        $unwind :{
-                            path : "$products"
+                        $unwind: {
+                            path: "$products"
                         }
                     },
                     {
-                        $match:{
+                        $match: {
                             'products.item': mongoose.Types.ObjectId(req.body.productId)
                         }
                     },
                     {
-                        $project :{ 
-                            products : 1,  
+                        $project: {
+                            products: 1,
                         }
                     },
                     {
-                        $lookup:{
-                            from : 'products',
-                            localField : 'products.item',
-                            foreignField : '_id',
-                            as : 'product'
+                        $lookup: {
+                            from: 'products',
+                            localField: 'products.item',
+                            foreignField: '_id',
+                            as: 'product'
                         }
                     },
                     {
-                        $project:{
-                            products:1,
-                            product : {$arrayElemAt : ["$product",0]}
+                        $project: {
+                            products: 1,
+                            product: { $arrayElemAt: ["$product", 0] }
                         }
                     },
                     {
-                        $project :{
-                            productTotal :{$multiply :['$products.quantity','$product.discount']}
+                        $project: {
+                            productTotal: { $multiply: ['$products.quantity', '$product.discount'] }
                         }
                     }
                 ]
-                    
+
                 )
                 let result
-    
-                if(total[0]){
+
+                if (total[0]) {
                     result = {
-                        total:total[0].total,
-                        productTotal : productTotal[0]
+                        total: total[0].total,
+                        productTotal: productTotal[0]
                     }
-                  
-                }else{
-                    result.total=0
-                    
+
+                } else {
+                    result.total = 0
+
                 }
-               
-                res.json({status:true,result})
+                let couponCheck = await couponSchema.findOne({ code: cartItems.coupon })
+                let discount
+                if (couponCheck) {
+                    if (couponCheck.type == 'Percentage') {
+                        result.total = result.total - (result.total * couponCheck.discountValue) / 100
+                        discount = (result.total * couponCheck.discountValue) / 100
+                    } else if (couponCheck.type == 'Flat Discount') {
+                        result.total = result.total - couponCheck.discountValue
+                        discount = couponCheck.discountValue
+                    } else {
+                    }
+                }
+
+                res.json({ status: true, result })
             })
         }
-        
-        
-        
+
+
+
     },
-    removeCartItem : async(req,res)=>{
+    removeCartItem: async (req, res) => {
+        let cartItems = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
         cart_schema.updateOne(
             {
-                _id:mongoose.Types.ObjectId(req.body.cartId)
+                _id: mongoose.Types.ObjectId(req.body.cartId)
             },
             {
-                $pull : {
-                    products :{item : mongoose.Types.ObjectId(req.body.productId)},
+                $pull: {
+                    products: { item: mongoose.Types.ObjectId(req.body.productId) },
                 }
             }
-        ).then(async()=>{
-            
+        ).then(async () => {
+
             let total = await cartSchema.aggregate([
                 {
-                    $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+                    $match: { userId: mongoose.Types.ObjectId(req.session.user._id) }
                 },
                 {
-                    $project : {
-                        products : 1,
+                    $project: {
+                        products: 1,
                     }
                 },
                 {
-                    $unwind : {
-                        path : "$products"
+                    $unwind: {
+                        path: "$products"
                     }
                 },
                 {
-                    $project :{
-                        item : "$products.item",
-                        quantity : "$products.quantity",
-                        total : "$products.total"
+                    $project: {
+                        item: "$products.item",
+                        quantity: "$products.quantity",
+                        total: "$products.total"
                     }
                 },
                 {
-                    $lookup :{
-                        from : 'products',
-                        localField : 'item',
-                        foreignField : '_id',
-                        as : 'product'
+                    $lookup: {
+                        from: 'products',
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
                     }
                 },
                 {
-                    $project : {
-                        item : 1,
-                        quantity : 1,
-                        total :1,
-                        product : {$arrayElemAt : ["$product",0]}
+                    $project: {
+                        item: 1,
+                        quantity: 1,
+                        total: 1,
+                        product: { $arrayElemAt: ["$product", 0] }
                     }
                 },
                 {
-                    $group :{
-                        _id:null,
-                        total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                    $group: {
+                        _id: null,
+                        total: { $sum: { $multiply: ['$quantity', '$product.discount'] } },
                     }
                 },
             ])
@@ -455,122 +507,134 @@ module.exports = {
             // get product Total
             let productTotal = await cartSchema.aggregate([
                 {
-                    $match :{
-                        userId:mongoose.Types.ObjectId(req.session.user._id),
+                    $match: {
+                        userId: mongoose.Types.ObjectId(req.session.user._id),
                     },
                 },
                 {
-                    $unwind :{
-                        path : "$products"
+                    $unwind: {
+                        path: "$products"
                     }
                 },
                 {
-                    $match:{
+                    $match: {
                         'products.item': mongoose.Types.ObjectId(req.body.productId)
                     }
                 },
                 {
-                    $project :{ 
-                        products : 1,  
+                    $project: {
+                        products: 1,
                     }
                 },
                 {
-                    $lookup:{
-                        from : 'products',
-                        localField : 'products.item',
-                        foreignField : '_id',
-                        as : 'product'
+                    $lookup: {
+                        from: 'products',
+                        localField: 'products.item',
+                        foreignField: '_id',
+                        as: 'product'
                     }
                 },
                 {
-                    $project:{
-                        products:1,
-                        product : {$arrayElemAt : ["$product",0]}
+                    $project: {
+                        products: 1,
+                        product: { $arrayElemAt: ["$product", 0] }
                     }
                 },
                 {
-                    $project :{
-                        productTotal :{$multiply :['$products.quantity','$product.discount']}
+                    $project: {
+                        productTotal: { $multiply: ['$products.quantity', '$product.discount'] }
                     }
                 }
             ]
-                
+
             )
             let result
 
-            if(total[0]){
+            if (total[0]) {
                 result = {
-                    total:total[0].total,
-                    productTotal : productTotal[0]
+                    total: total[0].total,
+                    productTotal: productTotal[0]
                 }
-              
-            }else{
-                result={
-                    total:0
+
+            } else {
+                result = {
+                    total: 0
+                }
+            }
+            let couponCheck = await couponSchema.findOne({ code: cartItems.coupon })
+            let discount
+            if (couponCheck) {
+                if (couponCheck.type == 'Percentage') {
+                    result.total = result.total - (result.total * couponCheck.discountValue) / 100
+                    discount = (result.total * couponCheck.discountValue) / 100
+                } else if (couponCheck.type == 'Flat Discount') {
+                    result.total = result.total - couponCheck.discountValue
+                    discount = couponCheck.discountValue
+                } else {
                 }
             }
 
-            
-            
-            res.json({status : true,result});
+
+
+            res.json({ status: true, result });
         })
     },
-    updateCart : async(req,res)=>{
+    updateCart: async (req, res) => {
         total = parseInt(req.body.total)
         await cartSchema.updateOne(
             {
-                _id : mongoose.Types.ObjectId(req.body.cartId),
-                'products.item' : mongoose.Types.ObjectId(req.body.productId)
+                _id: mongoose.Types.ObjectId(req.body.cartId),
+                'products.item': mongoose.Types.ObjectId(req.body.productId)
             },
             {
-                $set : {
-                    'products.$.total' : total,
+                $set: {
+                    'products.$.total': total,
                 }
             }
-        ).then(()=>{
-            res.json({status:true})
+        ).then(() => {
+            res.json({ status: true })
         })
     },
-    getCartItems: async(id)=>{
+    getCartItems: async (id) => {
         let cartItems = await cartSchema.aggregate([
             {
-                $match :{userId:mongoose.Types.ObjectId(id)} 
+                $match: { userId: mongoose.Types.ObjectId(id) }
             },
             {
-                $project : {
-                    products : 1,
+                $project: {
+                    products: 1,
                 }
             },
             {
-                $unwind : {
-                    path : "$products"
+                $unwind: {
+                    path: "$products"
                 }
             },
             {
-                $project :{
-                    item : "$products.item",
-                    quantity : "$products.quantity",
-                    total : "$products.total"
+                $project: {
+                    item: "$products.item",
+                    quantity: "$products.quantity",
+                    total: "$products.total"
                 }
             },
             {
-                $lookup :{
-                    from : 'products',
-                    localField : 'item',
-                    foreignField : '_id',
-                    as : 'product'
+                $lookup: {
+                    from: 'products',
+                    localField: 'item',
+                    foreignField: '_id',
+                    as: 'product'
                 }
             },
             {
-                $project : {
-                    item : 1,
-                    quantity : 1,
+                $project: {
+                    item: 1,
+                    quantity: 1,
                     total: 1,
-                    product : {$arrayElemAt : ["$product",0]}
+                    product: { $arrayElemAt: ["$product", 0] }
                 }
             }
         ])
         return cartItems
     },
-    
+
 }

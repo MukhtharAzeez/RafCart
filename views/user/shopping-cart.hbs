@@ -576,15 +576,42 @@
                             <p>Tax</p>
                             <p>Free</p>
                         </div>
+                        <div class="cartsum_text d-flex justify-content-between">
+                            <p>Coupon</p>
+                            <p>₹-<span id="discountOnCoupon">00</span></p>
+                        </div>
                         <div class="cart_sum_total d-flex justify-content-between">
                             <p>Total</p>
                              <p >₹<span id="totalAMount">{{total}}</span>.00</p>
                         </div>
-                        <div class="cart_sum_coupon">
-                            <input type="text" placeholder="Enter coupon">
-                            <button>apply</button>
+                        {{#if cartItems.0.coupon}}
+                        <div class="cart_sum_coupon" id="couponBox">
+                            <input type="text" placeholder="Enter coupon" value="{{cartItems.0.coupon}}">
                         </div>
+                        {{else}}
+                        <div class="cart_sum_coupon" id="couponBox2">
+                            
+                            {{#if code}}
+                            <input type="text" placeholder="Enter coupon" value="{{code}}" readonly>
+                            <button onclick="applyCoupon('{{code}}')">Apply</button>
+                            {{/if}}
+                        </div>
+                        {{/if}}
+
+                       
+
                         {{#if cartItems}}
+                        {{#if code}}
+                        <div class="cart_sum_pros" id="couponButton">
+                            <a href="/available_coupons"><button>Change Coupon</button></a>
+                        </div>
+                        {{else if cartItems.0.coupon}}
+                        {{else}}
+                        <div class="cart_sum_pros" id="couponButton">
+                            <a href="/available_coupons"><button>Available Coupons</button></a>
+                        </div>
+                        {{/if}}
+
                         <div class="cart_sum_pros" id="proceedButton">
                             <a href="/checkout-page"><button>Procceed to checkout</button></a>
                         </div>

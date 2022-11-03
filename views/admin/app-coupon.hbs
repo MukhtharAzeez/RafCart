@@ -348,32 +348,33 @@
                           </div>
                           <div class="mb-4">
                             <label for="form-coupon/code" class="form-label">Code</label>
-                            <input type="text" class="form-control" id="form-coupon/code" name="code"/>
+                            <input type="text" class="form-control" id="form-coupon/code" name="code" required/>
                           </div>
                           <div class="mb-4">
                             <div class="form-label mb-3">Type</div>
                             <label class="form-check"><input type="radio" class="form-check-input" name="type"
-                                checked="" value="Percentage"/>
+                                checked="" value="Percentage" id="discountValueGet1" required/>
                                 <span class="form-check-label">Percentage</span></label><label
                               class="form-check">
-                              <input type="radio" class="form-check-input" name="type" value="Fixed"/>
+                              <input type="radio" class="form-check-input" name="type" value="Flat Discount" id="discountValueGet2" required/>
                               <span
                                 class="form-check-label">Fixed amount</span></label><label
-                              class="form-check mb-0"><input type="radio" class="form-check-input" name="type" value="Free Shipping"/>
+                              class="form-check mb-0">
+                              <input type="radio" class="form-check-input" name="type" value="Free Shipping" id="discountValueHide" required/>
                               <span
                                 class="form-check-label">Free shipping</span></label>
                           </div>
-                          <div class="mb-4">
-                            <label for="form-coupon/value" class="form-label">Discount value</label>
-                            <input type="number" class="form-control" id="form-coupon/value" name="discountValue"/>
+                          <div class="mb-4" id="discountDiv">
+                            <label for="form-coupon/value" class="form-label">Discount value <span id="discountValueMsg" style="font-size: 11px; color : red;"></span></label>
+                            <input type="number" class="form-control" id="formCouponDiscount" name="discountValue"/>
                           </div>
                           <div class="mb-4">
                             <label for="form-coupon/limit" class="form-label">Usage limit</label>
-                            <input type="number" class="form-control" id="form-coupon/limit" name="usageLimit"/>
+                            <input type="number" class="form-control" id="form-couponLimit" name="usageLimit" requied/>
                           </div>
                           <div class="mb-n2 pt-2">
                             <label class="form-check">
-                              <input type="checkbox" class="form-check-input" name="type" value="registered"/>
+                              <input type="checkbox" class="form-check-input" name="type" value="registered" required/>
                               <span class="form-check-label">Only for registered
                                 customers</span></label>
                           </div>
@@ -407,12 +408,12 @@
                           <div class="mb-4">
                             <label for="form-coupon/start-date" class="form-label">Start date</label><input type="text"
                               class="form-control datepicker-here" id="form-coupon/start-date" data-auto-close="true"
-                              data-language="en" name="startDate"/>
+                              data-language="en" name="startDate" required/>
                           </div>
                           <div>
                             <label for="form-coupon/end-date" class="form-label">End date</label><input type="text"
                               class="form-control datepicker-here" id="form-coupon/end-date" data-auto-close="true"
-                              data-language="en" name="endDate"/>
+                              data-language="en" name="endDate" required/>
                           </div>
                         </div>
                       </div>
@@ -463,6 +464,7 @@
       <script src="/admin_js/calendar.js"></script>
       <script src="/admin_js/demo.js"></script>
       <script src="/admin_js/demo-chart-js.js"></script>
+      <script src="/admin_js/discountValueDiv.js"></script>
 </body>
 
 </html>
