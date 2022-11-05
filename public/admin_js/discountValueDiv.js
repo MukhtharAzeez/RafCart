@@ -12,7 +12,7 @@ $('#discountValueGet2').click(()=>{
     $('#discountDiv').show()
 })
 
-let value = $('input[name="type"]:checked').val();
+
 
 
 
@@ -23,8 +23,12 @@ $('#formCouponDiscount').focusout(()=>{
     check_discountValueAfterFocuOut();
 })
 
+function checkDiscount(){
+    check_discountValueAfterFocuOut()
+}
 
 function check_discount(){
+    let value = $('input[name="type"]:checked').val();
     var discount =$('#formCouponDiscount').val()
     if(value=='Percentage'){
         if(discount>0 && discount<=100){
@@ -38,6 +42,7 @@ function check_discount(){
 }
 
 function check_discountValueAfterFocuOut(){
+    let value = $('input[name="type"]:checked').val();
      var discount =$('#formCouponDiscount').val()
     if(value=='Percentage'){
         if(discount.length==0){
@@ -47,5 +52,7 @@ function check_discountValueAfterFocuOut(){
         }else{
             $('#discountValueMsg').html("Percentage value must contains between 1-100")  
         }
+    }else{
+        $('#discountValueMsg').html("")
     }
 }
