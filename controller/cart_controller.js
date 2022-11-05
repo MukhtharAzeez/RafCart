@@ -126,11 +126,16 @@ module.exports = {
                         }
                     },
                 ])
+                
+                
                 if (total[0]) {
                     total = total[0].total;
+                    
                 } else {
                     total = 0
+                  
                 }
+                let subTotal=total
                 let couponCheck
                 if(cartItems[0]){
                     couponCheck = await couponSchema.findOne({ code: cartItems[0].coupon })
@@ -147,7 +152,17 @@ module.exports = {
                     } else {
                     }
                 }
-                res.render('user/shopping-cart', { cartItems, "user": req.session.user, count, total, "userWishListCount": res.userWishListCount, code: req.query.code })
+                await cartSchema.updateOne(
+                    {
+                        userId : mongoose.Types.ObjectId(req.session.user._id)
+                    },
+                    {
+                        $set : {
+                            totalPrice : total
+                        }
+                    }
+                )
+                res.render('user/shopping-cart', { cartItems,subTotal,discount, "user": req.session.user, count, total, "userWishListCount": res.userWishListCount, code: req.query.code })
             } else {
                 res.redirect('back')
             }
@@ -194,6 +209,9 @@ module.exports = {
                             $push: {
                                 products: productObj
                             },
+                            $unset : {
+                                coupon : 1 
+                            }
                         },
 
                     ).then(() => {
@@ -297,10 +315,11 @@ module.exports = {
                         }
                     },
                 ])
-                
+                let subTotal
                 let couponCheck = await couponSchema.findOne({ code: cartItems.coupon })
                 let discount
                 if (couponCheck && total[0]) {
+                    total[0].subTotal = total[0].total
                     if (couponCheck.type == 'Percentage') {
                         total[0].total = total[0].total  - (total[0].total  * couponCheck.discountValue) / 100
                         discount = (total[0].total  * couponCheck.discountValue) / 100
@@ -310,10 +329,12 @@ module.exports = {
                     } else {
                     }
                 }else{
-                    total=[{_id:null,total:0}]
+                    if(total[0]){
+                        total=[{_id:null,total:total[0].total,subTotal:total[0].total}]
+                    }else{
+                        total=[{_id:null,total:0,subTotal:0}]
+                    }
                 }
-                console.log(total)
-                
                 res.json({ status: false, total });
             })
         } else {
@@ -418,17 +439,19 @@ module.exports = {
 
                 )
                 let result
-
+                
                 if (total[0]) {
                     result = {
                         total: total[0].total,
+                        subTotal: total[0].total,
                         productTotal: productTotal[0]
                     }
 
                 } else {
                     result.total = 0
-
+                    result.subTotal = 0
                 }
+                
                 let couponCheck = await couponSchema.findOne({ code: cartItems.coupon })
                 let discount
                 if (couponCheck) {
@@ -441,6 +464,16 @@ module.exports = {
                     } else {
                     }
                 }
+                await cartSchema.updateOne(
+                    {
+                        userId : mongoose.Types.ObjectId(req.session.user._id)
+                    },
+                    {
+                        $set : {
+                            totalPrice : result.total
+                        }
+                    }
+                )
 
                 res.json({ status: true, result })
             })
@@ -556,14 +589,17 @@ module.exports = {
             if (total[0]) {
                 result = {
                     total: total[0].total,
-                    productTotal: productTotal[0]
+                    productTotal: productTotal[0],
+                    subTotal : total[0].total
                 }
 
             } else {
                 result = {
-                    total: 0
+                    total: 0,
+                    subTotal : 0
                 }
             }
+            
             let couponCheck = await couponSchema.findOne({ code: cartItems.coupon })
             let discount
             if (couponCheck) {
@@ -576,6 +612,16 @@ module.exports = {
                 } else {
                 }
             }
+            await cartSchema.updateOne(
+                {
+                    userId : mongoose.Types.ObjectId(req.session.user._id)
+                },
+                {
+                    $set : {
+                        totalPrice : result.total
+                    }
+                }
+            )
 
 
 
@@ -583,7 +629,7 @@ module.exports = {
         })
     },
     updateCart: async (req, res) => {
-        total = parseInt(req.body.total)
+        
         await cartSchema.updateOne(
             {
                 _id: mongoose.Types.ObjectId(req.body.cartId),
@@ -591,7 +637,7 @@ module.exports = {
             },
             {
                 $set: {
-                    'products.$.total': total,
+                    'products.$.total': req.body.total,
                 }
             }
         ).then(() => {

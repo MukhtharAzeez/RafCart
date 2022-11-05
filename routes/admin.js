@@ -11,11 +11,11 @@ const coupon_controller = require('../controller/coupon_controller')
 
 
 verifyAdmin = (req,res,next)=>{
-    if(req.session.admin){
+    // if(req.session.admin){
         next()
-    }else{
-        res.redirect('/admin/login')
-    }
+    // }else{
+    //     res.redirect('/admin/login')
+    // }
   }
 
 /* User Management. */

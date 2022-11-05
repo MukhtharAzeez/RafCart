@@ -65,114 +65,133 @@
           <div id="top" class="sa-app__body">
             <div class="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
               <div class="container container--max--xl">
-                 <form action="/admin/add-a-coupon" method="post">
-                <div class="py-5">
-                  <div class="row g-4 align-items-center">
-                    <div class="col">
-                      <nav class="mb-2" aria-label="breadcrumb">
-                        <ol class="breadcrumb breadcrumb-sa-simple">
-                          <li class="breadcrumb-item">
-                            <a href="index.html">Dashboard</a>
-                          </li>
-                          <li class="breadcrumb-item">
-                            <a href="app-coupons-list.html">Coupons</a>
-                          </li>
-                          <li class="breadcrumb-item active" aria-current="page">
-                            Add Coupon
-                          </li>
-                        </ol>
-                      </nav>
-                      <h1 class="h3 m-0">Add Coupon</h1>
-                    </div>
-                    <div class="col-auto d-flex">
-                      <button type="submit" class="btn btn-primary">Add</button>
+                <form action="/admin/add-a-coupon" method="post">
+                  <div class="py-5">
+                    <div class="row g-4 align-items-center">
+                      <div class="col">
+                        <nav class="mb-2" aria-label="breadcrumb">
+                          <ol class="breadcrumb breadcrumb-sa-simple">
+                            <li class="breadcrumb-item">
+                              <a href="index.html">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                              <a href="app-coupons-list.html">Coupons</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                              Add Coupon
+                            </li>
+                          </ol>
+                        </nav>
+                        <h1 class="h3 m-0">Add Coupon</h1>
+                      </div>
+                      <div class="col-auto d-flex">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                      </div>
                     </div>
                   </div>
-                </div>
-               
-                <div class="sa-entity-layout"
-                  data-sa-container-query='{"920":"sa-entity-layout--size--md","1100":"sa-entity-layout--size--lg"}'>
-                  <div class="sa-entity-layout__body">
-                    <div class="sa-entity-layout__main">
-                      <div class="card">
-                        <div class="card-body p-5">
-                          <div class="mb-5">
-                            <h2 class="mb-0 fs-exact-18">Basic information</h2>
-                          </div>
-                          <div class="mb-4">
-                            <label for="form-coupon/code" class="form-label">Code</label>
-                            <input type="text" class="form-control" id="form-coupon/code" name="code" required/>
-                          </div>
-                          <div class="mb-4">
-                            <div class="form-label mb-3">Type</div>
-                            <label class="form-check"><input type="radio" class="form-check-input" name="type"
-                                checked="" value="Percentage" id="discountValueGet1" required/>
-                                <span class="form-check-label">Percentage</span></label><label
-                              class="form-check">
-                              <input type="radio" class="form-check-input" name="type" value="Flat Discount" id="discountValueGet2" required/>
-                              <span
-                                class="form-check-label">Fixed amount</span></label><label
-                              class="form-check mb-0">
-                              <input type="radio" class="form-check-input" name="type" value="Free Shipping" id="discountValueHide" required/>
-                              <span
-                                class="form-check-label">Free shipping</span></label>
-                          </div>
-                          <div class="mb-4" id="discountDiv">
-                            <label for="form-coupon/value" class="form-label">Discount value <span id="discountValueMsg" style="font-size: 11px; color : red;"></span></label>
-                            <input type="number" class="form-control" id="formCouponDiscount" name="discountValue"/>
-                          </div>
-                          <div class="mb-4">
-                            <label for="form-coupon/limit" class="form-label">Usage limit</label>
-                            <input type="number" class="form-control" id="form-couponLimit" name="usageLimit" requied/>
-                          </div>
-                          <div class="mb-n2 pt-2">
-                            <label class="form-check">
-                              <input type="checkbox" class="form-check-input" name="type" value="registered" required/>
-                              <span class="form-check-label">Only for registered
-                                customers</span></label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="sa-entity-layout__sidebar">
-                      <div class="card w-100">
-                        <div class="card-body p-5">
-                          <div class="mb-5">
-                            <h2 class="mb-0 fs-exact-18">Status</h2>
-                          </div>
-                          <div class="mb-n2 mt-n3">
-                            <label class="form-check">
-                              <input type="radio" class="form-check-input" name="status" checked="" value="enabled"/>
-                              <span class="form-check-label">Enabled</span></label><label class="form-check mb-0">
-                              <input type="radio" class="form-check-input" name="status" value="disabled"/><span
-                                class="form-check-label">Disabled</span></label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card w-100 mt-5">
-                        <div class="card-body p-5">
-                          <div class="mb-5">
-                            <h2 class="mb-0 fs-exact-18">Schedule</h2>
-                            <div class="mt-3 text-muted">
-                              Use these settings to limit the coupon expiration
-                              date.
+
+                  <div class="sa-entity-layout"
+                    data-sa-container-query='{"920":"sa-entity-layout--size--md","1100":"sa-entity-layout--size--lg"}'>
+                    <div class="sa-entity-layout__body">
+                      <div class="sa-entity-layout__main">
+                        <div class="card">
+                          <div class="card-body p-5">
+                            <div class="mb-5">
+                              <h2 class="mb-0 fs-exact-18">Basic information</h2>
+                            </div>
+                            <div class="mb-4">
+                              <label for="form-coupon/code" class="form-label">Code</label>
+                              <input type="text" class="form-control" id="form-coupon/code" name="code" required />
+                            </div>
+                            <div class="mb-4">
+                              <div class="form-label mb-3">Type</div>
+                              <label class="form-check"><input type="radio" class="form-check-input" name="type"
+                                  checked="" value="Percentage" id="discountValueGet1" required />
+                                <span class="form-check-label">Percentage</span></label><label class="form-check">
+                                <input type="radio" class="form-check-input" name="type" value="Flat Discount"
+                                  id="discountValueGet2" required />
+                                <span class="form-check-label">Fixed amount</span></label><label
+                                class="form-check mb-0">
+                                <input type="radio" class="form-check-input" name="type" value="Free Shipping"
+                                  id="discountValueHide" required />
+                                <span class="form-check-label">Free shipping</span></label>
+                            </div>
+                            <div class="mb-4" id="discountDiv">
+                              <label for="form-coupon/value" class="form-label">Discount value <span
+                                  id="discountValueMsg" style="font-size: 11px; color : red;"></span></label>
+                              <input type="number" class="form-control" id="formCouponDiscount" name="discountValue" />
+                            </div>
+                            <div class="mb-4">
+                              <label for="form-coupon/limit" class="form-label">Usage limit</label>
+                              <input type="number" class="form-control" id="form-couponLimit" name="usageLimit"
+                                requied />
+                            </div>
+
+
+                            <div class="mb-4">
+                              <label for="form-coupon/limit" class="form-label">Available For</label>
+                              <div class="input-group mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Above</span>
+                                <input type="number" class="form-control" aria-label="Sizing example input"
+                                  aria-describedby="inputGroup-sizing-default" value="0" name="lowerLimit"/>
+                              </div>
+                              <div class="input-group mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Below</span>
+                                <input type="number" class="form-control" aria-label="Sizing example input"
+                                  aria-describedby="inputGroup-sizing-default" value="100000" name="upperLimit"/>
+                              </div>
+                            </div>
+
+                            
+                            <div class="mb-n2 pt-2">
+                              <label class="form-check">
+                                <input type="checkbox" class="form-check-input" name="type" value="registered"
+                                  required />
+                                <span class="form-check-label">Only for registered
+                                  customers</span></label>
                             </div>
                           </div>
-                          <div class="mb-4">
-                            <label for="form-coupon/start-date" class="form-label">Start date</label><input type="text"
-                              class="form-control datepicker-here" id="form-coupon/start-date" data-auto-close="true"
-                              data-language="en" name="startDate" required/>
+                        </div>
+                      </div>
+                      <div class="sa-entity-layout__sidebar">
+                        <div class="card w-100">
+                          <div class="card-body p-5">
+                            <div class="mb-5">
+                              <h2 class="mb-0 fs-exact-18">Status</h2>
+                            </div>
+                            <div class="mb-n2 mt-n3">
+                              <label class="form-check">
+                                <input type="radio" class="form-check-input" name="status" checked="" value="enabled" />
+                                <span class="form-check-label">Enabled</span></label><label class="form-check mb-0">
+                                <input type="radio" class="form-check-input" name="status" value="disabled" /><span
+                                  class="form-check-label">Disabled</span></label>
+                            </div>
                           </div>
-                          <div>
-                            <label for="form-coupon/end-date" class="form-label">End date</label><input type="text"
-                              class="form-control datepicker-here" id="form-coupon/end-date" data-auto-close="true"
-                              data-language="en" name="endDate" required/>
+                        </div>
+                        <div class="card w-100 mt-5">
+                          <div class="card-body p-5">
+                            <div class="mb-5">
+                              <h2 class="mb-0 fs-exact-18">Schedule</h2>
+                              <div class="mt-3 text-muted">
+                                Use these settings to limit the coupon expiration
+                                date.
+                              </div>
+                            </div>
+                            <div class="mb-4">
+                              <label for="form-coupon/start-date" class="form-label">Start date</label><input
+                                type="text" class="form-control datepicker-here" id="form-coupon/start-date"
+                                data-auto-close="true" data-language="en" name="startDate" required />
+                            </div>
+                            <div>
+                              <label for="form-coupon/end-date" class="form-label">End date</label><input type="text"
+                                class="form-control datepicker-here" id="form-coupon/end-date" data-auto-close="true"
+                                data-language="en" name="endDate" required />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 </form>
               </div>
             </div>

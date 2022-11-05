@@ -26,6 +26,9 @@ let userDetails
 
 module.exports = {
     home : async(req,res)=>{
+        if(req.session.user){
+            console.log(req.session.user)
+        }
         try {
             const category = await categorySchema.find({}).lean();
         let banners = await bannerSchema.find({}).lean();
@@ -54,7 +57,6 @@ module.exports = {
             res.render('user/register',{noHeader:true,noFooter:true});
         }
     },
-
     postSignup : async (req,res)=>{
        
         let user =await userSchema.find({email:req.body.email})
@@ -88,6 +90,7 @@ module.exports = {
                    .then((result)=>{
                     userSession=result
                     userDetails=result;
+                    userSession.password = null
                     OtpCheck.sendOtp(number)
                     res.render('user/otp-verification')
                    })
@@ -130,6 +133,7 @@ module.exports = {
                         if(status){
                             
                             req.session.user=result[0];
+                            req.session.user.password=null
                             req.session.loggedIn = true;
                             userSession=req.session.user
                            res.redirect('/')
@@ -145,6 +149,7 @@ module.exports = {
             }
          }else{
             userDetails=result[0];
+            userDetails.password=null
             OtpCheck.sendOtp(result[0].phone)
             res.render('user/check-user-verification')
          }

@@ -102,12 +102,14 @@
                     <th>Type</th>
                     <th>Discount</th>
                     <th>Status</th>
+                    <th>Available For</th>
                     <th>Start date</th>
                     <th>End date</th>
                     <th class="w-min" data-orderable="false"></th>
                   </tr>
                 </thead>
                 <tbody>
+                  
                   {{#each coupons}}
                   <tr>
                     <td>
@@ -135,6 +137,7 @@
                         {{/if}}
                       </div>
                     </td>
+                    <td>₹{{this.lowerLimit}} - ₹{{this.upperLimit}}</td>
                     <td>{{this.startDate}}</td>
                     <td>{{this.expiryDate}}</td>
                     <td>

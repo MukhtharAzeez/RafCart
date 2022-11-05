@@ -566,7 +566,7 @@
                         <h4>Order Summary</h4>
                          <div class="cartsum_text d-flex justify-content-between">
                              <p class="text-semibold">Subtotal</p>
-                             <p class="text-semibold">₹<span  id="subTotal">{{total}}</span>.00</p>
+                             <p class="text-semibold">₹<span  id="subTotal">{{subTotal}}</span>.00</p>
                          </div>
                          <div class="cartsum_text d-flex justify-content-between">
                             <p>Delivery</p>
@@ -578,7 +578,7 @@
                         </div>
                         <div class="cartsum_text d-flex justify-content-between">
                             <p>Coupon</p>
-                            <p>₹-<span id="discountOnCoupon">00</span></p>
+                            <p>₹<span id="discountOnCoupon">-{{discount}}</span></p>
                         </div>
                         <div class="cart_sum_total d-flex justify-content-between">
                             <p>Total</p>
@@ -586,14 +586,16 @@
                         </div>
                         {{#if cartItems.0.coupon}}
                         <div class="cart_sum_coupon" id="couponBox">
-                            <input type="text" placeholder="Enter coupon" value="{{cartItems.0.coupon}}">
+                            <input type="text" placeholder="Enter coupon" value="{{cartItems.0.coupon}}" readonly>
+                            <button class="" onclick="removeCoupon('{{cartItems.0.coupon}}')" id="removeCoupon">remove</button>
                         </div>
                         {{else}}
-                        <div class="cart_sum_coupon" id="couponBox2">
+                        <div class="cart_sum_coupon" >
                             
                             {{#if code}}
                             <input type="text" placeholder="Enter coupon" value="{{code}}" readonly>
-                            <button onclick="applyCoupon('{{code}}')">Apply</button>
+                            <button onclick="applyCoupon('{{code}}')" id="applyButton">Apply</button>
+                            <button class="d-none" onclick="removeCoupon('{{code}}')" id="removeCoupon">remove</button>
                             {{/if}}
                         </div>
                         {{/if}}

@@ -18,6 +18,14 @@ const couponSchema = new Schema({
     type : Number,
     required: true,
   },
+  upperLimit : {
+    type: Number,
+    required: true,
+  },
+  lowerLimit : {
+    type: Number,
+    required: true,
+  },
   status : {
     type: Boolean,
     required: true,

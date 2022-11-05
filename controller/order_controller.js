@@ -22,26 +22,22 @@ module.exports = {
         address.mobile = parseInt(address.mobile)
         return new Promise (async(resolve, reject) => {
             const userId = userID;
-            const fullName = address.fullName;
-            const mobile = address.mobile;
-            const addressTODeliver = address.address;
-            const paymentMethod = address.paymentMethod;
+            const {fullName,mobile,addressToDeliver,paymentMethod} = address;
             const status = placedOrPending;
             const products=cartItems;
             const totalPrice=total;
             const purchaseDate = new Date(new Date().getTime()+(5.5*60*60*1000));
             const expectedDeliveryDate = new Date(new Date().getTime()+(8*24*60*60*1000)+(5.5*60*60*1000));
             const order = new orderSchema({
-                userId:userId,
-                paymentMethod : paymentMethod,
-                deliveryAddress : [fullName,mobile,addressTODeliver],
+                userId,
+                paymentMethod,
+                deliveryAddress : [fullName,mobile,addressToDeliver],
                 status : status,
                 products : products,
                 total : totalPrice,
                 purchaseDate : purchaseDate,
                 expectedDeliveryDate : expectedDeliveryDate
             });
-            console.log(new Date(expectedDeliveryDate))
             order
                .save()
                .then((result)=>{

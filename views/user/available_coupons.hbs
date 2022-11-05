@@ -538,6 +538,7 @@
                             <h1>Coupons</h1>
                             <div class="row">
                                 {{#each coupons}}
+                                {{#if this.available}}
                                 <div class="col-6 card ms-5 mb-5 ">
                                     <section class="date">
                                         <time datetime="23th feb">
@@ -562,9 +563,14 @@
                                                 <span>{{this.usageLimit}} Left</span>
                                             </time>
                                         </div>
+                                        {{#if this.used}}
+                                        <a><i class="fa-solid fa-check">Used</i></a>
+                                        {{else}}
                                         <a href="/view-cart?code={{this.code}}">use</a>
+                                        {{/if}}
                                     </section>
                                 </div>
+                                {{/if}}
                                 {{/each}}
                             </div>
                         </div>

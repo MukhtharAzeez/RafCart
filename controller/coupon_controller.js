@@ -16,6 +16,8 @@ module.exports = {
                     usageLimit : 1,
                     status : 1,
                     isFinished : 1,
+                    lowerLimit :1,
+                    upperLimit : 1,
                     startDate : { $dateToString: { format: "%Y-%m-%d", date: "$startDate" } },
                     expiryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expiryDate" } },
                 }
@@ -27,7 +29,8 @@ module.exports = {
         res.render('admin/app-coupon',{noHeader:true,noFooter:true})
     },
     add_a_coupon : async(req,res)=>{
-        let checkExist = await couponSchema.findOne({code : req.body.code}) 
+        let checkExist = await couponSchema.findOne({code : req.body.code})
+         
         if(checkExist){
             res.redirect('/admin/add-coupon')
         }else{
@@ -48,7 +51,8 @@ module.exports = {
                 const startDate = req.body.startDate;
                 const expiryDate = req.body.endDate;
                 const isFinished = false;
-        
+                const lowerLimit = req.body.lowerLimit;
+                const upperLimit = req.body.upperLimit;
                 
                 const coupons = new couponSchema({
                     code : code,
@@ -58,7 +62,9 @@ module.exports = {
                     status : status,
                     startDate : startDate,
                     expiryDate : expiryDate,
-                    isFinished : isFinished
+                    isFinished : isFinished,
+                    lowerLimit : lowerLimit,
+                    upperLimit : upperLimit
                 })
                 coupons
                     .save()
@@ -72,8 +78,8 @@ module.exports = {
                 res.redirect('/admin/add-coupon')
             }
         }else{
-            req.body.code=req.body.code.toUpperCase()
-        console.log(req.body)
+        req.body.code=req.body.code.toUpperCase()
+        
         
         const code = req.body.code;
         const type = req.body.type;
@@ -83,7 +89,8 @@ module.exports = {
         const startDate = req.body.startDate;
         const expiryDate = req.body.endDate;
         const isFinished = false;
-
+        const lowerLimit = req.body.lowerLimit;
+        const upperLimit = req.body.upperLimit;
         
         const coupons = new couponSchema({
             code : code,
@@ -93,7 +100,9 @@ module.exports = {
             status : status,
             startDate : startDate,
             expiryDate : expiryDate,
-            isFinished : isFinished
+            isFinished : isFinished,
+            lowerLimit : lowerLimit,
+            upperLimit : upperLimit
         })
         coupons
             .save()
@@ -119,6 +128,8 @@ module.exports = {
                     usageLimit : 1,
                     status : 1,
                     isFinished : 1,
+                    lowerLimit :1,
+                    upperLimit :1,
                     startDate : { $dateToString: { format: "%Y-%m-%d", date: "$startDate" } },
                     expiryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expiryDate" } },
                 }
@@ -133,15 +144,27 @@ module.exports = {
                 coupons[i].fixedValue = true
             }
         }
-        console.log(coupons)
+        let user=await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)})
+        let cart = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+        for(var i=0;i<coupons.length;i++){
+
+            for(var j=0;j<user.usedCoupons.length;j++){
+                if(coupons[i].code==user.usedCoupons[j]){
+                    coupons[i].used=true
+                }
+            }
+            if(cart.totalPrice>=coupons[i].lowerLimit && cart.totalPrice<=coupons[i].upperLimit){
+                coupons[i].available=true
+            }
+        }
+        console.log(coupons,cart)
+        
         res.render('user/available_coupons',{coupons,"user" : req.session.user,"count":res.count,"userWishListCount":res.userWishListCount})
     },
     checkForAvailablity : async(req,res)=>{
         let user = await userSchema.findOne({_id:mongoose.Types.ObjectId(req.session.user._id)})
-        console.log(user)
         let flag=false
         for(var i=0;i<user.usedCoupons.length;i++){
-            console.log(user.usedCoupons[i],req.query.code)
            if( user.usedCoupons[i]==req.query.code){
             flag=true
            }      
@@ -228,5 +251,82 @@ module.exports = {
        }else{
         res.json({status : false})
        }
+    },
+    removeCoupon : async(req,res)=>{
+        let couponCheck = await couponSchema.findOne({code : req.query.code})
+       if(couponCheck){
+        let cart=await cartSchema.updateOne(
+            {
+                userId : mongoose.Types.ObjectId(req.session.user._id)
+            },
+            {
+                $unset : {
+                    coupon : 1 
+                }
+            }
+        )
+       
+        let total = await cartSchema.aggregate([
+            {
+                $match :{userId:mongoose.Types.ObjectId(req.session.user._id)} 
+            },
+            {
+                $project : {
+                    products : 1,
+                }
+            },
+            {
+                $unwind : {
+                    path : "$products"
+                }
+            },
+            {
+                $project :{
+                    item : "$products.item",
+                    quantity : "$products.quantity",
+                    total : "$products.total"
+                }
+            },
+            {
+                $lookup :{
+                    from : 'products',
+                    localField : 'item',
+                    foreignField : '_id',
+                    as : 'product'
+                }
+            },
+            {
+                $project : {
+                    item : 1,
+                    quantity : 1,
+                    total :1,
+                    product : {$arrayElemAt : ["$product",0]}
+                }
+            },
+            {
+                $group :{
+                    _id:null,
+                    total : {$sum:{$multiply :['$quantity','$product.discount']}}, 
+                }
+            },
+        ])
+        if(total[0]){
+            total = total[0].total;
+        }else{
+            total = 0
+        }
+        let discount=0
+        res.json({status : true,total,discount})
+       }else{
+        res.json({status : false})
+       }
+    },
+    couponExistCheck : async(req,res)=>{
+        let cart=await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id)});
+        if(cart.coupon){
+            res.json({status : false})
+        }else{
+            res.json({status : true})
+        }
     },
 }

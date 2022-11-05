@@ -1,6 +1,5 @@
 function addToCart(id) {
-
-  console.log(id)
+    
     // check the product already exists or not 
     $.ajax({
         url: `/check-exist-product-in-cart/${id}`,

@@ -13,9 +13,10 @@ const cartSchema = new Schema({
     },
     coupon : {
         type : String,
+    },
+    totalPrice : {
+        type : Number,
     }
-    
-    
 });
 
 module.exports = mongoose.model("cart", cartSchema);

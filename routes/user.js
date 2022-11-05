@@ -121,6 +121,8 @@ router.post('/verify-payment',verifyLogin,cartAndWishList,orderController.verify
 router.get('/available_coupons',verifyLogin,cartAndWishList,couponController.couponsPage)
 router.get('/check-for-coupon',verifyLogin,cartAndWishList,couponController.checkForAvailablity)
 router.get('/apply-coupon',verifyLogin,cartAndWishList,couponController.applyCoupon)
+router.get('/remove-coupon',verifyLogin,cartAndWishList,couponController.removeCoupon)
+router.get('/coupon-exist-check',verifyLogin,cartAndWishList,couponController.couponExistCheck)
 
 // Orders
 router.get('/check-for-orders',verifyLogin,orderController.checkForOrders)
