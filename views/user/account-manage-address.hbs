@@ -23,7 +23,7 @@
 
     <!-- Preloader -->
     <div class="preloader">
-        <img src="images/preloader.gif" alt="preloader">
+         <img src="images/walk.gif" alt="preloader">
     </div>
 
     <!-- top header -->
@@ -549,6 +549,11 @@
                                         <input type="text" name="phone" required>
                                     </div>
                                 </div>
+                                {{#if addingPlace}}
+                                <input type="text" value="checkout" name="addingPlace" hidden>
+                                {{else}}
+                                <input type="text" value="account" name="addingPlace" hidden>
+                                {{/if}}
                                 <div class="col-md-6">
                                     <div class="single_billing_inp">
                                         <label>Country</label>

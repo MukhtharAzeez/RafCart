@@ -23,7 +23,7 @@
 
     <!-- Preloader -->
     <div class="preloader">
-        <img src="images/preloader.gif" alt="preloader">
+         <img src="images/walk.gif" alt="preloader">
     </div>
 
 
@@ -528,8 +528,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-8 col-lg-7 col-md-6">
+
                     <h4 class="shop_cart_title mb-4 ps-3">Billing details</h4>
-                    {{#if userAddress}}
+                    
 
                     {{#each userAddress}}
                     <div class="card" style="margin-bottom: 20px;">
@@ -547,20 +548,18 @@
                         </div>
                     </div>
                     {{/each}}
-                    {{else}}
-                    <div class="col-lg-4">
-                        <div class="single_prof_info shadow_sm mb-0">
-                            <div class="prof_info_title" style="padding-top: 80px;">
-                                <a href="/add-address">
-                                    <span class="icon" style="margin-left: 90px; color: red; font-size: 40px;"
-                                        id="addAdress">
-                                        <i class="la la-plus-circle" oooooooooooooooooooooooooooo></i>
-                                    </span>
-                                </a>
+                    
+                    <a href="/add-address?addingPlace=checkout">
+                        <div class="card" style="margin-bottom: 20px;">
+                            <div class="card-header">
+
+                                <span id="addAdress" >Add another address <i class="la la-plus-circle"></i></span>
                             </div>
+
                         </div>
-                    </div>
-                    {{/if}}
+                    </a>
+
+
                 </div>
 
                 <div class="col-xl-4 col-lg-5 col-md-6">

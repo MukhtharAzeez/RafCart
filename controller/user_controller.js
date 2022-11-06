@@ -1,4 +1,5 @@
 const db = require('../config/connection');
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const userSchema = require('../models/user_schema')
 const productSchema = require('../models/product_schema');
@@ -9,7 +10,7 @@ const cart_controller = require('../controller/cart_controller')
 const order_controller = require('../controller/order_controller')
 const OtpCheck = require('../utils/twilio')
 const couponSchema = require('../models/coupon_schema')
-const mongoose = require('mongoose');
+
 
 
 const country = require('country-state-city').Country
@@ -499,11 +500,11 @@ module.exports = {
         })
     },
     addAddress : async(req,res)=>{
+        
         let countries = await country.getAllCountries();
-        let user = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)}).lean()
-        res.render('user/account-manage-address',{user,countries})
+        let user = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)}).lean() 
+        res.render('user/account-manage-address',{user,countries,addingPlace:req.query.addingPlace})
     },
-    
     getAllStates: async(req,res)=>{
         let countries = await country.getAllCountries();
         for(var i=0; i<countries.length; i++){
@@ -549,7 +550,12 @@ module.exports = {
 
         }
        ).then(()=>{
-        res.redirect('/view-account')
+        if(req.body.addingPlace=='checkout'){
+            res.redirect('/checkout-page')
+        }else{
+            res.redirect('/view-account')
+        }
+        
        })
     },
     editAddress : async (req,res) => {
