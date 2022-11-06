@@ -828,7 +828,7 @@ module.exports = {
                     } else {
                     }
                 }
-        index=parseInt(req.params.index)
+        index=parseInt(req.query.index)
         let userAddress = await userSchema.aggregate([
             {
                 $match :{

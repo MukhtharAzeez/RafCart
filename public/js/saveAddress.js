@@ -9,8 +9,8 @@ function placeOrder(){
     let index=$('input[name="address"]:checked').val();
     if(index!=undefined){
       
-        location.href = `/payment-page/${index}`
-       
+        // location.href = `/payment-page/${index}`
+        location.href = `/payment-page?index=${index}`
         
     }else{
         Swal.fire({
