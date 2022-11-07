@@ -207,16 +207,26 @@ module.exports = {
             // To add coupons to claimed coupons if its available for all users
             
             if (coupons[i].couponFor) {
-                await userSchema.updateOne(
-                    {
-                        _id: mongoose.Types.ObjectId(req.session.user._id)
-                    },
-                    {
-                        $push: {
-                            claimedCoupons: coupons[i].code
-                        }
+                let flag=false;
+                for(var j=0; j < user.claimedCoupons.length; j++) {
+                    
+                    if(user.claimedCoupons[j]==coupons[i].code) {
+                        flag=true
                     }
-                )
+                    
+                }
+                if(flag==false){
+                    await userSchema.updateOne(
+                        {
+                            _id: mongoose.Types.ObjectId(req.session.user._id)
+                        },
+                        {
+                            $push: {
+                                claimedCoupons: coupons[i].code
+                            }
+                        }
+                    )
+                }
             }
 
 
@@ -261,6 +271,14 @@ module.exports = {
                     }
                 }
 
+                // To know how much percentage completed
+                coupons[i].completedPercentage=(totalOrder/coupons[i].orderToReach)*100
+                coupons[i].completedPercentage=Math.round(coupons[i].completedPercentage)
+                if(coupons[i].completedPercentage>100){
+                    coupons[i].completedPercentage=100
+                }
+
+
             } else if (coupons[i].couponType == 'totalPriceAchievement') {
                 coupons[i].price = true
 
@@ -274,6 +292,13 @@ module.exports = {
                         coupons[i].claim = false
                         coupons[i].claimed = true
                     }
+                }
+
+                // To know how much percentage completed
+                coupons[i].completedPercentage=(userTotalOrderedPrice/coupons[i].priceToReach)*100
+                coupons[i].completedPercentage=Math.round(coupons[i].completedPercentage)
+                if(coupons[i].completedPercentage>100){
+                    coupons[i].completedPercentage=100
                 }
             } else {
                 coupons[i].buy = true
@@ -298,7 +323,7 @@ module.exports = {
 
 
         }
-
+        console.log(coupons)
 
         if (req.query.achieve) {
             res.render('user/available_coupons_for_achieve', { coupons, "user": req.session.user, "count": res.count, "userWishListCount": res.userWishListCount })

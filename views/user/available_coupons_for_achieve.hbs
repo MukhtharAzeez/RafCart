@@ -24,7 +24,7 @@
 
     <!-- Preloader -->
     <div class="preloader">
-         <img src="images/walk.gif" alt="preloader">
+        <img src="images/walk.gif" alt="preloader">
     </div>
 
 
@@ -536,15 +536,16 @@
                     <div class="acprof_info_wrap voucher shadow_sm">
                         <div class="container">
                             <div class="d-flex">
-                               <h1>Coupons</h1> 
-                               <p class=" pt-2 ps-5">Click <a href="/available_coupons">here</a> to use coupons claimed through achievements! </p>
+                                <h1>Coupons</h1>
+                                <p class=" pt-2 ps-5">Click <a href="/available_coupons">here</a> to use coupons for all
+                                    users</p>
                             </div>
                             <div class="row">
                                 {{#each coupons}}
                                 {{#if this.available}}
                                 {{#if this.couponFor}}
-                                
-                                
+
+
                                 {{else}}
                                 <div class="col-6 card ms-5 mb-5 ">
                                     <section class="date">
@@ -564,19 +565,34 @@
                                         {{#if this.order}}
                                         <p><small>Complete </small>{{this.orderToReach}} <small>Orders </small></p>
                                         {{else if this.price}}
-                                        <p><small>Buy a Total of </small>₹{{this.priceToReach}} <small>Rupees </small></p>
+                                        <p><small>Buy a Total of </small>₹{{this.priceToReach}} <small>Rupees </small>
+                                        </p>
                                         {{else}}
-                                        <p><small>Place an order of </small>₹{{this.lowerLimitToGaveCoupon}} To ₹{{this.upperLimitToGaveCoupon}} <small>Rupees </small></p>
+                                        <p><small>Place an order of </small>₹{{this.lowerLimitToGaveCoupon}} To
+                                            ₹{{this.upperLimitToGaveCoupon}} <small>Rupees </small></p>
                                         {{/if}}
-                                        
+
+                                        {{#if this.completedPercentage}}
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark"
+                                                role="progressbar" aria-valuenow="{{this.completedPercentage}}" aria-valuemin="0"
+                                                aria-valuemax="100" style="width: {{this.completedPercentage}}%">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{this.completedPercentage}}%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </div>
+                                        </div>
+                                        {{/if}}
+
                                         {{#if this.used}}
                                         <a><i class="fa-solid fa-check">used</i></a>
                                         {{else if this.claim}}
-                                        <a  onclick="claimCoupon('{{this.code}}')" id="claimButtton{{this.code}}">claim</a>
-                                       <i class="fa-solid fa-check d-none" id="claimedButtton{{this.code}}">claimed</i>
+                                        <a onclick="claimCoupon('{{this.code}}')"
+                                            id="claimButtton{{this.code}}">claim</a>
+                                        <i class="fa-solid fa-check d-none" id="claimedButtton{{this.code}}">claimed</i>
                                         {{else if this.claimed}}
-                                       <i class="fa-solid fa-check" >claimed</i>
-                                       <a href="/view-cart?code={{this.code}}">use</a>
+                                        <i class="fa-solid fa-check">claimed</i>
+                                        <a href="/view-cart?code={{this.code}}">use</a>
                                         {{/if}}
                                     </section>
                                 </div>
@@ -585,7 +601,7 @@
                                 {{/each}}
                             </div>
                         </div>
-                            
+
                     </div>
 
                 </div>
