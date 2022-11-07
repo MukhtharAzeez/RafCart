@@ -214,7 +214,7 @@ module.exports = {
 
             // To know coupon is used or not
             for(var j=0;j<user.usedCoupons.length;j++){
-                if(coupons[i].code==user.usedCoupons[j] || coupons[i].code==user.claimedCoupons[j]){
+                if(coupons[i].code==user.usedCoupons[j]){
                     coupons[i].used=true
                 }
             }
@@ -316,6 +316,19 @@ module.exports = {
                 }
             }
         )
+        await userSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.session.user._id)
+            },
+            {
+                $push : {
+                    usedCoupons : req.query.code
+                },
+                $pull : {
+                    claimedCoupons : req.query.code
+                }
+            }
+        )
        
         let total = await cartSchema.aggregate([
             {
@@ -390,6 +403,19 @@ module.exports = {
             {
                 $unset : {
                     coupon : 1 
+                }
+            }
+        )
+        await userSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.session.user._id)
+            },
+            {
+                $pull : {
+                    usedCoupons : req.query.code
+                },
+                $push : {
+                    claimedCoupons : req.query.code
                 }
             }
         )
