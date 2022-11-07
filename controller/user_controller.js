@@ -934,6 +934,9 @@ module.exports = {
                     $push : {
                         usedCoupons : cart.coupon
                     },
+                     $pull : {
+                        claimedCoupons : cart.coupon
+                     }
                 }
             )
         }

@@ -63,7 +63,6 @@ function razorpayPayment(order){
         }
     };
     var rzp1 = new Razorpay(options);
-    console.log("toOpen razorpayPayment");
     rzp1.open();
 }
 
@@ -76,7 +75,6 @@ function verifyPayment(paymentDetails,order){
             order
         },
         success : (response) => {
-            console.log(response);
             location.href =`/order-successfully-placed?orderId=${response}`
             // if(response.onlinePaymentSuccess){
             //     location.href =`/order-successfully-placed?=${response.orderId}`

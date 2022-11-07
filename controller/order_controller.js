@@ -119,7 +119,10 @@ module.exports = {
                         {
                             $push : {
                                 couponsToClaim : coupons[i].code
-                            }
+                            },
+                            $pull : {
+                                claimedCoupons : coupons[i].code
+                             }
                         }
                     ).then((ressss)=>{
                         console.log(ressss)

@@ -523,6 +523,7 @@
             <a href="account.html">My Account</a>
             <a href="#" class="active">Edit Payment Method</a>
         </div>
+        
     </div>
 
     <!-- account wrapper -->
@@ -535,7 +536,10 @@
                 <div class="col-lg-9">
                     <div class="acprof_info_wrap voucher shadow_sm">
                         <div class="container">
-                            <h1>Coupons</h1>
+                            <div class="d-flex">
+                               <h1>Coupons</h1> 
+                               <p class=" pt-2 ps-5">Click <a href="/available_coupons?achieve=achieve">here</a> to use coupons claimed through achievements! </p>
+                            </div>
                             <div class="row">
                                 {{#each coupons}}
                                 {{#if this.available}}

@@ -214,6 +214,7 @@ function applyCoupon(code){
         url : `/check-for-coupon?code=${code}`,
         method : 'get',
         success : (response)=>{
+          console.log(response)
           if(response.status){
             $.ajax({
               url : `/apply-coupon?code=${code}`,
@@ -242,15 +243,18 @@ function applyCoupon(code){
 }
 
 function removeCoupon(code){
+  
   $.ajax({
     url : `/check-for-coupon?code=${code}`,
     method : 'get',
     success : (response)=>{
+      
       if(response.status){
         $.ajax({
           url : `/remove-coupon?code=${code}`,
           method : 'get',
           success : (response)=>{
+            
             if(response.status){
               document.getElementById("totalAMount").innerHTML =
               response.total;
