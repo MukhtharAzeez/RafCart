@@ -161,7 +161,7 @@ function removeProduct(cartId, productId) {
                     response.result.subTotal;
                   document.getElementById("cart-count").innerHTML = count - 1
       
-                  if (response.total[0].total  == 0) {
+                  if (response.result.total  == 0) {
                     document.getElementById('proceedButton').innerHTML = `<a href="/shop"><button>Browse Some Products</button></a>`
                     $('#discountOnCoupon').html('0')
                     $('#couponButton').hide();

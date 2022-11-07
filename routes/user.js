@@ -78,11 +78,13 @@ router.get('/check-for-coupon',userMiddleware.verifyLogin,userMiddleware.cartAnd
 router.get('/apply-coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.applyCoupon)
 router.get('/remove-coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.removeCoupon)
 router.get('/coupon-exist-check',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.couponExistCheck)
+router.get('/claim_coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.claimCoupon)
 
 // Orders
 router.get('/check-for-orders',userMiddleware.verifyLogin,orderController.checkForOrders)
 router.get('/view-current-order',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.viewCurrentOrder)
 router.get('/view-orders',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.viewOrders)
+router.get('/cancel-order',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.cancelOrder)
 
 
 

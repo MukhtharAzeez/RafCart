@@ -3,19 +3,43 @@ const orderSchema = require('../models/order_schema')
 const Razorpay = require('razorpay');
 const cartSchema = require('../models/cart_schema')
 const productSchema = require('../models/product_schema')
+const couponSchema = require('../models/coupon_schema')
+const userSchema = require('../models/user_schema')
+
 
 var instance = new Razorpay({
         key_id: process.env.RAZORPAY_KEY_ID,
         key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
+
+    
 module.exports = {
 
     // User Side
-    placeOrder : (address,cartItems,total,userID)=>{
+    placeOrder : async(address,cartItems,total,userID)=>{
         let placedOrPending
+        
         if(address.paymentMethod=='COD'){
             placedOrPending='placed'
+            let coupons=await couponSchema.find({couponType:'fromToTo'})
+            for(var i=0;i<coupons.length;i++){
+                if(total>=coupons[i].lowerLimitToGaveCoupon && total <= coupons[i].upperLimitToGaveCoupon){
+                    await userSchema.updateOne(
+                        {
+                            _id : mongoose.Types.ObjectId(userID)
+                        },
+                        {
+                            $push : {
+                                couponsToClaim : coupons[i].code
+                            }
+                        }
+                    ).then((ressss)=>{
+                        console.log(ressss)
+                    })
+                }
+            }
+
         }else{
             placedOrPending='pending'
         }
@@ -65,6 +89,7 @@ module.exports = {
 
     },
     verifyPayment : async(req,res)=>{
+        
         const crypto = require("crypto");
         const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
 
@@ -84,6 +109,23 @@ module.exports = {
                 }
             )
             await cartSchema.deleteOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+            let coupons=await couponSchema.find({couponType:'fromToTo'})
+            for(var i=0;i<coupons.length;i++){
+                if(total>=coupons[i].lowerLimitToGaveCoupon && total <= coupons[i].upperLimitToGaveCoupon){
+                    await userSchema.updateOne(
+                        {
+                            _id : mongoose.Types.ObjectId(req.session.user._id)
+                        },
+                        {
+                            $push : {
+                                couponsToClaim : coupons[i].code
+                            }
+                        }
+                    ).then((ressss)=>{
+                        console.log(ressss)
+                    })
+                }
+            }
             let orderId=req.body.order.receipt
             res.json(orderId)
         }else{
@@ -91,8 +133,7 @@ module.exports = {
         }
     },
     orderPlacedSucessFully : async(req,res)=>{
-        let productIds=[]
-        let quantities=[]
+       
         let order=await orderSchema.findOne({_id:mongoose.Types.ObjectId(req.query.orderId)})
         for(var i=0;i<order.products.length;i++) {
             order.products[i].product._id=order.products[i].product._id.toString()
@@ -111,9 +152,35 @@ module.exports = {
         }
         res.render('user/order-completed',{"user" : req.session.user,"count":res.count,orderId:req.query.orderId,"userWishListCount":res.userWishListCount})
     },
+    cancelOrder : async(req,res)=>{
+        let order=await orderSchema.findOne({_id:mongoose.Types.ObjectId(req.query.orderId)})
+        for(var i=0;i<order.products.length;i++) {
+            order.products[i].product._id=order.products[i].product._id.toString()
+            await productSchema.updateOne(
+                {
+                    _id : mongoose.Types.ObjectId(order.products[i].product._id)
+                },
+                {
+                    $inc : {
+                        stock:(order.products[i].quantity)
+                    }
+                }
+            )
+        }
+        await orderSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.query.orderId)
+            },
+            {
+                $set : {
+                    status:'order cancelled'
+                }
+            }
+        )
+        res.json({status:true})
+    },
     checkForOrders : async(req,res)=>{
         let orders=await orderSchema.find({userId : mongoose.Types.ObjectId(req.session.user._id)})
-        console.log(orders)
         if(orders[0]){
             res.json({status:true})
         }else{
@@ -163,10 +230,18 @@ module.exports = {
                         purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
                         expectedDeliveryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expectedDeliveryDate" } },
                         products : 1,
+                        
                     }
-                }
+                },
             ])
-            console.log(orders)
+            for(var i=0;i<orders.length;i++){
+                if(orders[i].status=='order cancelled'){
+                    orders[i].cancelled = true;
+                }else if(orders[i].status=='placed'){
+                    orders[i].placed = true;
+                }
+            }
+            
             res.render('user/account-order-history',{orders,user:req.session.user,count:res.count,userWishListCount:res.userWishListCount})
         } catch (error) {
             

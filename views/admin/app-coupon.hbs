@@ -106,14 +106,15 @@
                             <div class="mb-4">
                               <div class="form-label mb-3">Type</div>
                               <label class="form-check"><input type="radio" class="form-check-input" name="type"
-                                  checked="" value="Percentage" id="discountValueGet1" required onclick="checkDiscount()"/>
+                                  checked="" value="Percentage" id="discountValueGet1" required
+                                  onclick="checkDiscount()" />
                                 <span class="form-check-label">Percentage</span></label><label class="form-check">
                                 <input type="radio" class="form-check-input" name="type" value="Flat Discount"
-                                  id="discountValueGet2" required onclick="checkDiscount()"/>
+                                  id="discountValueGet2" required onclick="checkDiscount()" />
                                 <span class="form-check-label">Fixed amount</span></label><label
                                 class="form-check mb-0">
                                 <input type="radio" class="form-check-input" name="type" value="Free Shipping"
-                                  id="discountValueHide" required onclick="checkDiscount()"/>
+                                  id="discountValueHide" required onclick="checkDiscount()" />
                                 <span class="form-check-label">Free shipping</span></label>
                             </div>
                             <div class="mb-4" id="discountDiv">
@@ -133,28 +134,37 @@
                               <div class="input-group mb-4">
                                 <span class="input-group-text" id="inputGroup-sizing-default">Above</span>
                                 <input type="number" class="form-control" aria-label="Sizing example input"
-                                  aria-describedby="inputGroup-sizing-default" value="0" name="lowerLimit"/>
+                                  aria-describedby="inputGroup-sizing-default" value="0" name="lowerLimit" />
                               </div>
                               <div class="input-group mb-4">
                                 <span class="input-group-text" id="inputGroup-sizing-default">Below</span>
                                 <input type="number" class="form-control" aria-label="Sizing example input"
-                                  aria-describedby="inputGroup-sizing-default" value="100000" name="upperLimit"/>
+                                  aria-describedby="inputGroup-sizing-default" value="100000" name="upperLimit" />
                               </div>
                             </div>
 
+
                             
-                            <div class="mb-n2 pt-2">
-                              <label class="form-check">
-                                <input type="checkbox" class="form-check-input" name="type" value="registered"
-                                  required />
-                                <span class="form-check-label">Only for registered
-                                  customers</span></label>
-                            </div>
                           </div>
                         </div>
                       </div>
                       <div class="sa-entity-layout__sidebar">
+
                         <div class="card w-100">
+                          <div class="card-body p-5">
+                            <div class="mb-5">
+                              <h2 class="mb-0 fs-exact-18">Coupon For</h2>
+                            </div>
+                            <select class="form-select couponFor" aria-label="Default select example" name="couponFor">
+                              <option selected value="everyOne">Every one</option>
+                              <option value="offerForSomeUsers">offer for some users</option>
+                            </select>
+
+                          </div>
+                        </div>
+
+
+                        <div class="card w-100 mt-5" id="statusDiv">
                           <div class="card-body p-5">
                             <div class="mb-5">
                               <h2 class="mb-0 fs-exact-18">Status</h2>
@@ -168,7 +178,8 @@
                             </div>
                           </div>
                         </div>
-                        <div class="card w-100 mt-5">
+
+                        <div class="card w-100 mt-5" id="sheduleDiv">
                           <div class="card-body p-5">
                             <div class="mb-5">
                               <h2 class="mb-0 fs-exact-18">Schedule</h2>
@@ -180,15 +191,67 @@
                             <div class="mb-4">
                               <label for="form-coupon/start-date" class="form-label">Start date</label><input
                                 type="text" class="form-control datepicker-here" id="form-coupon/start-date"
-                                data-auto-close="true" data-language="en" name="startDate" required />
+                                data-auto-close="true" data-language="en" name="startDate"  />
                             </div>
                             <div>
                               <label for="form-coupon/end-date" class="form-label">End date</label><input type="text"
                                 class="form-control datepicker-here" id="form-coupon/end-date" data-auto-close="true"
-                                data-language="en" name="endDate" required />
+                                data-language="en" name="endDate"  />
                             </div>
                           </div>
                         </div>
+
+                        <div class="card w-100 mt-5" id="offerDiv">
+                          <div class="card-body p-5">
+                            <div class="mb-5">
+                              <h2 class="mb-0 fs-exact-18">Coupon Type</h2>
+                            </div>
+                            <select class="form-select couponType" aria-label="Default select example" name="couponType">
+                              <option selected value="fromToTo">coupon for purchasing between prices</option>
+                              <option value="totalOrderAchievement">When reach total order achievement</option>
+                              <option value="totalPriceAchievement">When reach total order upto a price</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="card w-100 mt-5" id="fromToTo">
+                          <div class="card-body p-5">
+                            <div class="mb-4">
+                              <label for="form-coupon/limit" class="form-label">Offer For</label>
+                              <div class="input-group mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Above</span>
+                                <input type="number" class="form-control" aria-label="Sizing example input"
+                                  aria-describedby="inputGroup-sizing-default"  name="lowerLimitToGaveCoupon" />
+                              </div>
+                              <div class="input-group mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Below</span>
+                                <input type="number" class="form-control" aria-label="Sizing example input"
+                                  aria-describedby="inputGroup-sizing-default"  name="upperLimitToGaveCoupon" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="card w-100 mt-5" id="orderToReach">
+                          <div class="card-body p-5">
+                            <div class="mb-4">
+                              <label for="form-coupon/start-date" class="form-label">Order to reach</label><input
+                                type="text" class="form-control"  data-language="en" name="orderToReach"  />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="card w-100 mt-5" id="priceToReach">
+                          <div class="card-body p-5">
+                            <div class="mb-4">
+                              <label for="form-coupon/start-date" class="form-label">Price to reach</label><input
+                                type="text" class="form-control"  data-language="en" name="priceToReach"  />
+                            </div>
+                          </div>
+                        </div>
+                        
+
                       </div>
                     </div>
                   </div>

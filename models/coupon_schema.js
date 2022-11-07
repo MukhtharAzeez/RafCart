@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Numbers = require("twilio/lib/rest/Numbers");
 
 const Schema = mongoose.Schema;
 
@@ -36,12 +37,29 @@ const couponSchema = new Schema({
   },
   startDate : {
     type: Date,
-    required: true,
   },
   expiryDate : {
     type: Date,
-    required: true,
   },
+  couponFor : {
+    type: Boolean,
+  },
+  couponType : {
+    type: String,
+  },
+  lowerLimitToGaveCoupon : {
+    type: Number,
+  },
+  upperLimitToGaveCoupon : {
+    type: Number,
+  },
+  orderToReach:  {
+    type: Number,
+  },
+  priceToReach : {
+    type: Number,
+  },
+
 });
 
 module.exports = mongoose.model("coupons", couponSchema);

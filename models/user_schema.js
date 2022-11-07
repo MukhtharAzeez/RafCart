@@ -41,6 +41,12 @@ const userSchema = new Schema({
     },
     usedCoupons : {
         type : Array,
+    },
+    claimedCoupons : {
+        type : Array,
+    },
+    couponsToClaim : {
+        type : Array,
     }
    
 })

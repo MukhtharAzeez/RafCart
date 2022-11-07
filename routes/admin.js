@@ -22,6 +22,7 @@ router.get('/banners',adminMiddleware.verifyAdmin,banner_controller.banners)
 router.get('/view-orders-list',adminMiddleware.verifyAdmin,order_controller.getAllOrders)
 router.get('/user-status/:id',adminMiddleware.verifyAdmin,admin_controller.blockUser)
 
+
 // Banner Management
 router
     .route('/add-banner')
@@ -32,6 +33,7 @@ router
     .get(adminMiddleware.verifyAdmin,banner_controller.edit_banner)
     .post(adminMiddleware.verifyAdmin,multer.any(),banner_controller.edit_a_banner)
 router.get('/delete-banner/:id', adminMiddleware.verifyAdmin,banner_controller.delete_banner)    
+
 
 // Product Management
 router
@@ -46,6 +48,7 @@ router.get('/show-deleted',adminMiddleware.verifyAdmin,product_controller.delete
 router.get('/delete-product/:id', adminMiddleware.verifyAdmin,product_controller.delete_product)
 router.get('/undo-product/:id',adminMiddleware.verifyAdmin,product_controller.undo_product)
 
+
 // Category Management
 router.get('/categories',adminMiddleware.verifyAdmin,category_controller.categories)
 router
@@ -57,6 +60,7 @@ router
     .get(adminMiddleware.verifyAdmin,category_controller.edit_category)
     .post(adminMiddleware.verifyAdmin,multer.single('image'),category_controller.edit_a_category)
 router.get('/delete-category/:id', category_controller.delete_category)
+
 
 // Order Management
 router.get('/edit-order-by-admin',adminMiddleware.verifyAdmin,order_controller.edit_a_product)

@@ -542,11 +542,16 @@
                                     <p class="ps-4">x{{this.quantity}}</p>
                                 </div>
                                 {{/each}}
+                                {{#if this.cancelled}}
+                                {{else}}
+                                <a onclick="cancelOrder('{{this._id}}')" style="color: red; cursor:pointer" id="cancelOrder{{this._id}}">Cancel order</a>
+                                {{/if}}
                             </div>
                             
                             <div class="prorder_btn">
                                 <a href="/view-current-order?orderId={{this._id}}">View Order</a>
                             </div>
+                            
                             <div class="prorder_txt prorder_odnumber">
                                 <h5>Order Number</h5>
                                 <p>23E34RT3</p>
@@ -566,7 +571,13 @@
                             <div class="prorder_txt prorder_status">
                                 <h5 class="d-none d-md-block">Status</h5>
                                 <h5 class="d-block d-md-none"><span class="text_md me-2">Qty: x3</span> $120</h5>
-                                <p class="text-color">{{this.status}}</p>
+                                {{#if this.cancelled}}
+                                <p class="" style="color: red;" id="status{{this._id}}">{{this.status}}</p>
+                                {{else if this.placed}}
+                                <p class="" style="color: green;" id="status{{this._id}}">{{this.status}}</p>
+                                {{else}}
+                                <p class="" style="color: orange;" id="status{{this._id}}">{{this.status}}</p>
+                                {{/if}}
                             </div>
                         </div>
                         {{/each}}
@@ -601,6 +612,7 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/cancelOrder.js"></script>
 </body>
 
 </html>

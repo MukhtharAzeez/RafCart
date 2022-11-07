@@ -3,7 +3,7 @@
 
     // hide perloader
     window.onload = function () {
-        $('.preloader').fadeOut(2000, function(){ $('.preloader').remove(); } );
+        $('.preloader').fadeOut(1000, function(){ $('.preloader').remove(); } );
     }
 
     // Mobile menu
