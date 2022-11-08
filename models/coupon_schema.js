@@ -59,6 +59,9 @@ const couponSchema = new Schema({
   priceToReach : {
     type: Number,
   },
+  usedCounts : {
+    type : Number,
+  }
 
 });
 

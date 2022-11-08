@@ -47,6 +47,9 @@ const userSchema = new Schema({
     },
     couponsToClaim : {
         type : Array,
+    },
+    createdDate : {
+        type : Date,
     }
    
 })

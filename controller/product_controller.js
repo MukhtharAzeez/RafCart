@@ -11,7 +11,12 @@ const mongoose = require('mongoose');
 module.exports={
 
     products : async(req,res)=>{
-        let products = await productSchema.find({isAvailable : true}).lean()
+        let products
+        if(req.query.category){
+             products = await productSchema.find({isAvailable : true,category:req.query.category}).lean()
+        }else{
+             products = await productSchema.find({isAvailable : true}).lean()
+        }
         res.render('admin/app-products-list',{noHeader:true,noFooter:true,products})
     },
     deleted_products : async(req,res)=>{

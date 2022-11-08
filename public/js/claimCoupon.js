@@ -6,6 +6,7 @@ function claimCoupon(code){
             if(response.status){
                 $(`#claimButtton${code}`).addClass('d-none')
                 $(`#claimedButtton${code}`).removeClass('d-none')
+                $(`#useButtton${code}`).removeClass('d-none')     
             }
         }
     })

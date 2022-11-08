@@ -12,7 +12,7 @@ const adminMiddleware=require('../middelwares/admin')
 
 
 
-/* User Management. */
+
 router.get('/',adminMiddleware.verifyAdmin,admin_controller.home)
 router.get('/login',admin_controller.login)
 router.post('/admin-auth',admin_controller.postSignup)

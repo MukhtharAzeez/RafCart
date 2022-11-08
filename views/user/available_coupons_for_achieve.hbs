@@ -590,6 +590,7 @@
                                         <a onclick="claimCoupon('{{this.code}}')"
                                             id="claimButtton{{this.code}}">claim</a>
                                         <i class="fa-solid fa-check d-none" id="claimedButtton{{this.code}}">claimed</i>
+                                        <a class="d-none" id="useButtton{{this.code}}" href="/view-cart?code={{this.code}}">use</a>
                                         {{else if this.claimed}}
                                         <i class="fa-solid fa-check">claimed</i>
                                         <a href="/view-cart?code={{this.code}}">use</a>

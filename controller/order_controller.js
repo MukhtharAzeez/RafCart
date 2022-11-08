@@ -34,9 +34,7 @@ module.exports = {
                                 couponsToClaim : coupons[i].code
                             }
                         }
-                    ).then((ressss)=>{
-                        console.log(ressss)
-                    })
+                    )
                 }
             }
 
@@ -111,7 +109,7 @@ module.exports = {
             await cartSchema.deleteOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
             let coupons=await couponSchema.find({couponType:'fromToTo'})
             for(var i=0;i<coupons.length;i++){
-                if(total>=coupons[i].lowerLimitToGaveCoupon && total <= coupons[i].upperLimitToGaveCoupon){
+                if(req.session.total>=coupons[i].lowerLimitToGaveCoupon && req.session.total <= coupons[i].upperLimitToGaveCoupon){
                     await userSchema.updateOne(
                         {
                             _id : mongoose.Types.ObjectId(req.session.user._id)
@@ -124,9 +122,17 @@ module.exports = {
                                 claimedCoupons : coupons[i].code
                              }
                         }
-                    ).then((ressss)=>{
-                        console.log(ressss)
-                    })
+                    )
+                    await couponSchema.updateOne(
+                        {
+                            code : cart.coupon
+                        },
+                        {
+                            $inc : {
+                                usedCounts : 1
+                            }
+                        }
+                    )
                 }
             }
             let orderId=req.body.order.receipt
@@ -236,7 +242,8 @@ module.exports = {
                         
                     }
                 },
-            ])
+            ]).sort ({purchaseDate : -1})
+            
             for(var i=0;i<orders.length;i++){
                 if(orders[i].status=='order cancelled'){
                     orders[i].cancelled = true;
@@ -319,18 +326,33 @@ module.exports = {
         res.render('admin/app-order',{noHeader:true,noFooter:true,orderDetails})
     },
     changeCurrentStatus : async(req,res)=>{
-        console.log(req.body)
-        let order=await orderSchema.updateOne(
-            {
-                _id : mongoose.Types.ObjectId(req.body.orderId),
-            },
-            {
-                $set : {
-                    status : req.body.changeStatus
+        
+        if(req.body.changeStatus=='delivered'){
+            let order=await orderSchema.updateOne(
+                {
+                    _id : mongoose.Types.ObjectId(req.body.orderId),
                 },
-            }
-        )
-        console.log(order)
+                {
+                    $set : {
+                        status : req.body.changeStatus,
+                        deliveredDate : new Date(),
+                    },
+                }
+            )
+        }else{
+            let order=await orderSchema.updateOne(
+                {
+                    _id : mongoose.Types.ObjectId(req.body.orderId),
+                },
+                {
+                    $set : {
+                        status : req.body.changeStatus
+                    },
+                }
+            )
+        }
+        
+       
         res.json({status:true})
     }
 }

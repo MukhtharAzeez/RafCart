@@ -81,7 +81,8 @@ module.exports = {
                     password : password,
                     status : true,
                     verification : 'pending',
-                    wishListCount : 0
+                    wishListCount : 0,
+                    createdDate : new Date(),
                 });
                 
                 mobileNumber=number;
@@ -939,11 +940,22 @@ module.exports = {
                      }
                 }
             )
+            await couponSchema.updateOne(
+                {
+                    code : cart.coupon
+                },
+                {
+                    $inc : {
+                        usedCounts : 1
+                    }
+                }
+            )
         }
 
 
         let cartItems =await cart_controller.getCartItems(req.session.user._id);
         let orderId =await order_controller.placeOrder(req.body,cartItems,total,req.session.user._id)
+        req.session.total=total
         if(req.body.paymentMethod=='COD'){
             await cartSchema.deleteOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
             res.json(orderId)

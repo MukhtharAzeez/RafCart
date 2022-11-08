@@ -32,7 +32,10 @@ const orderSchema = new Schema({
     }, 
     expectedDeliveryDate: {
         type : Date,
-    }, 
+    },
+    deliveredDate : {
+        type : Date
+    } 
 })
 
 module.exports =mongoose.model('order',orderSchema)
