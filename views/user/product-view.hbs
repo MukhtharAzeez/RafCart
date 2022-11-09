@@ -595,45 +595,15 @@
                 <div class="pv_tab_buttons" class="spec_text">
                     <div class="pbt_single_btn active" data-target=".info">Product Info</div>
                     <div class="pbt_single_btn" data-target=".qna">Question & Answer</div>
-                    <div class="pbt_single_btn" data-target=".review">Review (10)</div>
+                    <div class="pbt_single_btn" data-target=".review">Review ({{length}})</div>
                 </div>
                 <div class="pb_tab_content info active">
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="pbt_info_text">
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Est nec condimentum lorem
-                                    lacus. Lectus
-                                    libero in vulputate quis massa nisl risus, libero ut. Morbi praesent ipsum sed morbi
-                                    turpis sed.
-                                    Amet
-                                    sed fames fermentum, augue dignissim. Montes, velit velit eu gravida nibh in
-                                    feugiat.
-                                </p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Est nec condimentum lorem
-                                    lacus.
-                                    Lectus
-                                    libero in vulputate quis massa nisl risus, libero ut. Morbi praesent ipsum sed morbi
-                                    turpis sed.
-                                    Amet
-                                    sed fames fermentum, augue dignissim. Montes, velit velit eu gravida nibh in
-                                    feugiat.
-                                </p>
+                                {{product.description}}
                             </div>
-                            <div class="pbt_info_table">
-                                <div class="pbtit_single">
-                                    <p class="specs">Color</p>
-                                    <p class="spec_text">Black, Brown, Red</p>
-                                </div>
-                                <div class="pbtit_single">
-                                    <p class="specs">Material</p>
-                                    <p class="spec_text">Artificial Leather</p>
-                                </div>
-                                <div class="pbtit_single">
-                                    <p class="specs">Weight</p>
-                                    <p class="spec_text">0.5kg</p>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -693,7 +663,7 @@
                     <div class="review_rating">
                         <div class="total_rating">
                             <div class="trating_number">
-                                <span class="avrage">4.9</span>
+                                <span class="avrage">{{totalRating}}</span>
                                 <span class="from">/5</span>
                             </div>
                             <div class="rating_star">
@@ -714,8 +684,7 @@
                                     <span><i class="las la-star"></i></span>
                                     <span><i class="las la-star"></i></span>
                                 </div>
-                                <div class="rating_pbox"><span style="width: 70%;"></span></div>
-                                <p class="rating_count">18</p>
+                                <p class="rating_count">{{starCounts.4.count}}</p>
                             </div>
                             <div class="single_ovrating d-flex align-items-center">
                                 <div class="rating_star">
@@ -725,8 +694,7 @@
                                     <span><i class="las la-star"></i></span>
                                     <span><i class="lar la-star"></i></span>
                                 </div>
-                                <div class="rating_pbox"><span style="width: 20%;"></span></div>
-                                <p class="rating_count">2</p>
+                                <p class="rating_count">{{starCounts.3.count}}</p>
                             </div>
                             <div class="single_ovrating d-flex align-items-center">
                                 <div class="rating_star">
@@ -736,8 +704,7 @@
                                     <span><i class="lar la-star"></i></span>
                                     <span><i class="lar la-star"></i></span>
                                 </div>
-                                <div class="rating_pbox"><span style="width: 0%;"></span></div>
-                                <p class="rating_count">0</p>
+                                <p class="rating_count">{{starCounts.2.count}}</p>
                             </div>
                             <div class="single_ovrating d-flex align-items-center">
                                 <div class="rating_star">
@@ -747,8 +714,7 @@
                                     <span><i class="lar la-star"></i></span>
                                     <span><i class="lar la-star"></i></span>
                                 </div>
-                                <div class="rating_pbox"><span style="width: 0%;"></span></div>
-                                <p class="rating_count">0</p>
+                                <p class="rating_count">{{starCounts.1.count}}</p>
                             </div>
                             <div class="single_ovrating d-flex align-items-center">
                                 <div class="rating_star">
@@ -758,8 +724,7 @@
                                     <span><i class="lar la-star"></i></span>
                                     <span><i class="lar la-star"></i></span>
                                 </div>
-                                <div class="rating_pbox"><span style="width: 0%;"></span></div>
-                                <p class="rating_count">0</p>
+                                <p class="rating_count">{{starCounts.0.count}}</p>
                             </div>
                         </div>
                     </div>
@@ -774,58 +739,45 @@
                         </div>
                     </div>
                     <div class="review_cont_wrap">
+                        {{#each review}}
                         <div class="single_review_wrp">
                             <div class="review_avatar">
                                 <img loading="lazy"  src="images/avatar.png" alt="user">
                             </div>
                             <div class="review_content">
-                                <h5>by Sadat A.</h5>
+                                <h5>by {{this.user.0.userName}}</h5>
                                 <div class="rating_star">
+                                    {{#if this.reviews.FiveRating}}
                                     <span><i class="las la-star"></i></span>
                                     <span><i class="las la-star"></i></span>
                                     <span><i class="las la-star"></i></span>
                                     <span><i class="las la-star"></i></span>
                                     <span><i class="las la-star"></i></span>
+                                    {{else if this.reviews.FourRating}}
+                                    <span><i class="las la-star"></i></span>
+                                    <span><i class="las la-star"></i></span>
+                                    <span><i class="las la-star"></i></span>
+                                    <span><i class="las la-star"></i></span>
+                                    {{else if this.reviews.ThreeRating}}
+                                    <span><i class="las la-star"></i></span>
+                                    <span><i class="las la-star"></i></span>
+                                    <span><i class="las la-star"></i></span>
+                                    {{else if this.reviews.TwoRating}}
+                                    <span><i class="las la-star"></i></span>
+                                    <span><i class="las la-star"></i></span>
+                                    {{else if this.reviews.OneRating}}
+                                    <span><i class="las la-star"></i></span>
+                                    {{/if}}
+                                    
                                 </div>
-                                <div class="review_date">30 Jul 2021</div>
+                                <div class="review_date">{{this.reviews.date}}</div>
                                 <div class="review_body">
-                                    <p>Lorem Ipsumin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem
-                                        quis bibendum auctor, nisi elit consequat ipsum, nec
-                                        sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate</p>
-                                    <div class="review_imgs">
-                                        <img loading="lazy"  src="images/product.png" alt="review">
-                                        <img loading="lazy"  src="images/product.png" alt="review">
-                                        <img loading="lazy"  src="images/product.png" alt="review">
-                                    </div>
+                                    <p>{{this.reviews.details}}</p>
+                                   
                                 </div>
                             </div>
                         </div>
-                        <div class="single_review_wrp border-bottom-0 mb-0 pb-0">
-                            <div class="review_avatar">
-                                <img loading="lazy"  src="images/avatar.png" alt="user">
-                            </div>
-                            <div class="review_content">
-                                <h5>by Sadat A.</h5>
-                                <div class="rating_star">
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="lar la-star"></i></span>
-                                </div>
-                                <div class="review_date">30 Jul 2021</div>
-                                <div class="review_body">
-                                    <p>Lorem Ipsumin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem
-                                        quis bibendum auctor, nisi elit consequat ipsum, nec
-                                        sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate</p>
-                                    <div class="review_imgs">
-                                        <img loading="lazy"  src="images/product.png" alt="review">
-                                        <img loading="lazy"  src="images/product.png" alt="review">
-                                        <img loading="lazy"  src="images/product.png" alt="review">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {{/each}}
                     </div>
                 </div>
             </div>

@@ -244,30 +244,72 @@ module.exports={
                 $match : {
                     'reviews.productId' : mongoose.Types.ObjectId(req.query.productId)
                 }
+            },
+            {
+                $lookup : {
+                    from : 'users',
+                    localField : 'userId',
+                    foreignField : '_id',
+                    as : 'user'
+                }
             }
         ])
-        // let counts = await reviewSchema.aggregate([
-        //     {
-        //         $unwind : {
-        //             path : "$reviews"
-        //         }
-        //     },
-        //     {
-        //         $match : {
-        //             'reviews.productId' : mongoose.Types.ObjectId(req.query.productId)
-        //         }
-        //     },{
-        //         $group : {
-        //             _id : {
-        //                 $sum : 'review.rating'
-        //             }
-        //         }
-        //     }
-        // ])
-       
+        let starCounts = await reviewSchema.aggregate([
+            {
+                $unwind : {
+                    path : "$reviews"
+                }
+            },
+            {
+                $match : {
+                    'reviews.productId' : mongoose.Types.ObjectId(req.query.productId)
+                }
+            },
+            {
+                $group : {
+                    _id : "$reviews.rating",
+                    count : {$sum : 1}
+                }
+            }
+        ]).sort({_id : 1})
+
+        
+
+        let totalRating=0
+        let totalCount=0
+        for(var i=0;i<5;i++){
+            count=i+1
+            if(starCounts[i]){
+                if(starCounts[i]._id!=count){
+                    starCounts.splice(i, 0,{_id : i+1,count : 0});
+                }
+            }else{
+                starCounts.splice(i,0,{_id : i+1,count : 0});
+            }
+            starCounts[i].sum=starCounts[i]._id*starCounts[i].count
+            
+            totalCount+=starCounts[i].count
+            totalRating+=starCounts[i].sum
+        }
+        totalRating=totalRating/totalCount
+        totalRating=totalRating.toFixed(1)
       
         length=review.length
-        res.render('user/product-view',{product,review,length,"count":res.count,"userWishListCount":res.userWishListCount})
+        for(var i=0;i<length;i++){
+           if(review[i].reviews.rating==5){
+            review[i].reviews.FiveRating=true
+           }else if(review[i].reviews.rating==4){
+            review[i].reviews.FourRating=true
+           }else if(review[i].reviews.rating==3){
+            review[i].reviews.ThreeRating=true
+           }else if(review[i].reviews.rating==2){
+            review[i].reviews.TwoRating=true
+           }else if(review[i].reviews.rating==1){
+            review[i].reviews.OneRating=true
+           }
+        }
+        console.log(review)
+        res.render('user/product-view',{product,review,length,totalRating,starCounts,"count":res.count,"userWishListCount":res.userWishListCount})
     },
 }
 

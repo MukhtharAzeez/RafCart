@@ -22,7 +22,8 @@ module.exports = {
             let review={
                 productId : mongoose.Types.ObjectId(req.query.productId),
                 rating : req.body.rating1,
-                details : req.body.details
+                details : req.body.details,
+                date : new Date()
             }
             let reviewExistForUser = await reviewSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
             if(reviewExistForUser){
