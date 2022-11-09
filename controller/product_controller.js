@@ -104,7 +104,7 @@ module.exports={
     edit_a_product : async(req,res) => {
         let products=await productSchema.findById(req.params.id) 
         
-        if(req.file){
+        if(req.file || req.files){
             for(var i=0;i<products.images.length;i++){
                 await cloudinary.uploader.destroy(products.images[i].cloudinary_id)  
             }
@@ -308,8 +308,12 @@ module.exports={
             review[i].reviews.OneRating=true
            }
         }
-        console.log(review)
-        res.render('user/product-view',{product,review,length,totalRating,starCounts,"count":res.count,"userWishListCount":res.userWishListCount})
+        let relatedProducts = await productSchema.find({category : product.category}).lean()
+        res.render('user/product-view',{product,relatedProducts,review,length,totalRating,starCounts,"count":res.count,"userWishListCount":res.userWishListCount})
+    },
+    getProductBySearch : async(req,res)=>{
+        let products = await productSchema.find({name: { '$regex': `(\s+${req.query.name}|^${req.query.name})`, '$options': 'i' }}, {})
+        res.json(products)
     },
 }
 

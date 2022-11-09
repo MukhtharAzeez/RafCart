@@ -564,7 +564,7 @@
                                 {{#if product.isAvailable}}
                                 <p><span>Availability:</span><span class="text-green">In Stock</span></p>
                                 {{else}}
-                                <p><span>Availability:</span><span class="text-red">In Stock</span></p>
+                                <p><span>Availability:</span><span class="text-red">Out of Stock</span></p>
                                 {{/if}}
                                 <p><span>Category:</span>{{product.category}}</p>
                             </div>
@@ -580,14 +580,17 @@
                             </div>
                             
                         <div class="product_buttons">
-                            <a href="" class="default_btn small rounded me-sm-3 me-2 px-4"><i class="icon-cart me-2"></i> Add to Cart</a>
-                            <a href="" class="default_btn small rounded second border-none"><i class="icon-heart me-2"></i> Wishlist</a>
+                            <a onclick="addToCart('{{product._id}}')" class="default_btn small rounded me-sm-3 me-2 px-4"><i class="icon-cart me-2"></i> Add to Cart</a>
+                            <a onclick="addToWishList('{{product._id}}')" class="default_btn small rounded second border-none"><i class="icon-heart me-2"></i> Wishlist</a>
                         </div>
                         <div class="share_icons footer_icon d-flex">
                             <a href="#"><i class="lab la-facebook-f"></i></a>
                             <a href="#"><i class="lab la-twitter"></i></a>
                             <a href="#"><i class="lab la-instagram"></i></a>
                         </div>
+                        <div class="alert alert-success d-none" id="wishlistAddedMessage"  role="alert">
+                
+              </div>
                     </div>
                 </div>
             </div>
@@ -792,30 +795,24 @@
                 <h2 class="section_title_2">Related products</h2>
             </div>
             <div class="row gy-4">
+                {{#each relatedProducts}}
                 <div class="col-lg-3 col-sm-6">
                     <div class="single_new_arrive">
                         <div class="sna_img">
-                            <a href="product-view.html">
-                                <img loading="lazy"  class="prd_img" src="images/laptop-3.png" alt="product">
+                            <a href="/view-single-product?productId={{this._id}}">
+                                <img loading="lazy"  class="prd_img" src="{{this.images.0.image}}" alt="product">
                             </a>
-                            <span class="tag">Hot</span>
-                            <div class="prodcut_hovcont">
-                                <a href="product-view.html" class="icon" tabindex="0">
-                                    <i class="icon-search-left"></i>
-                                </a>
-                                <a href="#" class="icon" tabindex="0">
-                                    <i class="icon-heart"></i>
-                                </a>
-                            </div>
+                            <span class="tag">Related</span>
+                            
                         </div>
                         <div class="sna_content">
                             <a href="product-view.html">
-                                <h4>HP Pavilion 15</h4>
+                                <h4>{{this.name}}</h4>
                             </a>
                             <div class="ratprice">
                                 <div class="price">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
+                                    <span class="org_price">₹{{this.discount}}.00</span>
+                                    <span class="prev_price">₹{{this.price}}.45</span>
                                 </div>
                                 <div class="rating">
                                     <div class="d-flex align-items-center justify-content-start">
@@ -831,140 +828,14 @@
                                 </div>
                             </div>
                             <div class="product_adcart">
-                                <button class="default_btn">Add to cart</button>
+                                <button onclick="addToCart('{{this._id}}')" class="default_btn">Add to cart</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single_new_arrive">
-                        <div class="sna_img">
-                            <a href="product-view.html">
-                                <img loading="lazy"  class="prd_img" src="images/shoes-1.png" alt="product">
-                            </a>
-                            <div class="prodcut_hovcont">
-                                <a href="product-view.html" class="icon" tabindex="0">
-                                    <i class="icon-search-left"></i>
-                                </a>
-                                <a href="#" class="icon" tabindex="0">
-                                    <i class="icon-heart"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="sna_content">
-                            <a href="product-view.html">
-                                <h4>Red Casual Shoes</h4>
-                            </a>
-                            <div class="ratprice">
-                                <div class="price">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product_adcart">
-                                <button class="default_btn">Add to cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single_new_arrive">
-                        <div class="sna_img">
-                            <a href="product-view.html">
-                                <img loading="lazy"  class="prd_img" src="images/headphone-3.png" alt="product">
-                            </a>
-                            <div class="prodcut_hovcont">
-                                <a href="product-view.html" class="icon" tabindex="0">
-                                    <i class="icon-search-left"></i>
-                                </a>
-                                <a href="#" class="icon" tabindex="0">
-                                    <i class="icon-heart"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="sna_content">
-                            <a href="product-view.html">
-                                <h4>COWIN E7 Active</h4>
-                            </a>
-                            <div class="ratprice">
-                                <div class="price">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product_adcart">
-                                <button class="default_btn">Add to cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single_new_arrive">
-                        <div class="sna_img">
-                            <a href="product-view.html">
-                                <img loading="lazy"  class="prd_img" src="images/phone-1.png" alt="product">
-                            </a>
-                            <div class="prodcut_hovcont">
-                                <a href="product-view.html" class="icon" tabindex="0">
-                                    <i class="icon-search-left"></i>
-                                </a>
-                                <a href="#" class="icon" tabindex="0">
-                                    <i class="icon-heart"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="sna_content">
-                            <a href="product-view.html">
-                                <h4>Xiaomi Note 7 Pro</h4>
-                            </a>
-                            <div class="ratprice">
-                                <div class="price">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product_adcart">
-                                <button class="default_btn">Add to cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{/each}}
+
+                
             </div>
         </div>
     </section>
@@ -994,6 +865,8 @@
     <script src="js/slick.min.js"></script>
     <script src="js/jquery.nice-select.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/cartCount.js"></script>
+    <script src="js/wishList.js"></script>
 </body>
 
 </html>

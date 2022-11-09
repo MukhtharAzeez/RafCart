@@ -97,6 +97,9 @@ router.post('/write-the-review',userMiddleware.verifyLogin,userMiddleware.cartAn
 // Invoice
 router.get('/see-order-invoice',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.seeOrderInvoice) 
 
+// Search Products
+router.get('/product-search-result',userMiddleware.cartAndWishList,productController.getProductBySearch)
+
 router.get('/logout',controller.logout)
 
 

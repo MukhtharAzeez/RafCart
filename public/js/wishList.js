@@ -49,7 +49,6 @@ function removeFromWishList(id){
             method: "get",
             success: (response) => {
               if (response.status) {
-               
                 divToRemove.remove();
                 let count=parseInt(document.getElementById("wishListCount").innerHTML)
                 document.getElementById("wishListCount").innerHTML =count-1

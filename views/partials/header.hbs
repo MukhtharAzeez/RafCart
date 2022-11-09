@@ -395,13 +395,10 @@
                 <div class="search_wrap d-none d-lg-block">
                     <div class="search d-flex">
                         <div class="search_category">
-                            <select class="nice_select">
-                                <option value="">All category</option>
-                                <option value="">Men</option>
-                            </select>
+                            <p class="text-center mt-1" >La Bonnz</p>
                         </div>
                         <div class="search_input">
-                            <input type="text" placeholder="Search product..." id="show_suggest">
+                            <input type="text" placeholder="Search product..." id="show_suggest" onkeyup="searchProducts()">
                         </div>
                         <div class="search_subimt">
                             <button>
@@ -410,33 +407,13 @@
                             </button>
                         </div>
                     </div>
-                    <div class="search_suggest shadow-sm">
-                        <div class="search_result_product">
-                            <a href="" class="single_sresult_product">
-                                <div class="sresult_img">
-                                    <img loading="lazy"  src="images/laptop-2.png" alt="product">
-                                </div>
-                                <div class="sresult_content">
-                                    <h4>HP Pavilion 15</h4>
-                                    <div class="price">
-                                        <span class="org_price">$45.00</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="" class="single_sresult_product">
-                                <div class="sresult_img">
-                                    <img loading="lazy"  src="images/laptop-1.png" alt="product">
-                                </div>
-                                <div class="sresult_content">
-                                    <h4>HP Pavilion 15</h4>
-                                    <div class="price">
-                                        <span class="org_price">$45.00</span>
-                                    </div>
-                                </div>
-                            </a>
 
+                    <div class="search_suggest shadow-sm">
+                        <div class="search_result_product" id="divForSearch">
+                            
                         </div>
                     </div>
+
                 </div>
                 <div class="header_icon d-flex align-items-center">
                     <div class="shopcart">
@@ -1082,6 +1059,7 @@
     
     <script src="js/cartCount.js"></script>
     <script src="js/checkForOrder.js"></script>
+    <script src="js/searchProducts.js"></script>
 </body>
 
 </html>
