@@ -541,8 +541,10 @@
                                <p class=" pt-2 ps-5">Click <a href="/available_coupons?achieve=achieve">here</a> to use coupons claimed through achievements! </p>
                             </div>
                             <div class="row">
+                                
                                 {{#each coupons}}
-                                {{#if this.available}}
+                               
+                                {{!-- {{#if this.available}} --}}
                                 {{#if this.couponFor}}
                                 <div class="col-6 card ms-5 mb-5 ">
                                     <section class="date">
@@ -576,7 +578,7 @@
                                     </section>
                                 </div>
                                 {{/if}}
-                                {{/if}}
+                                {{!-- {{/if}} --}}
                                 {{/each}}
                             </div>
                         </div>

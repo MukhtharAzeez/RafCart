@@ -38,7 +38,7 @@ router.get('/add-address',userMiddleware.verifyLogin,controller.addAddress)
 router.get('/getAllStates/:countryName',controller.getAllStates)
 router.get('/getAllCities/:stateName',controller.getAllCities)
 router.post('/add-address/:id',userMiddleware.verifyLogin,controller.postAddAddress)
-router.get('/account-edit-address/:index',userMiddleware.verifyLogin,controller.editAddress)
+router.get('/account-edit-address',userMiddleware.verifyLogin,controller.editAddress)
 router.post('/edit-address/:id',userMiddleware.verifyLogin,controller.postEditAddress)
 router.get('/account-delete-address',userMiddleware.verifyLogin,controller.deleteAddress)
 
@@ -83,6 +83,7 @@ router.get('/apply-coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWish
 router.get('/remove-coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.removeCoupon)
 router.get('/coupon-exist-check',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.couponExistCheck)
 router.get('/claim_coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.claimCoupon)
+router.get('/check-cart-exist',userMiddleware.verifyLogin,cartController.checkCartExist)
 
 // Orders
 router.get('/check-for-orders',userMiddleware.verifyLogin,orderController.checkForOrders)

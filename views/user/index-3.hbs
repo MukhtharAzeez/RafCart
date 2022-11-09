@@ -525,41 +525,7 @@
                         <a href="/shop">Shop </a>
                         
                     </li>
-                    <li class="withsubs">
-                        <a href="shop-list.html">Pages <span><i class="las la-angle-down"></i></span></a>
-                        <div class="subnav py-3 px-2 d-flex gx-4">
-                            <div class="single_subnav">
-                                <h5 class="text_lg ps-3 mb-2">Others pages</h5>
-                                <ul>
-                                    <li><a href="about-us.html">About us</a></li>
-                                    <li><a href="contact-us.html">Contact us</a></li>
-                                    
-                                    <li><a href="track-order.html">Track order</a></li>
-                                    <li><a href="faq.html">FAQ</a></li>
-                                    <li><a href="404.html">404</a></li>
-                                </ul>
-                            </div>
-                            <div class="single_subnav">
-                                <h5 class="text_lg ps-3 mb-2">Account pages</h5>
-                                <ul>
-                                    <li><a href="account.html">My Account</a></li>
-                                    <li><a href="login.html">Login</a></li>
-                                    <li><a href="register.html">Register</a></li>
-                                    <li><a href="shop-grid.html">Forgot password</a></li>
-                                </ul>
-                            </div>
-                            <div class="single_subnav">
-                                <h5 class="text_lg ps-3 mb-2">Checkout page</h5>
-                                <ul>
-                                    <li><a href="shop-list.html">Checkout</a></li>
-                                    <li><a href="shop-list.html">Payment</a></li>
-                                    <li><a href="shop-list.html">Payment success</a></li>
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="contact-us.html">contact</a></li>
+                    
                 </ul>
             </div>
         </div>
@@ -1132,25 +1098,17 @@
         <div class="container">
             <h2 class="section_title_3">recomended for you</h2>
             <div class="product_slider_2">
+                {{#each recommendedProducts}}
                 <div class="single_toparrival">
                     <div class="topariv_img">
-                        <img loading="lazy"  src="images/parse.png" alt="product">
-                        <div class="prod_soh">
-                            <div class="adto_wish">
-                                <i class="fa-regular fa-heart "></i>
-                            </div>
-                            <div class="qk_view open_quickview">
-                                <span><i class="las la-eye"></i></span>
-                                Quick View
-                            </div>
-                        </div>
+                        <img loading="lazy"  src="{{this.images.0.image}}" alt="product">
                     </div>
                     <div class="topariv_cont">
-                        <a href="product-view.html">
-                            <h4>Women Scrub Leather</h4>
+                        <a href="/view-single-product?productId={{this._id}}">
+                            <h4>{{this.name}}</h4>
                         </a>
                         <div class="price mb-1 mt-2">
-                            <span class="org_price">$45.00</span>
+                            <span class="org_price">₹{{this.discount}}.00</span>
                         </div>
                         <div class="rating">
                             <div class="d-flex align-items-center justify-content-start">
@@ -1172,166 +1130,10 @@
                         </button>
                     </div>
                 </div>
-                <div class="single_toparrival">
-                    <div class="topariv_img">
-                        <img loading="lazy"  src="images/shirt-2.png" alt="product">
-                        <div class="prod_soh">
-                            <div class="adto_wish">
-                                <i class="fa-regular fa-heart "></i>
-                            </div>
-                            <div class="qk_view open_quickview">
-                                <span><i class="las la-eye"></i></span>
-                                Quick View
-                            </div>
-                        </div>
-                    </div>
-                    <div class="topariv_cont">
-                        <a href="product-view.html">
-                            <h4>Men T-SHIRT ΚΑΝΟΝΙΚΗ </h4>
-                        </a>
-                        <div class="price mb-1 mt-2">
-                            <span class="org_price">$45.00</span>
-                        </div>
-                        <div class="rating">
-                            <div class="d-flex align-items-center justify-content-start">
-                                <div class="rating_star">
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                </div>
-                                <p class="rating_count mb-0">(150)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="full_atc_btn">
-                        <button>
-                            <span class="me-1"><i class="icon-cart"></i></span>
-                            add to cart
-                        </button>
-                    </div>
-                </div>
-                <div class="single_toparrival">
-                    <div class="topariv_img">
-                        <img loading="lazy"  src="images/toy.png" alt="product">
-                        <div class="prod_soh">
-                            <div class="adto_wish">
-                                <i class="fa-regular fa-heart "></i>
-                            </div>
-                            <div class="qk_view open_quickview">
-                                <span><i class="las la-eye"></i></span>
-                                Quick View
-                            </div>
-                        </div>
-                    </div>
-                    <div class="topariv_cont">
-                        <a href="product-view.html">
-                            <h4>Playmobil Princess M</h4>
-                        </a>
-                        <div class="price mb-1 mt-2">
-                            <span class="org_price">$45.00</span>
-                        </div>
-                        <div class="rating">
-                            <div class="d-flex align-items-center justify-content-start">
-                                <div class="rating_star">
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                </div>
-                                <p class="rating_count mb-0">(150)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="full_atc_btn">
-                        <button>
-                            <span class="me-1"><i class="icon-cart"></i></span>
-                            add to cart
-                        </button>
-                    </div>
-                </div>
-                <div class="single_toparrival">
-                    <div class="topariv_img">
-                        <img loading="lazy"  src="images/shoes-5.png" alt="product">
-                        <div class="prod_soh">
-                            <div class="adto_wish">
-                                <i class="fa-regular fa-heart "></i>
-                            </div>
-                            <div class="qk_view open_quickview">
-                                <span><i class="las la-eye"></i></span>
-                                Quick View
-                            </div>
-                        </div>
-                    </div>
-                    <div class="topariv_cont">
-                        <a href="product-view.html">
-                            <h4>Men's Running Shoes</h4>
-                        </a>
-                        <div class="price mb-1 mt-2">
-                            <span class="org_price">$45.00</span>
-                        </div>
-                        <div class="rating">
-                            <div class="d-flex align-items-center justify-content-start">
-                                <div class="rating_star">
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                </div>
-                                <p class="rating_count mb-0">(150)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="full_atc_btn">
-                        <button>
-                            <span class="me-1"><i class="icon-cart"></i></span>
-                            add to cart
-                        </button>
-                    </div>
-                </div>
-                <div class="single_toparrival">
-                    <div class="topariv_img">
-                        <img loading="lazy"  src="images/shoes-3.png" alt="product">
-                        <div class="prod_soh">
-                            <div class="adto_wish">
-                                <i class="fa-regular fa-heart "></i>
-                            </div>
-                            <div class="qk_view open_quickview">
-                                <span><i class="las la-eye"></i></span>
-                                Quick View
-                            </div>
-                        </div>
-                    </div>
-                    <div class="topariv_cont">
-                        <a href="product-view.html">
-                            <h4>Women Hill Leather</h4>
-                        </a>
-                        <div class="price mb-1 mt-2">
-                            <span class="org_price">$45.00</span>
-                        </div>
-                        <div class="rating">
-                            <div class="d-flex align-items-center justify-content-start">
-                                <div class="rating_star">
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                    <span><i class="las la-star"></i></span>
-                                </div>
-                                <p class="rating_count mb-0">(150)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="full_atc_btn">
-                        <button>
-                            <span class="me-1"><i class="icon-cart"></i></span>
-                            add to cart
-                        </button>
-                    </div>
-                </div>
+                {{/each}}
+
+
+               
             </div>
         </div>
     </div>
@@ -1380,7 +1182,7 @@
    
 
     <!-- best selling -->
-    <div class="best_selling section_padding_b">
+    {{!-- <div class="best_selling section_padding_b">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6">
@@ -1390,59 +1192,10 @@
                             <a href="#">See More <span><i class="las la-angle-right"></i></span></a>
                         </div>
                     </div>
+                    
                     <div class="bestprod_wrp">
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/prod-1.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">Adidas Trefoil Hoodie</h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/prod-6.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">REG BROADCLOTH </h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
+                       
                         <div class="single_bestprod">
                             <div class="bestprod_img">
                                 <img loading="lazy"  src="images/prod-4.png" alt="product">
@@ -1471,185 +1224,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 mt-4 mt-md-0">
-                    <div class="bestprod_title d-flex align-items-center justify-content-between">
-                        <div class="text_xl text-uppercase text-semibold">best selling</div>
-                        <div class="seemore_2">
-                            <a href="#">See More <span><i class="las la-angle-right"></i></span></a>
-                        </div>
-                    </div>
-                    <div class="bestprod_wrp">
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/prod-3.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">Jump-Rings Connectors </h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/prod-2.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">SWAROVSKI Fine Bracelet</h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/prod-5.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">Hilfiger Tommy Hilfiger </h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 mt-4 mt-md-0 d-block d-md-none d-lg-block">
-                    <div class="bestprod_title d-flex align-items-center justify-content-between">
-                        <div class="text_xl text-uppercase text-semibold">Top rated</div>
-                        <div class="seemore_2">
-                            <a href="#">See More <span><i class="las la-angle-right"></i></span></a>
-                        </div>
-                    </div>
-                    <div class="bestprod_wrp">
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/shirt-2.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">Adidas Trefoil Hoodie</h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/prod-8.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">REG BROADCLOTH </h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single_bestprod">
-                            <div class="bestprod_img">
-                                <img loading="lazy"  src="images/prod-7.png" alt="product">
-                            </div>
-                            <div class="bestprod_content">
-                                <a href="#" class="default_link">
-                                    <h4 class="text_lg mb-2">Blazer Tenia - Lana-Beige </h4>
-                                </a>
-                                <div class="price mb-0">
-                                    <span class="org_price">$45.00</span>
-                                    <span class="prev_price">$55.45</span>
-                                </div>
-                                <div class="rating">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div class="rating_star">
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                            <span><i class="las la-star"></i></span>
-                                        </div>
-                                        <p class="rating_count">(150)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+                
+                
             </div>
         </div>
-    </div>
+    </div> --}}
 
    
 

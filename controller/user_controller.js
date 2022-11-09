@@ -27,9 +27,6 @@ let userDetails
 
 module.exports = {
     home : async(req,res)=>{
-        if(req.session.user){
-            console.log(req.session.user)
-        }
         try {
             const category = await categorySchema.find({}).lean();
         let banners = await bannerSchema.find({}).lean();
@@ -38,13 +35,17 @@ module.exports = {
             banners = await bannerSchema.find({}).sort({_id : -1}).skip(2).lean();
             subBanners= await bannerSchema.find({}).sort({_id : -1}).limit(2).lean();
         }
+
+        let recommendedProducts = await productSchema.find({}).lean()
+        let latestProduct = await productSchema.find({}).limit(3).lean();
         
-        res.render('user/index-3',{noHeader:true,noFooter:true,"user" : req.session.user,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
+        res.render('user/index-3',{noHeader:true,noFooter:true,recommendedProducts,latestProduct,"user" : req.session.user,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
         } catch (error) {
             
         }
     },
     login : (req,res)=>{
+        req.session.url
         if(req.session.loggedIn){
           res.redirect('/')
         }else{
@@ -139,7 +140,11 @@ module.exports = {
                             req.session.user.password=null
                             req.session.loggedIn = true;
                             userSession=req.session.user
-                           res.redirect('/')
+                            if(req.session.url){
+                                res.redirect(req.session.url)
+                            }else{
+                                res.redirect('/')
+                            }
                         }else{
                            res.redirect('/login')
                         }
@@ -562,7 +567,7 @@ module.exports = {
     },
     editAddress : async (req,res) => {
         let userDetails = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)}).lean()
-        index=req.params.index
+        index=req.query.index
         userDetails=userDetails.address[index]
         let countries = await country.getAllCountries();
         try {
@@ -968,5 +973,5 @@ module.exports = {
     logout : (req,res)=>{
         req.session.destroy()
         res.redirect('/')
-    }, 
+    },
 }

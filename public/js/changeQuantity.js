@@ -198,48 +198,67 @@ function removeProduct(cartId, productId) {
 
 
 function applyCoupon(code){
+  
+  $.ajax({
+    url : '/check-cart-exist',
+    method : 'get',
+    success : (response)=>{
+      if(response.status){
 
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "Adding products after applying coupon is not possible!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes',
-    background : 'black'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      $.ajax({
-        url : `/check-for-coupon?code=${code}`,
-        method : 'get',
-        success : (response)=>{
-          console.log(response)
-          if(response.status){
+        
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "Adding products after applying coupon is not possible!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes',
+          background : 'black'
+        }).then((result) => {
+          if (result.isConfirmed) {
             $.ajax({
-              url : `/apply-coupon?code=${code}`,
+              url : `/check-for-coupon?code=${code}`,
               method : 'get',
               success : (response)=>{
+                console.log(response)
                 if(response.status){
-                  document.getElementById("totalAMount").innerHTML =
-                  response.total;
-                  document.getElementById("discountOnCoupon").innerHTML =
-                  -response.discount;
-                  $('#couponBox').hide();
-                  $('#applyButton').hide();
-                  $('#removeCoupon').removeClass('d-none')
-                  $('#couponButton').hide();
-                }else{
-          
+                  $.ajax({
+                    url : `/apply-coupon?code=${code}`,
+                    method : 'get',
+                    success : (response)=>{
+                      if(response.status){
+                        document.getElementById("totalAMount").innerHTML =
+                        response.total;
+                        document.getElementById("discountOnCoupon").innerHTML =
+                        -response.discount;
+                        $('#couponBox').hide();
+                        $('#applyButton').hide();
+                        $('#removeCoupon').removeClass('d-none')
+                        $('#couponButton').hide();
+                      }else{
+                
+                      }
+                     
+                    }
+                  })
                 }
-               
               }
             })
           }
-        }
-      })
+        })
+      }else{
+        Swal.fire({
+          title : 'Cart is empty?',
+          text : 'Add some product before applying coupon',
+          icon : 'question',
+          background : 'black'
+        })
+      }
     }
   })
+
+  
 }
 
 function removeCoupon(code){

@@ -38,7 +38,7 @@ module.exports = {
         let thirtyDaysAgo = new Date(new Date().getTime()-(30*24*60*60*1000));
         let oneWeekAgo = new Date(new Date().getTime()-(7*24*60*60*1000));
         let oneYearAgo = new Date(new Date().getTime()-(12*30*24*60*60*1000));
-
+        
         
 
 
@@ -105,7 +105,7 @@ module.exports = {
                     month: {
                         $let: {
                             vars: {
-                                monthsInString: ["Jan", "Feb", "Mar", "Apr", "May", "June", 
+                                monthsInString: [" ","Jan", "Feb", "Mar", "Apr", "May", "June", 
                                 "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
                             },
                             in: {

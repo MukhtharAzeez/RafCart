@@ -250,7 +250,7 @@ module.exports = {
                         
                     }
                 },
-            ]).sort ({purchaseDate : -1})
+            ]).sort({purchaseDate : -1})
             
             for(var i=0;i<orders.length;i++){
                 if(orders[i].status=='order cancelled'){
@@ -331,7 +331,8 @@ module.exports = {
                     userDetails : {$arrayElemAt : ["$userDetails",0]}
                 }
             },
-        ])
+        ]).sort({purchaseDate : -1})
+       
         for(var i=0;i<orders.length;i++){
             orders[i].items=orders[i].products.length
             if(orders[i].paymentMethod=='COD'){

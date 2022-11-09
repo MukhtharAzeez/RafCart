@@ -67,19 +67,29 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  // console.log(err);
+  // // render the error page
+  // res.status(err.status || 500);
+  // // console.log(err);
   
-  if(req.session.user){
-    res.render('user/404');
-  }else if(req.session.admin){
-    res.render('admin/page-404',{noHeader:true,noFooter:true});
-  }else{
-    res.render('user/404');
+  // if(req.session.user){
+  //   res.render('user/404');
+  // }else if(req.session.admin){
+  //   res.render('admin/page-404',{noHeader:true,noFooter:true});
+  // }else{
+  //   res.render('user/404');
+  // }
+  if (req.accepts('html')) {
+    if(req.session.admin){
+      res.render('admin/page-404',{error:true,url : req.url,noHeader :true,noFooter : true})
+
+    }else{
+    res.render('user/404',{error:true,url : req.url})
+
+    }
+    
   }
  
   // res.render('user/404',{error:true})

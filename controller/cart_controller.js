@@ -685,5 +685,15 @@ module.exports = {
         ])
         return cartItems
     },
+    checkCartExist : async(req,res)=>{
+        let cartExist = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+
+        console.log(cartExist.products.length>0)
+        if(cartExist.products.length>0){
+            res.json({status : true})
+        }else{
+            res.json({status : false})
+        }
+    },
 
 }

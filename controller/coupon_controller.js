@@ -326,6 +326,7 @@ module.exports = {
 
         }
         
+        
 
         if (req.query.achieve) {
             res.render('user/available_coupons_for_achieve', { coupons, "user": req.session.user, "count": res.count, "userWishListCount": res.userWishListCount })
