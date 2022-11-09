@@ -6,6 +6,7 @@ const wishListController = require('../controller/wishList_controller')
 const orderController=require('../controller/order_controller')
 const productController = require('../controller/product_controller')
 const couponController = require('../controller/coupon_controller')
+const reviewController = require('../controller/review_controller')
 const userMiddleware = require('../middelwares/user')
 
 
@@ -50,6 +51,9 @@ router.post('/category-filter',controller.getProductsByFilter)
 router.get('/get-all-products',controller.getAllProducts)
 router.get('/product-quick-view/:id',controller.quickViewProduct)
 
+// View Single Product
+router.get('/view-single-product',userMiddleware.cartAndWishList,productController.viewSingleProduct)
+
 // Cart
 router.get('/view-cart',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,cartController.cart)
 router.post('/change-product-total-price',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,cartController.updateCart)
@@ -86,9 +90,12 @@ router.get('/view-current-order',userMiddleware.verifyLogin,userMiddleware.cartA
 router.get('/view-orders',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.viewOrders)
 router.get('/cancel-order',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.cancelOrder)
 
+// Review
+router.get('/review-for-a-product',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,reviewController.writeReview)
+router.post('/write-the-review',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,reviewController.writeAReview)
+
 // Invoice
 router.get('/see-order-invoice',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.seeOrderInvoice) 
-
 
 router.get('/logout',controller.logout)
 

@@ -1,6 +1,7 @@
 const userSchema = require('../models/user_schema')
 const productSchema = require('../models/product_schema')
 const categorySchema = require('../models/category_schema')
+const reviewSchema = require('../models/review_schema')
 const cloudinary = require('../utils/cloudinary');
 const multer = require('../utils/multer');
 const mongoose = require('mongoose');
@@ -230,6 +231,43 @@ module.exports={
         res.json({status:true})
        }
        
+    },
+    viewSingleProduct : async(req,res) => {
+        let product = await productSchema.findOne({_id : mongoose.Types.ObjectId(req.query.productId)}).lean()
+        let review = await reviewSchema.aggregate([
+            {
+                $unwind : {
+                    path : "$reviews"
+                }
+            },
+            {
+                $match : {
+                    'reviews.productId' : mongoose.Types.ObjectId(req.query.productId)
+                }
+            }
+        ])
+        // let counts = await reviewSchema.aggregate([
+        //     {
+        //         $unwind : {
+        //             path : "$reviews"
+        //         }
+        //     },
+        //     {
+        //         $match : {
+        //             'reviews.productId' : mongoose.Types.ObjectId(req.query.productId)
+        //         }
+        //     },{
+        //         $group : {
+        //             _id : {
+        //                 $sum : 'review.rating'
+        //             }
+        //         }
+        //     }
+        // ])
+       
+      
+        length=review.length
+        res.render('user/product-view',{product,review,length,"count":res.count,"userWishListCount":res.userWishListCount})
     },
 }
 

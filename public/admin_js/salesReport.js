@@ -120,8 +120,8 @@ $(document).ready(function () {
                 method : 'get',
                 success : (response)=>{
                     console.log(response)
-                    $('#fromDate').html(from);
-                    $('#toDate').html(selectedSecond);
+                    $('#fromDate').html('Day '+from);
+                    $('#toDate').html('Day '+selectedSecond);
                     let div=$('#salesReport')
                     let html=''
                     let total=0

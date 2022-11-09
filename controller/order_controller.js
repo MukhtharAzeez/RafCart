@@ -214,13 +214,21 @@ module.exports = {
                     total :1,
                     status :1,
                     purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                    deliveredDate : { $dateToString: { format: "%Y-%m-%d", date: "$deliveredDate" } },
                     quantity : '$products.quantity',
                     price : '$products.total',
                     product : '$products.product',
                 }
             }
         ])
-        res.render('user/account-placed-order-history',{order,user:req.session.user,count:res.count,userWishListCount:res.userWishListCount})
+        if(order[0].status=='placed'){
+            order[0].placed=true
+        }else if(order[0].status=='shipped'){
+            order[0].shipped=true
+        }else if(order[0].status=='delivered'){
+            order[0].delivered=true
+        }
+        res.render('user/account-order-details',{order,user:req.session.user,count:res.count,userWishListCount:res.userWishListCount})
     },
     viewOrders : async(req,res)=>{
         
