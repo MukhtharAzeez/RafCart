@@ -199,7 +199,9 @@ module.exports = {
                 }
             }
         ])
-        userTotalOrderedPrice = userTotalOrderedPrice[0].total
+        if(userTotalOrderedPrice[0]){
+            userTotalOrderedPrice = userTotalOrderedPrice[0].total
+        }
 
         for (var i = 0; i < coupons.length; i++) {
 
@@ -323,7 +325,7 @@ module.exports = {
 
 
         }
-        console.log(coupons)
+        
 
         if (req.query.achieve) {
             res.render('user/available_coupons_for_achieve', { coupons, "user": req.session.user, "count": res.count, "userWishListCount": res.userWishListCount })

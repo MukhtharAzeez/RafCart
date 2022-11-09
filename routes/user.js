@@ -86,6 +86,8 @@ router.get('/view-current-order',userMiddleware.verifyLogin,userMiddleware.cartA
 router.get('/view-orders',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.viewOrders)
 router.get('/cancel-order',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.cancelOrder)
 
+// Invoice
+router.get('/see-order-invoice',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,orderController.seeOrderInvoice) 
 
 
 router.get('/logout',controller.logout)

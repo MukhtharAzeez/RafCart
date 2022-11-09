@@ -22,7 +22,11 @@
   <link rel="stylesheet" href="vendor/nouislider/nouislider.min.css" />
   <link rel="stylesheet" href="vendor/fullcalendar/main.min.css" />
   <link rel="stylesheet" href="/css/adminstyle.css" />
+<link rel="stylesheet" href="css/orderInvoice.css">
+
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-97489509-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" ></script>
+
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() {
@@ -35,6 +39,9 @@
 </head>
 
 <body>
+
+  
+
   <!-- sa-app -->
   <div class="sa-app sa-app--desktop-sidebar-shown sa-app--mobile-sidebar-hidden sa-app--toolbar-fixed">
     <!-- sa-app__sidebar -->
@@ -72,10 +79,23 @@
                   <div class="col">
                     <h1 class="h3 m-0">Dashboard</h1>
                   </div>
+                  <div class="col">
+                    <p style="font-size: 14px; padding-left: 64%; padding-top: 14px; color : rgb(10, 108, 118);">Download sales report :</p>
+                  </div>
                   <div class="col-auto d-flex">
-                    <select class="form-select me-3">
-                      <option selected="">7 October, 2021</option>
-                    </select><a href="#" class="btn btn-primary">Export</a>
+                    
+                    <select class="form-select me-3 periodSelect" id="periodSelect">
+                      <option selected="" value="year">Year</option>
+                      <option value="month">Month</option>
+                      <option value="week">Week</option>
+                      <option value="day">Day</option>
+                    </select>
+                    <select class="form-select me-3" id="valuesByInput">
+                      {{#each years}}
+                      <option value="{{this}}">{{this}}</option>
+                      {{/each}}
+                    </select>
+                    <a class="btn btn-primary" id="downloadSalesReport">Download</a>
                   </div>
                 </div>
               </div>
@@ -256,7 +276,8 @@
                   <div class="col-12 col-xxl-3 d-flex">
 
                   <div class="card flex-grow-1 saw-chart">
-                     <canvas id="doughnutChart"></canvas>
+                    <h6 class="text-center" style="padding: 40px 0px;">Weekly sales report</h6>
+                     <canvas id="doughnutChart"></canvas>   
                   </div>
 
                 </div>
@@ -266,15 +287,17 @@
                 <div class="col-12 col-xxl-3 d-flex">
 
                   <div class="card flex-grow-1 saw-chart-circle">
+                    <h6 class="text-center" style="padding: 40px 0px;">Top 10 Coupons used</h6>
                     <canvas id="pieChart"></canvas>
                   </div>
                 </div>
 
                
-                {{!--  --}}
+                {{!-- Monthly Report --}}
                 <div class="col-12 col-lg-8 col-xxl-9 d-flex">
 
                   <div class="card flex-grow-1 saw-chart">
+                    <h6 class="text-center" style="padding: 40px 0px;">Monthly sales in a year</h6>
                     <canvas id="barChart"></canvas>
                   </div>
 
@@ -470,6 +493,64 @@ var myPieChart = new Chart(ctxP, {
         <div class="sa-app__toasts toast-container bottom-0 end-0"></div>
         <!-- sa-app__toasts / end -->
       </div>
+      <div class="receipt-content" id="invoice" >
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="invoice-wrapper">
+
+                    <div class="payment-info">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>From</span>
+                                <strong id="fromDate">
+                                    
+                                </strong>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <span>To</span>
+                                <strong id="toDate">
+                                    
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="line-items">
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    
+                                    <th scope="col" id="titleBySelection"></th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesReport">
+                                
+                                
+                                
+                               
+                            </tbody>
+                        </table>
+                        <div class="total text-right">
+                            <div class="field grand-total">
+                                Total ₹<span id="totalSpan"></span>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+                <div class="footer">
+                    Copyright © 2014. La Bonnz
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
       <!-- sa-app / end -->
       <!-- scripts -->
       <script src="vendor/jquery/jquery.min.js"></script>
@@ -492,8 +573,9 @@ var myPieChart = new Chart(ctxP, {
       <script src="admin_js/calendar.js"></script>
       <script src="admin_js/demo.js"></script>
       <script src="admin_js/demo-chart-js.admin_"></script>
-      <script src="admin_js/customChart.js"></script>
+      <script src="admin_js/salesReport.js"></script>
 
 </body>
 
 </html>
+

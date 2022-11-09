@@ -533,6 +533,9 @@
                 
                 <div class="col-lg-9">
                     <div class="acorder_wrapper">
+                       <a href="/see-order-invoice?orderId={{order.0._id}}"><button type="button" class="btn btn-dark  mb-2"><i class="fa-sharp fa-solid fa-arrow-down"></i> Order Invoice</button></a> 
+                   
+
                         {{#each order}}
                         <div class="single_prof_recorder mt-0 mb-4 shadow_sm">
                             <div class="prorder_img">
@@ -566,11 +569,14 @@
                             </div>
                         </div>
                         {{/each}}
+
                     </div>
                     <div class="prorder_txt prorder_total">
                             <h5>Total</h5>
                             <p>₹{{order.0.total}}</p>
+                            
                     </div>
+                    
                 </div>
             </div>
         </div>

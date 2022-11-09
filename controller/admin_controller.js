@@ -31,12 +31,17 @@ module.exports = {
         ])
         
         if(totalIncome[0]){
-            
             totalIncome=(totalIncome[0].totalIncome/100)*25 
         }
+
+        let todayDate = new Date();
         let thirtyDaysAgo = new Date(new Date().getTime()-(30*24*60*60*1000));
-        let oneYearAgo = new Date(new Date().getTime()-(12*30*24*60*60*1000));
         let oneWeekAgo = new Date(new Date().getTime()-(7*24*60*60*1000));
+        let oneYearAgo = new Date(new Date().getTime()-(12*30*24*60*60*1000));
+
+        
+
+
         let totalSellsInThisMonth=await orderSchema.find({"deliveredDate" : { $gte : thirtyDaysAgo }}).count()
         let totalIncomeInThisMonth=await orderSchema.aggregate([
             {
@@ -182,6 +187,8 @@ module.exports = {
             }
         ]).sort({month : -1})
         
+
+       
         let weeklySalesReport=await orderSchema.aggregate([
             {
                 $match : {
@@ -201,6 +208,7 @@ module.exports = {
                 }
             },
         ])
+     
         
         let usedCoupons = await couponSchema.aggregate([
             {
@@ -212,7 +220,14 @@ module.exports = {
             
         ])
 
-        res.render('admin/index',{incomeStatistics,totalUsersInThisYear,totalSellsInThisYear,usedCoupons,weeklySalesReport,noHeader:true,noFooter:true,totalSells,totalIncome,totalSellsInThisMonth,totalIncomeInThisMonth,orders})        
+        let years =[]
+        let currentYear=new Date();
+        for(var i=1;i<10;i++){
+            years.push(currentYear.getFullYear()-i);
+        }
+        
+
+        res.render('admin/index',{years,incomeStatistics,totalUsersInThisYear,totalSellsInThisYear,usedCoupons,weeklySalesReport,noHeader:true,noFooter:true,totalSells,totalIncome,totalSellsInThisMonth,totalIncomeInThisMonth,orders})        
     },
     login : async(req,res)=>{
         res.render('admin/auth-sign-in',{noHeader:true,noFooter:true})
@@ -262,6 +277,137 @@ module.exports = {
             })
         }
         
+    },
+    yearInvoice : async(req,res)=>{
+        // req.query.year=parseInt(req.query.year)+1
+        // req.query.year=''+req.query.year
+        wantDate=new Date(req.query.year)
+        let year=parseInt(req.query.year)+1;
+        year=''+year
+        limitDate = new Date(year)
+        let incomeStatistics = await  orderSchema.aggregate([
+            {
+                $match : {
+                "deliveredDate" : { $gte : wantDate }
+                }
+            },
+            {
+                $match : {
+                "deliveredDate" : { $lte : limitDate }
+                }
+            },
+            {
+                $project:
+                {
+                    purchaseDate: 1,
+                    total : 1,
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$purchaseDate"},
+                    total: { $sum: "$total" }
+                }
+            },
+            {
+                $addFields: {
+                    month: {
+                        $let: {
+                            vars: {
+                                monthsInString: ["Jan", "Feb", "Mar", "Apr", "May", "June", 
+                                "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                            },
+                            in: {
+                                $arrayElemAt: ['$$monthsInString', '$_id']
+                            }
+                        }
+                    }
+                }
+            }
+        ]).sort({month : -1})
+        
+        res.json({incomeStatistics})
+    },
+    MonthInvoice : async(req,res)=>{
+        date=new Date().getFullYear()
+        date=date+'-'+req.query.month
+        date=new Date(date)
+
+        req.query.month=parseInt(req.query.month)+1
+
+        limitDate = new Date().getFullYear()
+        limitDate=limitDate+'-'+req.query.month
+        limitDate=new Date(limitDate)
+        
+        let incomeStatistics = await  orderSchema.aggregate([
+            {
+                $match : {
+                "deliveredDate" : { $gte : date }
+                }
+            },
+            {
+                $match : {
+                "deliveredDate" : { $lte : limitDate }
+                }
+            },
+            {
+                $project:
+                {
+                    purchaseDate: 1,
+                    total : 1,
+                }
+            },
+            {
+                $group: {
+                    _id: { $week: "$purchaseDate"},
+                    total: { $sum: "$total" }
+                }
+            },
+        
+    ]).sort({week : -1})
+        res.json({incomeStatistics})
+        
+    },
+    WeekInvoice : async(req,res)=>{
+        year=new Date().getFullYear()
+        month=new Date().getMonth()+1
+
+        let limit=parseInt(req.query.week)+1
+        limit=year+'-'+month+'-'+limit
+        limit=new Date(limit)
+
+        let start=parseInt(req.query.week)-6
+        start=year+'-'+month+'-'+start
+        start=new Date(start)
+       
+        let weeklySalesReport=await orderSchema.aggregate([
+            {
+                $match : {
+                "deliveredDate" : { $gte : start }
+                }
+            },
+            {
+                $match : {
+                "deliveredDate" : { $lte : limit }
+                }
+            },
+            {
+                $project:
+                {
+                    purchaseDate: 1,
+                    total : 1
+                }
+            },
+            {
+                $group: {
+                    _id: { $dayOfWeek: "$purchaseDate"},
+                    count: { $count: {}},
+                    total : {$sum : "$total"}
+                }
+            },
+        ]).sort({_id : 1})
+
+        res.json({weeklySalesReport})
     },
     logout : async(req,res)=>{
         req.session.destroy();

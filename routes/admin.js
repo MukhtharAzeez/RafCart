@@ -73,6 +73,14 @@ router.get('/add-coupon',adminMiddleware.verifyAdmin,coupon_controller.addCoupon
 router.post('/add-a-coupon',adminMiddleware.verifyAdmin,coupon_controller.add_a_coupon)
 
 
+// Invoices
+router.get('/get-salesReport-by-year',adminMiddleware.verifyAdmin,admin_controller.yearInvoice)
+router.get('/get-salesReport-by-month',adminMiddleware.verifyAdmin,admin_controller.MonthInvoice)
+router.get('/get-salesReport-by-week',adminMiddleware.verifyAdmin,admin_controller.WeekInvoice)
+
+
+
+
 router.get('/logout',adminMiddleware.verifyAdmin,admin_controller.logout)
 
 

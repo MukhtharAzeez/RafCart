@@ -260,6 +260,46 @@ module.exports = {
 
         
     },
+    seeOrderInvoice : async(req,res)=>{
+        let order = await orderSchema.aggregate([
+            {
+                $match : {
+                    _id : mongoose.Types.ObjectId(req.query.orderId)
+                }
+            },
+            {
+                $unwind : {
+                    path : '$products'
+                }
+            },
+            {
+                $project : {
+                    userId : 1,
+                    total :1,
+                    status :1,
+                    paymentMethod : 1,
+                    deliveryAddress: 1,
+                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                    quantity : '$products.quantity',
+                    price : '$products.total',
+                    product : '$products.product',
+                }
+            },
+            {
+                $lookup : {
+                    from : 'users',
+                    localField : 'userId',
+                    foreignField : '_id',
+                    as : 'user'
+                }
+            },
+           
+        ])
+        console.log(order)
+        let orderId=order[0]._id.toString().slice(18,24)
+        order[0].id=orderId
+        res.render('user/order-invoice',{count:res.count,userWishListCount:res.userWishListCount,order,user:req.session.user})
+    },
 
     // Admin Side
     getAllOrders : async(req,res)=>{

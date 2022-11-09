@@ -1,0 +1,148 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RAFCART - Multipurpose eCommerce HTML Template">
+    <meta name="author" content="Programming Kit">
+    <title>RAFCART - Multipurpose eCommerce HTML Template</title>
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+
+    <!-- all css -->  
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/slick.css">
+    <link rel="stylesheet" href="css/line-awesome.css">
+    <link rel="stylesheet" href="css/nice-select.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/orderInvoice.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" ></script>
+
+
+</head>
+
+<body>
+
+<div class="receipt-content" id="invoice">
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="invoice-wrapper">
+                    <div class="intro">
+                        Hi <strong>
+                            {{order.0.user.0.userName}}
+                        </strong>,
+                        <br>
+                        This is the receipt for a payment of <strong>₹
+                            {{order.0.total}}.00</strong> for your works
+                    </div>
+
+                    <div class="payment-info">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Order Id.</span>
+                                <strong>
+                                    {{order.0.id}}
+                                </strong>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <span>Ordered On</span>
+                                <strong>
+                                    {{order.0.purchaseDate}}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="line-items">
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each order}}
+                                <tr> 
+                                    <td>{{this.product.name}}</td>
+                                    <td>{{this.quantity}}</td>
+                                    <td>{{this.price}}</td>
+                                </tr>
+                                {{/each}}
+                               
+                            </tbody>
+                        </table>
+                        <div class="total text-right">
+                            <div class="field grand-total">
+                                Total <span>₹{{order.0.total}}.00</span>
+                            </div>
+                        </div>
+
+                        <div class="print btn_print" id="hideDownload" style="cursor: pointer;">
+                            <a >
+                                {{!-- <i class="fa fa-print"></i> --}}
+                                <i class="fa-regular fa-circle-down"></i>
+                                Download invoice
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    Copyright © 2014. La Bonnz
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <script src="js/main.js"></script>
+{{!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
+{{!-- <script src="js/jsPDF/dist/jspdf.umd.js"></script> --}}
+
+</body>
+
+</html>
+
+
+
+	<script type="text/javascript">
+	$(document).ready(function($) 
+	{ 
+
+		$(document).on('click', '.btn_print', function(event) 
+		{
+			event.preventDefault();
+            $('#hideDownload').addClass('d-none')
+			var element = document.getElementById('invoice'); 
+			//easy
+			//html2pdf().from(element).save();	
+			var opt = 
+			{
+			  margin:       0.2,
+			  filename:     'La Bonnz'+'{{order.0.id}}'+'.pdf',
+			  html2canvas:  { scale: 2 },
+			  jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+			};
+
+			// New Promise-based usage:
+			html2pdf().set(opt).from(element).save();
+		});
+	});
+	</script>
+

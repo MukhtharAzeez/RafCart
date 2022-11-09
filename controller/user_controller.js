@@ -74,6 +74,7 @@ module.exports = {
                 const password = await bcrypt.hash(req.body.password,10);
                 let number=parseInt(phone)
                 console.log(number);
+                
                 const user = new userSchema({
                     userName : userName,
                     email : email,
