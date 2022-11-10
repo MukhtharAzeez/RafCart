@@ -143,7 +143,9 @@ module.exports = {
     },
     orderPlacedSucessFully : async(req,res)=>{
        
+
         let order=await orderSchema.findOne({_id:mongoose.Types.ObjectId(req.query.orderId)})
+        console.log(order)
         for(var i=0;i<order.products.length;i++) {
             order.products[i].product._id=order.products[i].product._id.toString()
             await productSchema.updateOne(
@@ -155,8 +157,18 @@ module.exports = {
                         stock:-(order.products[i].quantity)
                     }
                 }
-            ).then((res)=>{
-                console.log(res)
+            )
+            await productSchema.updateMany(
+                {
+                    stock : 0
+                },
+                {
+                    $set : {
+                        onStock : false
+                    }
+                }
+            ).then((result)=>{
+                console.log(result)
             })
         }
         res.render('user/order-completed',{"user" : req.session.user,"count":res.count,orderId:req.query.orderId,"userWishListCount":res.userWishListCount})
@@ -175,6 +187,19 @@ module.exports = {
                     }
                 }
             )
+            await productSchema.updateMany(
+                {
+                    stock : {$gt : 0}
+                },
+                {
+                    $set : {
+                        onStock : true
+                    }
+                }
+            ).then((result)=>{
+                console.log(result)
+            })
+            
         }
         
         await orderSchema.updateOne(

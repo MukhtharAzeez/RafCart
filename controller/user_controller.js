@@ -62,8 +62,8 @@ module.exports = {
     postSignup : async (req,res)=>{
        
         let user =await userSchema.find({email:req.body.email})
-        
-        if(user[0]){
+        let userWithPhone = await userSchema.findOne({email:req.body.phone})
+        if(user[0] || userWithPhone){
             res.redirect('/register')
         }else if(req.body.password !== req.body.confirmPassword){
             res.redirect('/register')

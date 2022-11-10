@@ -256,6 +256,7 @@ module.exports = {
     },
 
     changeCartQuantity: async (req, res) => {
+       
         let cartItems = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
         count = parseInt(req.body.count)
         if (req.body.quantity == 1 && count === -1) {
