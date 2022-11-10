@@ -165,10 +165,7 @@ module.exports = {
             
         })
     },
-    otpVerification : async(req,res)=>{
-        // let otp=Object.values(req.body)
-        // otp = otp.join()   
-        // otp = otp.replaceAll(',','');   
+    otpVerification : async(req,res)=>{   
         console.log(req.body)
         let otp=Object.values(req.body)
         console.log("First",otp)
