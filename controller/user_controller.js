@@ -184,10 +184,10 @@ module.exports = {
                 }
             )
            
-            res.json({status:true})
+            res.render('/')
         }else{
-            req.session.destroy();
-            res.json({status:false})
+            
+            res.redirect('/verify-through-otp')
         }
     },
     shop :async (req,res) => {
