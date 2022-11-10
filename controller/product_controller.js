@@ -312,7 +312,8 @@ module.exports={
         res.render('user/product-view',{product,relatedProducts,review,length,totalRating,starCounts,"count":res.count,"userWishListCount":res.userWishListCount})
     },
     getProductBySearch : async(req,res)=>{
-        let products = await productSchema.find({name: { '$regex': `(\s+${req.query.name}|^${req.query.name})`, '$options': 'i' }}, {})
+        // let products = await productSchema.find({name: { '$regex': `(\s+${req.query.name}|^${req.query.name})`, '$options': 'i' }}, {})
+        let products = await productSchema.find({name: { '$regex': req.query.name, '$options': 'i' }}, {})
         res.json(products)
     },
 }
