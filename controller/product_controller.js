@@ -314,7 +314,12 @@ module.exports={
     getProductBySearch : async(req,res)=>{
         // let products = await productSchema.find({name: { '$regex': `(\s+${req.query.name}|^${req.query.name})`, '$options': 'i' }}, {})
         let products = await productSchema.find({name: { '$regex': req.query.name, '$options': 'i' }}, {})
-        res.json(products)
+        if(products[0]){
+            res.json(products)
+        }else{
+         products = await productSchema.find({category: { '$regex': req.query.name, '$options': 'i' }}, {})
+         res.json(products)
+        }  
     },
 }
 
