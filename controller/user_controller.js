@@ -29,6 +29,7 @@ module.exports = {
     home : async(req,res)=>{
         try {
             const category = await categorySchema.find({}).lean();
+            const topCategory = await categorySchema.find({}).limit(8).lean();
         let banners = await bannerSchema.find({}).lean();
         let subBanners
         if(banners.length>=3){
@@ -39,7 +40,7 @@ module.exports = {
         let recommendedProducts = await productSchema.find({}).lean()
         let latestProduct = await productSchema.find({}).limit(3).lean();
         
-        res.render('user/index-3',{noHeader:true,noFooter:true,recommendedProducts,latestProduct,"user" : req.session.user,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
+        res.render('user/index-3',{noHeader:true,noFooter:true,recommendedProducts,latestProduct,"user" : req.session.user,topCategory,category,"count":res.count,banners,subBanners,"userWishListCount":res.userWishListCount});
         } catch (error) {
             
         }

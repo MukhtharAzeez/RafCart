@@ -16,11 +16,12 @@ module.exports = {
 
     home : async(req,res)=>{
         let totalSells=await orderSchema.find({status:'delivered'}).count()
+        newDate= new Date();
         let totalIncome = await orderSchema.aggregate([
             {
                 $match : {
-                    status : 'delivered'
-                }
+                    "deliveredDate" : { $lte : newDate }
+                    }
             },
             {
                 $group : {
@@ -32,6 +33,7 @@ module.exports = {
         
         if(totalIncome[0]){
             totalIncome=(totalIncome[0].totalIncome/100)*25 
+            totalIncome=Math.round(totalIncome)
         }
 
         let todayDate = new Date();
@@ -43,6 +45,7 @@ module.exports = {
 
 
         let totalSellsInThisMonth=await orderSchema.find({"deliveredDate" : { $gte : thirtyDaysAgo }}).count()
+        
         let totalIncomeInThisMonth=await orderSchema.aggregate([
             {
                 $match : {
@@ -59,6 +62,8 @@ module.exports = {
         
         if(totalIncomeInThisMonth[0]){
          totalIncomeInThisMonth=(totalIncomeInThisMonth[0].total/100)*25  
+         totalIncomeInThisMonth=Math.round(totalIncomeInThisMonth)
+
         }
 
         let orders=await orderSchema.aggregate([
