@@ -5,9 +5,15 @@ const cartSchema = require('../models/cart_schema');
 let url
 
 module.exports = {
-    verifyLogin: (req, res, next) => {
+    verifyLogin: async(req, res, next) => {
         if (req.session.user) {
-            next()
+            let user = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id) })
+            if(user.status==true){
+                next()
+            }else{
+                res.redirect('/login')
+            }
+            
         } else {
             req.session.url = req.url
             url = req.session.url
