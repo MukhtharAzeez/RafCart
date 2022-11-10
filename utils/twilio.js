@@ -28,7 +28,8 @@ module.exports={
         await client.verify.v2.services(sid)
             .verificationChecks
             .create({to: '+91'+phone, code: otp})
-            .then(verification_check => {
+            .then((verification_check) => {
+                console.log(verification_check)
             validation= verification_check
       });
       return validation

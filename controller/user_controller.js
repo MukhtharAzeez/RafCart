@@ -166,9 +166,16 @@ module.exports = {
         })
     },
     otpVerification : async(req,res)=>{
+        // let otp=Object.values(req.body)
+        // otp = otp.join()   
+        // otp = otp.replaceAll(',','');   
+        console.log(req.body)
         let otp=Object.values(req.body)
+        console.log("First",otp)
         otp = otp.join()   
-        otp = otp.replaceAll(',','');     
+        console.log('Second',otp)
+        otp = otp.split(",").join('') 
+        console.log("Third",otp)    
         let otpStatus=await OtpCheck.verifyOtp(mobileNumber,otp)     
         if(otpStatus.valid){
             req.session.user=userDetails
@@ -184,10 +191,10 @@ module.exports = {
                 }
             )
            
-            res.render('/')
+            res.json({status:true})
         }else{
-            
-            res.redirect('/verify-through-otp')
+            req.session.destroy();
+            res.json({status:false})
         }
     },
     shop :async (req,res) => {
