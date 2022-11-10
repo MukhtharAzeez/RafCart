@@ -131,12 +131,12 @@ module.exports = {
             {
                 $project:
                 {
-                    purchaseDate: 1,
+                    deliveredDate: 1,
                 }
             },
             {
                 $group: {
-                    _id: { $month: "$purchaseDate"},
+                    _id: { $month: "$deliveredDate"},
                     count: { $count: {}}
                 }
             },
