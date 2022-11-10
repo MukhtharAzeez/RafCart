@@ -21,13 +21,13 @@ function changeQuantity(cartId, productId, count) {
             if (response.status) {
               let removedProduct = document.getElementById("remove" + productId);
               count = parseInt(count);
-              document
-                .getElementById("plusButtonCart" + productId)
-                .classList.add("d-none");
-              document
-                .getElementById("minusButtonCart" + productId)
-                .classList.add("d-none");
-              document.getElementById(productId).style.width = "110px";
+              // document
+              //   .getElementById("plusButtonCart" + productId)
+              //   .classList.add("d-none");
+              // document
+              //   .getElementById("minusButtonCart" + productId)
+              //   .classList.add("d-none");
+              // document.getElementById(productId).style.width = "110px";
               $.ajax({
                 url: "/change-cart-quantity",
                 data: {
@@ -47,13 +47,13 @@ function changeQuantity(cartId, productId, count) {
                       response.result.productTotal.productTotal;
                     document.getElementById("subTotal").innerHTML =
                       response.result.subTotal;
-                    document
-                      .getElementById("plusButtonCart" + productId)
-                      .classList.remove("d-none");
-                    document
-                      .getElementById("minusButtonCart" + productId)
-                      .classList.remove("d-none");
-                    document.getElementById(productId).style.width = "40px";
+                    // document
+                    //   .getElementById("plusButtonCart" + productId)
+                    //   .classList.remove("d-none");
+                    // document
+                    //   .getElementById("minusButtonCart" + productId)
+                    //   .classList.remove("d-none");
+                    // document.getElementById(productId).style.width = "40px";
       
       
       

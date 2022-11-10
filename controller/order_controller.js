@@ -176,6 +176,7 @@ module.exports = {
                 }
             )
         }
+        
         await orderSchema.updateOne(
             {
                 _id : mongoose.Types.ObjectId(req.query.orderId)

@@ -9,7 +9,7 @@ const db= require('./config/connection');
 
 const dotenv = require("dotenv")
 dotenv.config();
-
+console.log('test')
 const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
 
