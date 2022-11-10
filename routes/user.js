@@ -22,7 +22,7 @@ router
 router.get('/verify-through-otp')
 router.post('/verify-through-otp',controller.otpVerification)
 router.post('/email-password-check',controller.emailAndPasswordValidCheck);
-
+router.get('/check-user-session-exist',controller.checkUserSessionExist);
 
 router
   .route('/login')

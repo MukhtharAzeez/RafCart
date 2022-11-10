@@ -195,6 +195,13 @@ module.exports = {
             res.json({status:false})
         }
     },
+    checkUserSessionExist : async(  req,res)=>{
+        if(req.session.user){
+            res.json({status : true})
+        }else{
+            res.json({status : false})
+        }
+    },
     shop :async (req,res) => {
 
         let products = await productSchema.find({}).lean()
