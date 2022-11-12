@@ -8,6 +8,7 @@ const orderSchema = require('../models/order_schema')
 module.exports = {
     // Admin
     couponsList: async (req, res) => {
+       try {
         let coupons = await couponSchema.aggregate([
             {
                 $project: {
@@ -25,33 +26,98 @@ module.exports = {
             }
         ])
         res.render('admin/app-coupons-list', { coupons, noHeader: true, noFooter: true });
+       } catch (error) {
+        res.redirect('/admin/not-found');
+       }
     },
     addCoupon: async (req, res) => {
+        try {
         res.render('admin/app-coupon', { noHeader: true, noFooter: true })
+            
+        } catch (error) {
+            res.redirect('/admin/not-found');
+        }
     },
     add_a_coupon: async (req, res) => {
-        let checkExist = await couponSchema.findOne({ code: req.body.code })
-        if (checkExist) {
-            res.redirect('/admin/add-coupon')
-        } else {
-            req.body.type = req.body.type
-            if (req.body.status == 'enabled') {
-                req.body.status = true
-            } else if (req.body.status == 'disabled') {
-                req.body.status = false
-            }
-            if (req.body.type == 'Percentage') {
-                if (req.body.discountValue > 1 && req.body.discountValue <= 100) {
-
-                    // check coupon for every users or not
+        try {
+            let checkExist = await couponSchema.findOne({ code: req.body.code })
+            if (checkExist) {
+                res.redirect('/admin/add-coupon')
+            } else {
+                req.body.type = req.body.type
+                if (req.body.status == 'enabled') {
+                    req.body.status = true
+                } else if (req.body.status == 'disabled') {
+                    req.body.status = false
+                }
+                if (req.body.type == 'Percentage') {
+                    if (req.body.discountValue > 1 && req.body.discountValue <= 100) {
+    
+                        // check coupon for every users or not
+                        if (req.body.couponFor == 'offerForSomeUsers') {
+                            req.body.couponFor = false
+                        } else {
+                            req.body.couponFor = true
+                        }
+    
+    
+                        req.body.code = req.body.code.toUpperCase()
+                        const code = req.body.code;
+                        const type = req.body.type;
+                        const discountValue = req.body.discountValue;
+                        const usageLimit = req.body.usageLimit;
+                        const status = req.body.status;
+                        const startDate = req.body.startDate;
+                        const expiryDate = req.body.endDate;
+                        const isFinished = false;
+                        const lowerLimit = req.body.lowerLimit;
+                        const upperLimit = req.body.upperLimit;
+                        const couponFor = req.body.couponFor;
+                        const couponType = req.body.couponType;
+                        const lowerLimitToGaveCoupon = req.body.lowerLimitToGaveCoupon;
+                        const upperLimitToGaveCoupon = req.body.upperLimitToGaveCoupon;
+                        const orderToReach = req.body.orderToReach;
+                        const priceToReach = req.body.priceToReach;
+    
+                        const coupons = new couponSchema({
+                            code: code,
+                            type: type,
+                            discountValue: discountValue,
+                            usageLimit: usageLimit,
+                            status: status,
+                            startDate: startDate,
+                            expiryDate: expiryDate,
+                            isFinished: isFinished,
+                            lowerLimit: lowerLimit,
+                            upperLimit: upperLimit,
+                            couponFor,
+                            couponType,
+                            lowerLimitToGaveCoupon,
+                            upperLimitToGaveCoupon,
+                            orderToReach,
+                            priceToReach,
+                        })
+                        coupons
+                            .save()
+                            .then((response) => {
+                                res.redirect('/admin/coupons-list')
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            })
+                    } else {
+                        res.redirect('/admin/add-coupon')
+                    }
+                } else {
+    
                     if (req.body.couponFor == 'offerForSomeUsers') {
                         req.body.couponFor = false
                     } else {
                         req.body.couponFor = true
                     }
-
-
+    
                     req.body.code = req.body.code.toUpperCase()
+    
                     const code = req.body.code;
                     const type = req.body.type;
                     const discountValue = req.body.discountValue;
@@ -68,7 +134,7 @@ module.exports = {
                     const upperLimitToGaveCoupon = req.body.upperLimitToGaveCoupon;
                     const orderToReach = req.body.orderToReach;
                     const priceToReach = req.body.priceToReach;
-
+    
                     const coupons = new couponSchema({
                         code: code,
                         type: type,
@@ -95,69 +161,15 @@ module.exports = {
                         .catch((error) => {
                             console.log(error);
                         })
-                } else {
-                    res.redirect('/admin/add-coupon')
                 }
-            } else {
-
-                if (req.body.couponFor == 'offerForSomeUsers') {
-                    req.body.couponFor = false
-                } else {
-                    req.body.couponFor = true
-                }
-
-                req.body.code = req.body.code.toUpperCase()
-
-                const code = req.body.code;
-                const type = req.body.type;
-                const discountValue = req.body.discountValue;
-                const usageLimit = req.body.usageLimit;
-                const status = req.body.status;
-                const startDate = req.body.startDate;
-                const expiryDate = req.body.endDate;
-                const isFinished = false;
-                const lowerLimit = req.body.lowerLimit;
-                const upperLimit = req.body.upperLimit;
-                const couponFor = req.body.couponFor;
-                const couponType = req.body.couponType;
-                const lowerLimitToGaveCoupon = req.body.lowerLimitToGaveCoupon;
-                const upperLimitToGaveCoupon = req.body.upperLimitToGaveCoupon;
-                const orderToReach = req.body.orderToReach;
-                const priceToReach = req.body.priceToReach;
-
-                const coupons = new couponSchema({
-                    code: code,
-                    type: type,
-                    discountValue: discountValue,
-                    usageLimit: usageLimit,
-                    status: status,
-                    startDate: startDate,
-                    expiryDate: expiryDate,
-                    isFinished: isFinished,
-                    lowerLimit: lowerLimit,
-                    upperLimit: upperLimit,
-                    couponFor,
-                    couponType,
-                    lowerLimitToGaveCoupon,
-                    upperLimitToGaveCoupon,
-                    orderToReach,
-                    priceToReach,
-                })
-                coupons
-                    .save()
-                    .then((response) => {
-                        res.redirect('/admin/coupons-list')
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    })
             }
+        } catch (error) {
+            res.redirect('/admin/not-found');
         }
-
-
     },
     // User
     couponsPage: async (req, res) => {
+      try {
         let coupons = await couponSchema.aggregate([
             {
                 $project: {
@@ -333,9 +345,13 @@ module.exports = {
         } else {
             res.render('user/available_coupons', { coupons, "user": req.session.user, "count": res.count, "userWishListCount": res.userWishListCount })
         }
+      } catch (error) {
+        res.redirect('/not-found')
+      }
     },
     checkForAvailablity: async (req, res) => {
-        let user = await userSchema.findOne({ _id: mongoose.Types.ObjectId(req.session.user._id) })
+        try {
+            let user = await userSchema.findOne({ _id: mongoose.Types.ObjectId(req.session.user._id) })
         let flag = false
         for (var i = 0; i < user.usedCoupons.length; i++) {
             if (user.usedCoupons[i] == req.query.code) {
@@ -352,9 +368,13 @@ module.exports = {
         } else {
             res.json({ status: false })
         }
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     applyCoupon: async (req, res) => {
-        let couponCheck = await couponSchema.findOne({ code: req.query.code })
+        try {
+            let couponCheck = await couponSchema.findOne({ code: req.query.code })
         if (couponCheck) {
             
 
@@ -438,9 +458,13 @@ module.exports = {
         } else {
             res.json({ status: false })
         }
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     removeCoupon: async (req, res) => {
-        let couponCheck = await couponSchema.findOne({ code: req.query.code })
+        try {
+            let couponCheck = await couponSchema.findOne({ code: req.query.code })
         if (couponCheck) {
             let cart = await cartSchema.updateOne(
                 {
@@ -507,19 +531,25 @@ module.exports = {
         } else {
             res.json({ status: false })
         }
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     couponExistCheck: async (req, res) => {
+       try {
         let cart = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) });
         if (cart.coupon) {
             res.json({ status: false })
         } else {
             res.json({ status: true })
         }
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
     claimCoupon: async (req, res) => {
-        console.log(req.query)
+       try {
         let coupon = await couponSchema.findOne({ code: req.query.code })
-        console.log(coupon)
         await userSchema.updateOne(
             {
                 _id: mongoose.Types.ObjectId(req.session.user._id)
@@ -546,5 +576,8 @@ module.exports = {
             }
         }
         res.json({ status: true })
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
 }

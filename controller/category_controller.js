@@ -5,13 +5,23 @@ const mongoose = require('mongoose');
 
 module.exports = {
     categories : async(req,res)=>{
+       try {
         let category = await categorySchema.find({}).lean()
         res.render('admin/app-categories-list',{noHeader:true,noFooter:true,category})
+       } catch (error) {
+        res.redirect('/admin/not-found')
+       }
     },
     add_category : (req,res)=>{
+        try {
         res.render('admin/add-category',{noHeader:true,noFooter:true})
+            
+        } catch (error) {
+            res.redirect('/admin/not-found')
+        }
     },
     add_a_category : async(req,res)=>{
+       try {
         let category = await categorySchema.findOne({name : req.body.name})
         if(category){     
             res.redirect('/admin/add-category')
@@ -43,13 +53,21 @@ module.exports = {
          }else{
             res.redirect('/admin/add-category')
          }
+       } catch (error) {
+        res.redirect('/admin/not-found')
+       }
     },
     edit_category : async(req,res)=>{
-        let category = await categorySchema.findById(req.params.id).lean();
+        try {
+            let category = await categorySchema.findById(req.params.id).lean();
         res.render('admin/edit-category',{noHeader:true,noFooter:true,category});
+        } catch (error) {
+            res.redirect('/admin/not-found')
+        }
     },
     edit_a_category : async(req,res) => {
-        let category=await categorySchema.findById(req.params.id) 
+        try {
+            let category=await categorySchema.findById(req.params.id) 
         if(req.file){
             await cloudinary.uploader.destroy(category.cloudinary_id)  
         }
@@ -92,9 +110,13 @@ module.exports = {
                     res.redirect('/admin/categories')
                 })
             }
+        } catch (error) {
+            res.redirect('/admin/not-found')
+        }
     },
     
     delete_category : async(req,res)=>{
+       try {
         let category=await categorySchema.findById(req.params.id)   
         console.log(category)
         if(category.count>0){
@@ -105,6 +127,9 @@ module.exports = {
             res.redirect('/admin/categories')
             })
         }
+       } catch (error) {
+        res.redirect('/admin/not-found')
+       }
        
     },
 }

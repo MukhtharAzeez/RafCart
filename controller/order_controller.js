@@ -18,6 +18,7 @@ module.exports = {
 
     // User Side
     placeOrder : async(address,cartItems,total,userID)=>{
+       try {
         let placedOrPending
         
         if(address.paymentMethod=='COD'){
@@ -69,10 +70,13 @@ module.exports = {
                 console.log(error);
                })
         })
-        
+       } catch (error) {
+        res.redirect('/not-found')
+       } 
     },
     generateRazorpay : async(orderId,total)=>{
-        orderId=orderId.toString();
+        try {
+            orderId=orderId.toString();
         var options = {
             amount: total*100,  
             currency: "INR",
@@ -84,10 +88,14 @@ module.exports = {
         }catch(e){
             console.log(e);
         }
+        } catch (error) {
+            res.redirect('/not-found')
+        }
 
     },
     verifyPayment : async(req,res)=>{
-        
+       try {
+         
         const crypto = require("crypto");
         const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
 
@@ -140,10 +148,12 @@ module.exports = {
         }else{
             res.json({onlinePaymentSuccess:false})
         }
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
     orderPlacedSucessFully : async(req,res)=>{
-       
-
+       try {
         let order=await orderSchema.findOne({_id:mongoose.Types.ObjectId(req.query.orderId)})
         console.log(order)
         for(var i=0;i<order.products.length;i++) {
@@ -172,9 +182,13 @@ module.exports = {
             })
         }
         res.render('user/order-completed',{"user" : req.session.user,"count":res.count,orderId:req.query.orderId,"userWishListCount":res.userWishListCount})
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
     cancelOrder : async(req,res)=>{
-        let order=await orderSchema.findOne({_id:mongoose.Types.ObjectId(req.query.orderId)})
+        try {
+            let order=await orderSchema.findOne({_id:mongoose.Types.ObjectId(req.query.orderId)})
         for(var i=0;i<order.products.length;i++) {
             order.products[i].product._id=order.products[i].product._id.toString()
             await productSchema.updateOne(
@@ -213,48 +227,59 @@ module.exports = {
             }
         )
         res.json({status:true})
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     checkForOrders : async(req,res)=>{
-        let orders=await orderSchema.find({userId : mongoose.Types.ObjectId(req.session.user._id)})
+        try {
+            let orders=await orderSchema.find({userId : mongoose.Types.ObjectId(req.session.user._id)})
         if(orders[0]){
             res.json({status:true})
         }else{
             res.json({status:false})
         }
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     viewCurrentOrder : async(req,res)=>{
-        let order = await orderSchema.aggregate([
-            {
-                $match : {
-                    _id : mongoose.Types.ObjectId(req.query.orderId)
+        try {
+            let order = await orderSchema.aggregate([
+                {
+                    $match : {
+                        _id : mongoose.Types.ObjectId(req.query.orderId)
+                    }
+                },
+                {
+                    $unwind : {
+                        path : '$products'
+                    }
+                },
+                {
+                    $project : {
+                        userId : 1,
+                        total :1,
+                        status :1,
+                        purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                        deliveredDate : { $dateToString: { format: "%Y-%m-%d", date: "$deliveredDate" } },
+                        quantity : '$products.quantity',
+                        price : '$products.total',
+                        product : '$products.product',
+                    }
                 }
-            },
-            {
-                $unwind : {
-                    path : '$products'
-                }
-            },
-            {
-                $project : {
-                    userId : 1,
-                    total :1,
-                    status :1,
-                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
-                    deliveredDate : { $dateToString: { format: "%Y-%m-%d", date: "$deliveredDate" } },
-                    quantity : '$products.quantity',
-                    price : '$products.total',
-                    product : '$products.product',
-                }
+            ])
+            if(order[0].status=='placed'){
+                order[0].placed=true
+            }else if(order[0].status=='shipped'){
+                order[0].shipped=true
+            }else if(order[0].status=='delivered'){
+                order[0].delivered=true
             }
-        ])
-        if(order[0].status=='placed'){
-            order[0].placed=true
-        }else if(order[0].status=='shipped'){
-            order[0].shipped=true
-        }else if(order[0].status=='delivered'){
-            order[0].delivered=true
+            res.render('user/account-order-details',{order,user:req.session.user,count:res.count,userWishListCount:res.userWishListCount})
+        } catch (error) {
+            res.redirect('/not-found')
         }
-        res.render('user/account-order-details',{order,user:req.session.user,count:res.count,userWishListCount:res.userWishListCount})
     },
     viewOrders : async(req,res)=>{
         
@@ -288,120 +313,132 @@ module.exports = {
             
             res.render('user/account-order-history',{orders,user:req.session.user,count:res.count,userWishListCount:res.userWishListCount})
         } catch (error) {
-            
+            res.redirect('/not-found')
         }
 
 
         
     },
     seeOrderInvoice : async(req,res)=>{
-        let order = await orderSchema.aggregate([
-            {
-                $match : {
-                    _id : mongoose.Types.ObjectId(req.query.orderId)
-                }
-            },
-            {
-                $unwind : {
-                    path : '$products'
-                }
-            },
-            {
-                $project : {
-                    userId : 1,
-                    total :1,
-                    status :1,
-                    paymentMethod : 1,
-                    deliveryAddress: 1,
-                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
-                    quantity : '$products.quantity',
-                    price : '$products.total',
-                    product : '$products.product',
-                }
-            },
-            {
-                $lookup : {
-                    from : 'users',
-                    localField : 'userId',
-                    foreignField : '_id',
-                    as : 'user'
-                }
-            },
-           
-        ])
-        console.log(order)
-        let orderId=order[0]._id.toString().slice(18,24)
-        order[0].id=orderId
-        res.render('user/order-invoice',{count:res.count,userWishListCount:res.userWishListCount,order,user:req.session.user})
+        try {
+            let order = await orderSchema.aggregate([
+                {
+                    $match : {
+                        _id : mongoose.Types.ObjectId(req.query.orderId)
+                    }
+                },
+                {
+                    $unwind : {
+                        path : '$products'
+                    }
+                },
+                {
+                    $project : {
+                        userId : 1,
+                        total :1,
+                        status :1,
+                        paymentMethod : 1,
+                        deliveryAddress: 1,
+                        purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                        quantity : '$products.quantity',
+                        price : '$products.total',
+                        product : '$products.product',
+                    }
+                },
+                {
+                    $lookup : {
+                        from : 'users',
+                        localField : 'userId',
+                        foreignField : '_id',
+                        as : 'user'
+                    }
+                },
+               
+            ])
+            let orderId=order[0]._id.toString().slice(18,24)
+            order[0].id=orderId
+            res.render('user/order-invoice',{count:res.count,userWishListCount:res.userWishListCount,order,user:req.session.user})
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
 
     // Admin Side
     getAllOrders : async(req,res)=>{
-        let orders=await orderSchema.aggregate([
-            {
-                $lookup:{
-                    from : 'users',
-                    localField : 'userId',
-                    foreignField : '_id',
-                    as : 'userDetails',
+        try {
+            let orders=await orderSchema.aggregate([
+                {
+                    $lookup:{
+                        from : 'users',
+                        localField : 'userId',
+                        foreignField : '_id',
+                        as : 'userDetails',
+                    },
                 },
-            },
-            {
-                $project : {
-                    paymentMethod : 1,
-                    total : 1,
-                    status : 1,
-                    products : 1,
-                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
-                    expectedDeliveryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expectedDeliveryDate" } },
-                    userDetails : {$arrayElemAt : ["$userDetails",0]}
-                }
-            },
-        ]).sort({purchaseDate : -1})
-       
-        for(var i=0;i<orders.length;i++){
-            orders[i].items=orders[i].products.length
-            if(orders[i].paymentMethod=='COD'){
-                orders[i].paid=false
-             }else{
-                 orders[i].paid=true
-             }
+                {
+                    $project : {
+                        paymentMethod : 1,
+                        total : 1,
+                        status : 1,
+                        products : 1,
+                        purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                        expectedDeliveryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expectedDeliveryDate" } },
+                        userDetails : {$arrayElemAt : ["$userDetails",0]}
+                    }
+                },
+            ]).sort({purchaseDate : -1})
+           
+            for(var i=0;i<orders.length;i++){
+                orders[i].items=orders[i].products.length
+                if(orders[i].paymentMethod=='COD'){
+                    orders[i].paid=false
+                 }else{
+                     orders[i].paid=true
+                 }
+            }
+            res.render('admin/app-orders-list',{noHeader:true,noFooter:true,orders});
+        } catch (error) {
+            res.redirect('/admin/not-found')
         }
-        res.render('admin/app-orders-list',{noHeader:true,noFooter:true,orders});
     },
     edit_a_product : async(req,res)=>{
-        let orderDetails=await orderSchema.aggregate([
-            {
-                $match : {
-                    _id : mongoose.Types.ObjectId(req.query.orderId)
-                }
-            },
-            {
-                $lookup : {
-                    from : 'users',
-                    localField : 'userId',
-                    foreignField : '_id',
-                    as : 'userDetails',
-                }
-            },
-            {
-                $project : {
-                    paymentMethod : 1,
-                    products :1,
-                    total : 1,
-                    status : 1,
-                    deliveryAddress : 1,
-                    userDetails : {$arrayElemAt : ['$userDetails',0]},
-                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
-                    expectedDeliveryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expectedDeliveryDate" } },
-                }
-            },
-        ])
-        // orderDetails=orderDetails[0]
-        res.render('admin/app-order',{noHeader:true,noFooter:true,orderDetails})
+        try {
+            let orderDetails=await orderSchema.aggregate([
+                {
+                    $match : {
+                        _id : mongoose.Types.ObjectId(req.query.orderId)
+                    }
+                },
+                {
+                    $lookup : {
+                        from : 'users',
+                        localField : 'userId',
+                        foreignField : '_id',
+                        as : 'userDetails',
+                    }
+                },
+                {
+                    $project : {
+                        paymentMethod : 1,
+                        products :1,
+                        total : 1,
+                        status : 1,
+                        deliveryAddress : 1,
+                        userDetails : {$arrayElemAt : ['$userDetails',0]},
+                        purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                        expectedDeliveryDate : { $dateToString: { format: "%Y-%m-%d", date: "$expectedDeliveryDate" } },
+                    }
+                },
+            ])
+            // orderDetails=orderDetails[0]
+            res.render('admin/app-order',{noHeader:true,noFooter:true,orderDetails})
+        } catch (error) {
+            res.redirect('/admin/not-found')
+        }
     },
     changeCurrentStatus : async(req,res)=>{
         
+       try {
         if(req.body.changeStatus=='delivered'){
             let order=await orderSchema.updateOne(
                 {
@@ -429,5 +466,8 @@ module.exports = {
         
        
         res.json({status:true})
+       } catch (error) {
+        res.json({status : false})
+       }
     }
 }

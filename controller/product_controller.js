@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 module.exports={
 
     products : async(req,res)=>{
+       try {
         let products
         if(req.query.category){
              products = await productSchema.find({isAvailable : true,category:req.query.category}).lean()
@@ -19,17 +20,29 @@ module.exports={
              products = await productSchema.find({isAvailable : true}).lean()
         }
         res.render('admin/app-products-list',{noHeader:true,noFooter:true,products})
+       } catch (error) {
+        res.redirect('/admin/not-found')
+       }
     },
     deleted_products : async(req,res)=>{
-        let products = await productSchema.find({isAvailable : false}).lean()
+        try {
+            let products = await productSchema.find({isAvailable : false}).lean()
         res.render('admin/product-deleted-list',{noHeader:true,noFooter:true,products})
+        } catch (error) {
+            res.redirect('/admin/not-found')
+        }
     },
     add_product : async(req,res)=>{
+       try {
         let category = await categorySchema.find({}).lean()
         res.render('admin/add-product',{noHeader:true,noFooter:true,category})
+       } catch (error) {
+        res.redirect('/admin/not-found')
+       }
     },
     add_a_product : async(req,res)=>{
-        let productExist = await productSchema.findOne({name : req.body.name})
+        try {
+            let productExist = await productSchema.findOne({name : req.body.name})
         if(productExist){
             res.redirect('/admin/add-product')
         }else if(req.files){
@@ -90,8 +103,12 @@ module.exports={
          }else{
             res.redirect('/admin/add-product')
          }
+        } catch (error) {
+            res.redirect('/admin/not-found')
+        }
     },
     edit_product : async(req,res)=>{
+      try {
         let products=await productSchema.findById(req.params.id).lean()
         let category = await categorySchema.find({}).lean()
         if(products.isAvailable){
@@ -99,9 +116,13 @@ module.exports={
         }else{
             res.redirect('/admin/products');
         }
+      } catch (error) {
+        res.redirect('/admin/not-found')
+      }
         
     },
     edit_a_product : async(req,res) => {
+      try {
         let products=await productSchema.findById(req.params.id) 
         
         if(req.file || req.files){
@@ -127,7 +148,7 @@ module.exports={
                 })
              }
             }catch(err){
-                console.log(err);
+                res.redirect('/admin/not-found')
             }
         
                     
@@ -189,25 +210,33 @@ module.exports={
                     res.redirect('/admin/products')
                 })
             }
+      } catch (error) {
+        res.redirect('/admin/not-found')
+      }
             
     },
     delete_product : async(req,res)=>{
-        productSchema.updateOne(
-            {
-                _id : req.params.id
-            },
-            {
-                $set : {
-                    stock : 0,
-                    onStock : false,
-                    isAvailable : false
+        try {
+            productSchema.updateOne(
+                {
+                    _id : req.params.id
+                },
+                {
+                    $set : {
+                        stock : 0,
+                        onStock : false,
+                        isAvailable : false
+                    }
                 }
-            }
-            ).then(()=>{
-            res.redirect('/admin/products')
-        })
+                ).then(()=>{
+                res.redirect('/admin/products')
+            })
+        } catch (error) {
+            res.redirect('/admin/not-found')
+        }
     },
     undo_product : async(req,res)=>{
+      try {
         productSchema.updateOne(
             {
                 _id : req.params.id
@@ -220,21 +249,29 @@ module.exports={
             ).then(()=>{
             res.redirect('/admin/show-deleted')
         })
+      } catch (error) {
+        res.redirect('/admin/not-found')
+      }
     },
     checkStockLeft : async(req,res)=>{
-       let product=await productSchema.findOne({_id:mongoose.Types.ObjectId(req.body.productId)})
-       if(req.body.count==1){
-        if(product.stock>req.body.quantity){
-            res.json({status:true})
-           }else{
-            res.json({status:false})
-           }
-       }else{
-        res.json({status:true})
-       }
+      try {
+        let product=await productSchema.findOne({_id:mongoose.Types.ObjectId(req.body.productId)})
+        if(req.body.count==1){
+         if(product.stock>req.body.quantity){
+             res.json({status:true})
+            }else{
+             res.json({status:false})
+            }
+        }else{
+         res.json({status:true})
+        }
+      } catch (error) {
+        res.redirect('/not-found')
+      }
        
     },
     viewSingleProduct : async(req,res) => {
+     try {
         let product = await productSchema.findOne({_id : mongoose.Types.ObjectId(req.query.productId)}).lean()
         let review = await reviewSchema.aggregate([
             {
@@ -312,16 +349,23 @@ module.exports={
         }
         let relatedProducts = await productSchema.find({category : product.category}).lean()
         res.render('user/product-view',{product,relatedProducts,review,length,totalRating,starCounts,"count":res.count,"userWishListCount":res.userWishListCount})
+     } catch (error) {
+        res.redirect('/not-found')
+     }
     },
     getProductBySearch : async(req,res)=>{
-        // let products = await productSchema.find({name: { '$regex': `(\s+${req.query.name}|^${req.query.name})`, '$options': 'i' }}, {})
-        let products = await productSchema.find({name: { '$regex': req.query.name, '$options': 'i' }}, {})
-        if(products[0]){
-            res.json(products)
-        }else{
-         products = await productSchema.find({category: { '$regex': req.query.name, '$options': 'i' }}, {})
-         res.json(products)
-        }  
+       try {
+         // let products = await productSchema.find({name: { '$regex': `(\s+${req.query.name}|^${req.query.name})`, '$options': 'i' }}, {})
+         let products = await productSchema.find({name: { '$regex': req.query.name, '$options': 'i' }}, {})
+         if(products[0]){
+             res.json(products)
+         }else{
+          products = await productSchema.find({category: { '$regex': req.query.name, '$options': 'i' }}, {})
+          res.json(products)
+         }  
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
 }
 
