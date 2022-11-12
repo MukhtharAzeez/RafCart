@@ -14,246 +14,263 @@ var path = require('path');
 
 module.exports = {
 
+    errorPage : (req,res)=>{
+        res.render('admin/page-404',{noHeader:true,noFooter:true})
+    },
     home : async(req,res)=>{
-        let totalSells=await orderSchema.find({status:'delivered'}).count()
-        newDate= new Date();
-        let totalIncome = await orderSchema.aggregate([
-            {
-                $match : {
-                    "deliveredDate" : { $lte : newDate }
-                    }
-            },
-            {
-                $group : {
-                    _id : null,
-                    totalIncome : {$sum : "$total"}
-                }
-            },
-        ])
-        
-        if(totalIncome[0]){
-            totalIncome=(totalIncome[0].totalIncome/100)*25 
-            totalIncome=Math.round(totalIncome)
-        }
-
-        let todayDate = new Date();
-        let thirtyDaysAgo = new Date(new Date().getTime()-(30*24*60*60*1000));
-        let oneWeekAgo = new Date(new Date().getTime()-(7*24*60*60*1000));
-        let oneYearAgo = new Date(new Date().getTime()-(12*30*24*60*60*1000));
-        
-        
-
-
-        let totalSellsInThisMonth=await orderSchema.find({"deliveredDate" : { $gte : thirtyDaysAgo }}).count()
-        
-        let totalIncomeInThisMonth=await orderSchema.aggregate([
-            {
-                $match : {
-                "deliveredDate" : { $gte : thirtyDaysAgo }
-                }
-            },
-            {
-                $group : {
-                    _id : null,
-                    total : {$sum : "$total"}
-                }
-            }
-        ])
-        
-        if(totalIncomeInThisMonth[0]){
-         totalIncomeInThisMonth=(totalIncomeInThisMonth[0].total/100)*25  
-         totalIncomeInThisMonth=Math.round(totalIncomeInThisMonth)
-
-        }
-
-        let orders=await orderSchema.aggregate([
-            {
-                $lookup : {
-                    from : 'users',
-                    localField : 'userId',
-                    foreignField : '_id',
-                    as : 'users'
-                }
-            },
-            {
-                $project : {
-                    paymentMethod : 1,
-                    total : 1,
-                    status : 1,
-                    purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
-                    user : {$arrayElemAt: ["$users", 0]}
-                }
-            },
-        ]).sort ({purchaseDate : -1}).limit(8)
-       
-        let incomeStatistics = await  orderSchema.aggregate([
-            {
-                $match : {
-                "deliveredDate" : { $gte : oneYearAgo }
-                }
-            },
-            {
-                $project:
+        try {
+            let totalSells=await orderSchema.find({status:'delivered'}).count()
+            newDate= new Date();
+            let totalIncome = await orderSchema.aggregate([
                 {
-                    purchaseDate: 1,
-                    total : 1,
-                }
-            },
-            {
-                $group: {
-                    _id: { $month: "$purchaseDate"},
-                    total: { $sum: "$total" }
-                }
-            },
-            {
-                $addFields: {
-                    month: {
-                        $let: {
-                            vars: {
-                                monthsInString: [" ","Jan", "Feb", "Mar", "Apr", "May", "June", 
-                                "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                            },
-                            in: {
-                                $arrayElemAt: ['$$monthsInString', '$_id']
-                            }
+                    $match : {
+                        "deliveredDate" : { $lte : newDate }
                         }
-                    }
-                }
-            }
-        ]).sort({month : -1})
-       
-        let totalSellsInThisYear = await  orderSchema.aggregate([
-            {
-                $match : {
-                "deliveredDate" : { $gte : oneYearAgo }
-                }
-            },
-            {
-                $project:
+                },
                 {
-                    deliveredDate: 1,
-                }
-            },
-            {
-                $group: {
-                    _id: { $month: "$deliveredDate"},
-                    count: { $count: {}}
-                }
-            },
-            {
-                $addFields: {
-                    month: {
-                        $let: {
-                            vars: {
-                                monthsInString: ["Jan", "Feb", "Mar", "Apr", "May", "June", 
-                                "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                            },
-                            in: {
-                                $arrayElemAt: ['$$monthsInString', '$_id']
-                            }
-                        }
+                    $group : {
+                        _id : null,
+                        totalIncome : {$sum : "$total"}
                     }
-                }
-            }
-        ]).sort({month : -1})
-
-        let totalUsersInThisYear = await  userSchema.aggregate([
-            {
-                $match : {
-                "createdDate" : { $gte : oneYearAgo }
-                }
-            },
-            {
-                $project:
-                {
-                    createdDate: 1,
-                }
-            },
-            {
-                $group: {
-                    _id: { $month: "$createdDate"},
-                    count: { $count: {}}
-                }
-            },
-            {
-                $addFields: {
-                    month: {
-                        $let: {
-                            vars: {
-                                monthsInString: ["Jan", "Feb", "Mar", "Apr", "May", "June", 
-                                "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                            },
-                            in: {
-                                $arrayElemAt: ['$$monthsInString', '$_id']
-                            }
-                        }
-                    }
-                }
-            }
-        ]).sort({month : -1})
-        
-
-       
-        let weeklySalesReport=await orderSchema.aggregate([
-            {
-                $match : {
-                "deliveredDate" : { $gte : oneWeekAgo }
-                }
-            },
-            {
-                $project:
-                {
-                    purchaseDate: 1,
-                }
-            },
-            {
-                $group: {
-                    _id: { $dayOfWeek: "$purchaseDate"},
-                    count: { $count: {}}
-                }
-            },
-        ])
-     
-        
-        let usedCoupons = await couponSchema.aggregate([
-            {
-                $project : {
-                    code : 1,
-                    usedCounts : 1,
-                }
-            }
+                },
+            ])
             
-        ])
+            if(totalIncome[0]){
+                totalIncome=(totalIncome[0].totalIncome/100)*25 
+                totalIncome=Math.round(totalIncome)
+            }
+    
+            let todayDate = new Date();
+            let thirtyDaysAgo = new Date(new Date().getTime()-(30*24*60*60*1000));
+            let oneWeekAgo = new Date(new Date().getTime()-(7*24*60*60*1000));
+            let oneYearAgo = new Date(new Date().getTime()-(12*30*24*60*60*1000));
+            
+            
+    
+    
+            let totalSellsInThisMonth=await orderSchema.find({"deliveredDate" : { $gte : thirtyDaysAgo }}).count()
+            
+            let totalIncomeInThisMonth=await orderSchema.aggregate([
+                {
+                    $match : {
+                    "deliveredDate" : { $gte : thirtyDaysAgo }
+                    }
+                },
+                {
+                    $group : {
+                        _id : null,
+                        total : {$sum : "$total"}
+                    }
+                }
+            ])
+            
+            if(totalIncomeInThisMonth[0]){
+             totalIncomeInThisMonth=(totalIncomeInThisMonth[0].total/100)*25  
+             totalIncomeInThisMonth=Math.round(totalIncomeInThisMonth)
+    
+            }
+           
 
-        let years =[]
-        let currentYear=new Date();
-        for(var i=1;i<10;i++){
-            years.push(currentYear.getFullYear()-i);
+            let orders=await orderSchema.aggregate([
+                {
+                    $lookup : {
+                        from : 'users',
+                        localField : 'userId',
+                        foreignField : '_id',
+                        as : 'users'
+                    }
+                },
+                {
+                    $project : {
+                        paymentMethod : 1,
+                        total : 1,
+                        status : 1,
+                        purchaseDate : { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                        user : {$arrayElemAt: ["$users", 0]}
+                    }
+                },
+            ]).sort ({purchaseDate : -1}).limit(8)
+           
+            let incomeStatistics = await  orderSchema.aggregate([
+                {
+                    $match : {
+                    "deliveredDate" : { $gte : oneYearAgo }
+                    }
+                },
+                {
+                    $project:
+                    {
+                        purchaseDate: 1,
+                        total : 1,
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $month: "$purchaseDate"},
+                        total: { $sum: "$total" }
+                    }
+                },
+                {
+                    $addFields: {
+                        month: {
+                            $let: {
+                                vars: {
+                                    monthsInString: [" ","Jan", "Feb", "Mar", "Apr", "May", "June", 
+                                    "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                },
+                                in: {
+                                    $arrayElemAt: ['$$monthsInString', '$_id']
+                                }
+                            }
+                        }
+                    }
+                }
+            ]).sort({month : -1})
+           
+            let totalSellsInThisYear = await  orderSchema.aggregate([
+                {
+                    $match : {
+                    "deliveredDate" : { $gte : oneYearAgo }
+                    }
+                },
+                {
+                    $project:
+                    {
+                        deliveredDate: 1,
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $month: "$deliveredDate"},
+                        count: { $count: {}}
+                    }
+                },
+                {
+                    $addFields: {
+                        month: {
+                            $let: {
+                                vars: {
+                                    monthsInString: ["Jan", "Feb", "Mar", "Apr", "May", "June", 
+                                    "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                },
+                                in: {
+                                    $arrayElemAt: ['$$monthsInString', '$_id']
+                                }
+                            }
+                        }
+                    }
+                }
+            ]).sort({month : -1})
+    
+            let totalUsersInThisYear = await  userSchema.aggregate([
+                {
+                    $match : {
+                    "createdDate" : { $gte : oneYearAgo }
+                    }
+                },
+                {
+                    $project:
+                    {
+                        createdDate: 1,
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $month: "$createdDate"},
+                        count: { $count: {}}
+                    }
+                },
+                {
+                    $addFields: {
+                        month: {
+                            $let: {
+                                vars: {
+                                    monthsInString: ["Jan", "Feb", "Mar", "Apr", "May", "June", 
+                                    "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                },
+                                in: {
+                                    $arrayElemAt: ['$$monthsInString', '$_id']
+                                }
+                            }
+                        }
+                    }
+                }
+            ]).sort({month : -1})
+            
+    
+           
+            let weeklySalesReport=await orderSchema.aggregate([
+                {
+                    $match : {
+                    "deliveredDate" : { $gte : oneWeekAgo }
+                    }
+                },
+                {
+                    $project:
+                    {
+                        purchaseDate: 1,
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $dayOfWeek: "$purchaseDate"},
+                        count: { $count: {}}
+                    }
+                },
+            ])
+         
+            
+            let usedCoupons = await couponSchema.aggregate([
+                {
+                    $project : {
+                        code : 1,
+                        usedCounts : 1,
+                    }
+                }
+                
+            ])
+    
+            let years =[]
+            let currentYear=new Date();
+            for(var i=1;i<10;i++){
+                years.push(currentYear.getFullYear()-i);
+            }
+           
+            res.render('admin/index',{years,incomeStatistics,totalUsersInThisYear,totalSellsInThisYear,usedCoupons,weeklySalesReport,noHeader:true,noFooter:true,totalSells,totalIncome,totalSellsInThisMonth,totalIncomeInThisMonth,orders})   
+        } catch (error) {
+            res.redirect('admin/not-found')
         }
-        
 
-        res.render('admin/index',{years,incomeStatistics,totalUsersInThisYear,totalSellsInThisYear,usedCoupons,weeklySalesReport,noHeader:true,noFooter:true,totalSells,totalIncome,totalSellsInThisMonth,totalIncomeInThisMonth,orders})        
     },
     login : async(req,res)=>{
         res.render('admin/auth-sign-in',{noHeader:true,noFooter:true})
     },
     postSignup : async(req,res)=>{
-        let adminDetails=await adminSchema.findOne({email:req.body.email,password : req.body.password})
-        if(adminDetails){
-            req.session.admin=adminDetails
-            req.session.adminLoggedIn=true
-            res.redirect('/admin')
-        }else{
-            res.redirect('/admin/admin-auth')
+        try {
+            let adminDetails=await adminSchema.findOne({email:req.body.email,password : req.body.password})
+                if(adminDetails){
+                    req.session.admin=adminDetails
+                    req.session.adminLoggedIn=true
+                res.redirect('/admin')
+            }else{
+                res.redirect('/admin/admin-auth')
+            }
+        } catch (error) {
+            res.redirect('admin/not-found')
         }
     },
     customers : async (req,res)=>{
-        let customers = await userSchema.find({}).lean()
+        try {
+            let customers = await userSchema.find({}).lean()
+            res.render('admin/app-customers-list',{noHeader:true,noFooter:true,customers})
+        } catch (error) {
+            res.redirect('admin/not-found')
+        }
         
-        res.render('admin/app-customers-list',{noHeader:true,noFooter:true,customers})
     },
     blockUser : async(req,res)=>{
-        let user = await userSchema.findById(req.params.id)
+        try {
+            let user = await userSchema.findById(req.params.id)
         if(user.status){
             userSchema.updateOne(
                 {
@@ -281,12 +298,16 @@ module.exports = {
                 res.redirect('/admin/customers')
             })
         }
+        } catch (error) {
+            res.redirect('admin/not-found')
+        }
         
     },
     yearInvoice : async(req,res)=>{
         // req.query.year=parseInt(req.query.year)+1
         // req.query.year=''+req.query.year
-        wantDate=new Date(req.query.year)
+        try {
+            wantDate=new Date(req.query.year)
         let year=parseInt(req.query.year)+1;
         year=''+year
         limitDate = new Date(year)
@@ -332,9 +353,13 @@ module.exports = {
         ]).sort({month : -1})
         
         res.json({incomeStatistics})
+        } catch (error) {
+            res.redirect('admin/not-found')
+        }
     },
     MonthInvoice : async(req,res)=>{
-        date=new Date().getFullYear()
+        try {
+            date=new Date().getFullYear()
         date=date+'-'+req.query.month
         date=new Date(date)
 
@@ -371,9 +396,13 @@ module.exports = {
         
     ]).sort({week : -1})
         res.json({incomeStatistics})
+        } catch (error) {
+            res.redirect('admin/not-found')
+        }
         
     },
     WeekInvoice : async(req,res)=>{
+       try {
         year=new Date().getFullYear()
         month=new Date().getMonth()+1
 
@@ -413,9 +442,16 @@ module.exports = {
         ]).sort({_id : 1})
 
         res.json({weeklySalesReport})
+       } catch (error) {
+        res.redirect('admin/not-found')
+       }
     },
     logout : async(req,res)=>{
-        req.session.destroy();
+        try {
+            req.session.destroy();
         res.redirect('/admin')
+        } catch (error) {
+            res.redirect('admin/not-found')
+        }
     },
 }

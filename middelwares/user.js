@@ -12,8 +12,7 @@ module.exports = {
                 next()
             }else{
                 res.redirect('/login')
-            }
-            
+            }   
         } else {
             req.session.url = req.url
             url = req.session.url

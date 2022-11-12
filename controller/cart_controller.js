@@ -11,7 +11,8 @@ const couponSchema = require('../models/coupon_schema')
 module.exports = {
 
     cart: async (req, res) => {
-        let count = 0;
+        try {
+            let count = 0;
         if (req.session.user) {
             const cart = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
             if (cart) {
@@ -171,11 +172,16 @@ module.exports = {
 
             res.redirect('/shop')
         }
+        
+    } catch (error) {
+            res.redirect('/not-found')
+        }
 
     },
     addToCart: async (req, res) => {
 
-        let product = await productSchema.findOne({ _id: mongoose.Types.ObjectId(req.params.id) })
+        try {
+            let product = await productSchema.findOne({ _id: mongoose.Types.ObjectId(req.params.id) })
         let productObj = {
             item: mongoose.Types.ObjectId(req.params.id),
             quantity: 1,
@@ -232,10 +238,14 @@ module.exports = {
         } else {
             res.json({ status: false })
         }
+        } catch (error) {
+            res.redirect('/not-found')
+        }
 
     },
     checkExistProductInCart: async (req, res) => {
 
+       try {
         if (req.session.user) {
 
             let product = await cartSchema.findOne({
@@ -253,10 +263,13 @@ module.exports = {
         } else {
             res.json()
         }
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
 
     changeCartQuantity: async (req, res) => {
-       
+       try {
         let cartItems = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
         count = parseInt(req.body.count)
         if (req.body.quantity == 1 && count === -1) {
@@ -479,12 +492,14 @@ module.exports = {
                 res.json({ status: true, result })
             })
         }
-
-
+       } catch (error) {
+        res.redirect('/not-found')
+       }
 
     },
     removeCartItem: async (req, res) => {
-        let cartItems = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
+        try {
+            let cartItems = await cartSchema.findOne({ userId: mongoose.Types.ObjectId(req.session.user._id) })
         cart_schema.updateOne(
             {
                 _id: mongoose.Types.ObjectId(req.body.cartId)
@@ -628,73 +643,86 @@ module.exports = {
 
             res.json({ status: true, result });
         })
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     updateCart: async (req, res) => {
-        
-        await cartSchema.updateOne(
-            {
-                _id: mongoose.Types.ObjectId(req.body.cartId),
-                'products.item': mongoose.Types.ObjectId(req.body.productId)
-            },
-            {
-                $set: {
-                    'products.$.total': req.body.total,
+        try {
+            await cartSchema.updateOne(
+                {
+                    _id: mongoose.Types.ObjectId(req.body.cartId),
+                    'products.item': mongoose.Types.ObjectId(req.body.productId)
+                },
+                {
+                    $set: {
+                        'products.$.total': req.body.total,
+                    }
                 }
-            }
-        ).then(() => {
-            res.json({ status: true })
-        })
+            ).then(() => {
+                res.json({ status: true })
+            })
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     getCartItems: async (id) => {
-        let cartItems = await cartSchema.aggregate([
-            {
-                $match: { userId: mongoose.Types.ObjectId(id) }
-            },
-            {
-                $project: {
-                    products: 1,
+        try {
+            let cartItems = await cartSchema.aggregate([
+                {
+                    $match: { userId: mongoose.Types.ObjectId(id) }
+                },
+                {
+                    $project: {
+                        products: 1,
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$products"
+                    }
+                },
+                {
+                    $project: {
+                        item: "$products.item",
+                        quantity: "$products.quantity",
+                        total: "$products.total"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1,
+                        quantity: 1,
+                        total: 1,
+                        product: { $arrayElemAt: ["$product", 0] }
+                    }
                 }
-            },
-            {
-                $unwind: {
-                    path: "$products"
-                }
-            },
-            {
-                $project: {
-                    item: "$products.item",
-                    quantity: "$products.quantity",
-                    total: "$products.total"
-                }
-            },
-            {
-                $lookup: {
-                    from: 'products',
-                    localField: 'item',
-                    foreignField: '_id',
-                    as: 'product'
-                }
-            },
-            {
-                $project: {
-                    item: 1,
-                    quantity: 1,
-                    total: 1,
-                    product: { $arrayElemAt: ["$product", 0] }
-                }
-            }
-        ])
-        return cartItems
+            ])
+            return cartItems
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
     checkCartExist : async(req,res)=>{
+       try {
         let cartExist = await cartSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
 
-        console.log(cartExist.products.length>0)
         if(cartExist.products.length>0){
             res.json({status : true})
         }else{
             res.json({status : false})
         }
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
 
 }

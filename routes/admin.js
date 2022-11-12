@@ -84,7 +84,7 @@ router.get('/get-salesReport-by-week',adminMiddleware.verifyAdmin,admin_controll
 router.get('/logout',adminMiddleware.verifyAdmin,admin_controller.logout)
 
 
-
+router.get('/not-found',adminMiddleware.verifyAdmin,admin_controller.errorPage)
 
 
 module.exports = router;

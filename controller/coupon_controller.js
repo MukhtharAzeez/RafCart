@@ -356,16 +356,7 @@ module.exports = {
     applyCoupon: async (req, res) => {
         let couponCheck = await couponSchema.findOne({ code: req.query.code })
         if (couponCheck) {
-            let cart = await cartSchema.updateOne(
-                {
-                    userId: mongoose.Types.ObjectId(req.session.user._id)
-                },
-                {
-                    $set: {
-                        coupon: req.query.code
-                    }
-                }
-            )
+            
 
 
             let total = await cartSchema.aggregate([
@@ -417,16 +408,33 @@ module.exports = {
             } else {
                 total = 0
             }
-            let discount
-            if (couponCheck.type == 'Percentage') {
-                total = total - (total * couponCheck.discountValue) / 100
-                discount = (total * couponCheck.discountValue) / 100
-            } else if (couponCheck.type == 'Flat Discount') {
-                total = total - couponCheck.discountValue
-                discount = couponCheck.discountValue
-            } else {
+
+            if(couponCheck.startDate<=new Date()>=couponCheck.expiryDate && couponCheck.lowerLimit<=total >= couponCheck.upperLimit){
+                let cart = await cartSchema.updateOne(
+                    {
+                        userId: mongoose.Types.ObjectId(req.session.user._id)
+                    },
+                    {
+                        $set: {
+                            coupon: req.query.code
+                        }
+                    }
+                )
+                
+                let discount
+                if (couponCheck.type == 'Percentage') {
+                    total = total - (total * couponCheck.discountValue) / 100
+                    discount = (total * couponCheck.discountValue) / 100
+                } else if (couponCheck.type == 'Flat Discount') {
+                    total = total - couponCheck.discountValue
+                    discount = couponCheck.discountValue
+                } else {
+                }
+                res.json({ status: true, total, discount })
+            }else{
+            res.json({ status: false })
             }
-            res.json({ status: true, total, discount })
+            
         } else {
             res.json({ status: false })
         }

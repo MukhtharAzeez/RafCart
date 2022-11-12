@@ -198,8 +198,8 @@ function removeProduct(cartId, productId) {
 
 
 function applyCoupon(code){
-  
-  $.ajax({
+  let total = parseInt(document.getElementById('totalAMount').innerHTML)
+    $.ajax({
     url : '/check-cart-exist',
     method : 'get',
     success : (response)=>{
@@ -237,7 +237,12 @@ function applyCoupon(code){
                         $('#removeCoupon').removeClass('d-none')
                         $('#couponButton').hide();
                       }else{
-                
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Oops...',
+                          text: 'Unfortunately this coupon not for you',
+                          background : 'black'
+                        })
                       }
                      
                     }

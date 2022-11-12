@@ -163,6 +163,8 @@ module.exports={
                         }
                     }
                 ).then((result)=>{
+                    console.log(result)
+                    
                     res.redirect('/admin/products')
                 })
             }else{

@@ -79,6 +79,7 @@ router.post('/verify-payment',userMiddleware.verifyLogin,userMiddleware.cartAndW
 // Coupons
 router.get('/available_coupons',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.couponsPage)
 router.get('/check-for-coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.checkForAvailablity)
+
 router.get('/apply-coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.applyCoupon)
 router.get('/remove-coupon',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.removeCoupon)
 router.get('/coupon-exist-check',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,couponController.couponExistCheck)
@@ -102,6 +103,9 @@ router.get('/see-order-invoice',userMiddleware.verifyLogin,userMiddleware.cartAn
 router.get('/product-search-result',userMiddleware.cartAndWishList,productController.getProductBySearch)
 
 router.get('/logout',controller.logout)
+
+router.get('/not-found',controller.errorPage)
+
 
 
 module.exports = router;

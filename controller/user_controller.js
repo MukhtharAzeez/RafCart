@@ -26,6 +26,9 @@ let mobileNumber
 let userDetails
 
 module.exports = {
+    errorPage : async(req,res)=>{
+        res.render('user/404')
+    },
     home : async(req,res)=>{
         try {
             const category = await categorySchema.find({}).lean();
