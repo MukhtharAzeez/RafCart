@@ -1,0 +1,161 @@
+
+    <!-- mobile bottom bar -->
+    <div class="mobile_bottombar d-block d-lg-none">
+        <div class="header_icon">
+            <a href="javascript:void(0)" class="icon_wrp text-center open_menu">
+                <span class="icon">
+                    <i class="las la-bars"></i>
+                </span>
+                <span class="icon_text">Menu</span>
+            </a>
+            <a href="javascript:void(0)" class="icon_wrp text-center open_category">
+                <span class="icon">
+                   <i class="icon-list-ul"></i>
+                </span>
+                <span class="icon_text">Categories</span>
+            </a>
+            <a href="javascript:void(0)" class="icon_wrp text-center" id="src_icon">
+                <span class="icon">
+                   <i class="icon-search-left"></i>
+                </span>
+                <span class="icon_text">Search</span>
+            </a>
+            <a href="/view-cart" class="icon_wrp crt text-center" id="openCart" >
+                <span class="icon">
+                    <i class="icon-cart"></i>
+                </span>
+                <span class="icon_text">Cart</span>
+                <span class="pops">8</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- mobile menu -->
+    <div class="mobile_menwrap d-lg-none" id="mobile_menwrap">
+        <div class="mobile_menu_2">
+            <h5 class="mobile_title">
+                Menu
+                <span class="sidebarclose" id="menuclose">
+                    <i class="las la-times"></i>
+                </span>
+            </h5>
+            <ul>
+                <li class="withsub">
+                    <a href="/">
+                        Home
+                    </a>
+            
+                </li>
+
+                <li class="withsub">
+                    <a href="/shop">
+                        Shop
+                    </a>
+                   
+                </li>
+                <li class="withsub">
+                    <a href="javascript:void(0)">
+                        My Account
+                    </a>
+                    <div class="submn">
+                        {{#if user}}
+                        <a href="/view-account">My account</a>
+                        <a href="/logout">Logout</a>
+                        {{else}}
+                        <a href="/login">Login</a>
+                        <a href="/register">Register</a>
+                        {{/if}}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--  mobile cart -->
+    {{!-- <div class="mobile_menwrap d-lg-none" id="mobileCart" >
+        <div class="mobile_cart_wrap d-flex flex-column">
+            <h5 class="mobile_title">
+                Cart
+                <span class="sidebarclose" id="mobileCartClose">
+                    <i class="las la-times"></i>
+                </span>
+            </h5>
+            <div class="px-3 py-3 flex-grow-1 d-flex flex-column">
+                <div class="cart_droptitle">
+                    <h4 class="text_lg">Total 2 Items</h4>
+                </div>
+                <div class="cartsdrop_wrap">
+
+                    <a href="/" class="single_cartdrop mb-3">
+                        <span class="remove_cart"><i class="las la-times"></i></span>
+                        <div class="cartdrop_img">
+                            <img loading="lazy"  src="images/shoes-5.png" alt="product">
+                        </div>
+                        <div class="cartdrop_cont">
+                            <h5 class="text_lg mb-0 default_link">
+                                Men casual shoes
+                            </h5>
+                            <p class="mb-0 text_xs text_p">x1 <span class="ms-2">$450</span></p>
+                        </div>
+                    </a>
+
+
+                  
+
+
+                </div>
+                <div class="mt-auto">
+                    <div class="total_cartdrop">
+                        <h4 class="text_lg text-uppercase mb-0">Sub Total:</h4>
+                        <h4 class="text_lg mb-0 ms-2">$980.00</h4>
+                    </div>
+                    <div class="cartdrop_footer mt-3 d-flex">
+                        <a href="/view-cart" class="default_btn w-50 text_xs px-1">View Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
+    <!-- mobile searchbar -->
+    <div class="mobile_search_bar">
+        <div class="mobile_search_text">
+            <p>What you are looking for?</p>
+            <span class="close_mbsearch" id="close_mbsearch">
+                <i class="las la-times"></i>
+            </span>
+        </div>
+        <form>
+            <input type="text" placeholder="search products..." onkeyup="searchProducts()" id="show_suggestForMobile">
+            <button>
+                <i class="icon-search-left"></i>
+            </button>
+        </form>
+
+        <div class="search_result_product" id="divForSearchForMobile">
+
+        </div>
+    </div>
+
+    <!-- mobile category -->
+    <div class="mobile_menwrap d-lg-none" id="mobile_catwrap">
+        <div class="sub_categories">
+            <h5 class="mobile_title">
+                All categories
+                <span class="sidebarclose" id="catclose">
+                    <i class="las la-times"></i>
+                </span>
+            </h5>
+
+            {{#each category}}
+            <a href="/get-category-product/{{this.name}}" class="singlecats">
+                <span class="img_wrp">
+                   <i class="las la-shoe-prints"></i>  
+                </span>
+                <span class="txt">{{this.name}}</span>
+            </a>
+            {{/each}}
+
+            
+        </div>
+    </div>

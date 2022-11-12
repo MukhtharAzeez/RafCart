@@ -102,9 +102,12 @@ router.get('/see-order-invoice',userMiddleware.verifyLogin,userMiddleware.cartAn
 // Search Products
 router.get('/product-search-result',userMiddleware.cartAndWishList,productController.getProductBySearch)
 
+// Error Page
+router.get('/not-found',controller.errorPage)
+
+
 router.get('/logout',controller.logout)
 
-router.get('/not-found',controller.errorPage)
 
 
 

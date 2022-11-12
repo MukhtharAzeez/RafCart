@@ -51,7 +51,7 @@ module.exports = {
     },
     login : (req,res)=>{
         try {
-            req.session.url
+           
         if(req.session.loggedIn){
           res.redirect('/')
         }else{

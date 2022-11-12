@@ -8,6 +8,7 @@ module.exports = {
     verifyLogin: async(req, res, next) => {
         if (req.session.user) {
             let user = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id) })
+           
             if(user.status==true){
                 next()
             }else{
