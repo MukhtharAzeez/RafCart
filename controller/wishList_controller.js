@@ -5,40 +5,45 @@ const mongoose = require('mongoose');
 
 module.exports = {
     wishlist : async(req,res)=>{
-        let wishListProducts = await userSchema.aggregate([
-            {
-                $match :{
-                    _id : mongoose.Types.ObjectId(req.session.user._id)
+        try {
+            let wishListProducts = await userSchema.aggregate([
+                {
+                    $match :{
+                        _id : mongoose.Types.ObjectId(req.session.user._id)
+                    }
+                },
+                {
+                    $project :{
+                        wishListProducts : 1
+                    }
+                },
+                {
+                    $unwind : {
+                        path : "$wishListProducts"
+                    } 
+                },
+                {
+                    $lookup : {
+                        from : 'products',
+                        localField : 'wishListProducts',
+                        foreignField : '_id',
+                        as : 'product'
+                    }
+                },
+                {
+                    $project : {
+                        product:{ $arrayElemAt:['$product',0] }
+                    }
                 }
-            },
-            {
-                $project :{
-                    wishListProducts : 1
-                }
-            },
-            {
-                $unwind : {
-                    path : "$wishListProducts"
-                } 
-            },
-            {
-                $lookup : {
-                    from : 'products',
-                    localField : 'wishListProducts',
-                    foreignField : '_id',
-                    as : 'product'
-                }
-            },
-            {
-                $project : {
-                    product:{ $arrayElemAt:['$product',0] }
-                }
-            }
-        ])
-        let userDetails = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)})
-        res.render('user/wish-list.hbs',{wishListProducts,userDetails,"count":res.count,"userWishListCount":res.userWishListCount})
+            ])
+            let userDetails = await userSchema.findOne({_id : mongoose.Types.ObjectId(req.session.user._id)})
+            res.render('user/wish-list.hbs',{wishListProducts,userDetails,"count":res.count,"userWishListCount":res.userWishListCount})
+        } catch (error) {
+            res.redirectt('/not-found')
+        }
     },
     addToWishList : async(req,res)=>{
+       try {
         if(req.session.user){
             let productExist=await userSchema.findOne(
                 {
@@ -80,8 +85,12 @@ module.exports = {
         }else{
             res.json({status:false})
         }
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
     removeFromWishList : async(req,res)=>{
+       try {
         await userSchema.updateOne(
             {
                 _id : mongoose.Types.ObjectId(req.session.user._id),
@@ -94,6 +103,9 @@ module.exports = {
         ).then(()=>{
             res.json({status:true})
         })
+       } catch (error) {
+        res.redirect('/not-found')
+       }
         
     },
 }

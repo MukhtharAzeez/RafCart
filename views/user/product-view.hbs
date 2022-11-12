@@ -666,7 +666,11 @@
                     <div class="review_rating">
                         <div class="total_rating">
                             <div class="trating_number">
+                                {{#if totalRating}}
                                 <span class="avrage">{{totalRating}}</span>
+                                {{else}}
+                                <span class="avrage">{{totalRating}}</span>
+                                {{/if}}
                                 <span class="from">/5</span>
                             </div>
                             <div class="rating_star">

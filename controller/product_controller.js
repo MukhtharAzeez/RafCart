@@ -330,9 +330,12 @@ module.exports={
             totalCount+=starCounts[i].count
             totalRating+=starCounts[i].sum
         }
-        totalRating=totalRating/totalCount
-        totalRating=totalRating.toFixed(1)
-      
+        if(totalRating>0){
+            totalRating=totalRating/totalCount
+            totalRating=totalRating.toFixed(1)
+        }
+        
+        
         length=review.length
         for(var i=0;i<length;i++){
            if(review[i].reviews.rating==5){

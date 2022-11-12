@@ -11,49 +11,53 @@ const mongoose = require('mongoose');
 
 module.exports = {
     writeReview : async (req,res)=>{
-        console.log(req.query.productId)
+       try {
         let product = await productSchema.findOne({_id : mongoose.Types.ObjectId(req.query.productId)}).lean()
-        console.log(product)
         res.render('user/account-review-details',{product,"user" : req.session.user,"count":res.count,"userWishListCount":res.userWishListCount});
+       } catch (error) {
+        res.redirect('/not-found')
+       }
     },
     writeAReview : async(req,res)=>{
-        if(req.body.rating1){
-            req.body.rating1=parseInt(req.body.rating1)
-            let review={
-                productId : mongoose.Types.ObjectId(req.query.productId),
-                rating : req.body.rating1,
-                details : req.body.details,
-                date : new Date()
-            }
-            let reviewExistForUser = await reviewSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
-            if(reviewExistForUser){
-                
-                await reviewSchema.updateOne(
-                    {
-                        userId : mongoose.Types.ObjectId(req.session.user._id)
-                    },
-                    {
-                        $push : {
-                            reviews : review
-                        }
-                    }
-                )
-            }else{
-                const newReview = new reviewSchema({
-                    userId: req.session.user._id,
-                    reviews: [review],
-                })
-    
-                newReview.save().then((response) => {
+        try {
+            if(req.body.rating1){
+                req.body.rating1=parseInt(req.body.rating1)
+                let review={
+                    productId : mongoose.Types.ObjectId(req.query.productId),
+                    rating : req.body.rating1,
+                    details : req.body.details,
+                    date : new Date()
+                }
+                let reviewExistForUser = await reviewSchema.findOne({userId : mongoose.Types.ObjectId(req.session.user._id)})
+                if(reviewExistForUser){
                     
-                })
-            }
-        res.render('user/review-placed',{"user" : req.session.user,"count":res.count,"userWishListCount":res.userWishListCount})
-
-        }else{
-            res.redirect('back')
-        }
-       
+                    await reviewSchema.updateOne(
+                        {
+                            userId : mongoose.Types.ObjectId(req.session.user._id)
+                        },
+                        {
+                            $push : {
+                                reviews : review
+                            }
+                        }
+                    )
+                }else{
+                    const newReview = new reviewSchema({
+                        userId: req.session.user._id,
+                        reviews: [review],
+                    })
         
+                    newReview.save().then((response) => {
+                        
+                    })
+                }
+            res.render('user/review-placed',{"user" : req.session.user,"count":res.count,"userWishListCount":res.userWishListCount})
+    
+            }else{
+                res.redirect('back')
+            }
+        } catch (error) {
+            res.redirect('/not-found')
+        }
     },
 }
