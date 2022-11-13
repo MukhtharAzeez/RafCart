@@ -3,7 +3,7 @@ $("#emailError").hide();
 $("#phoneError").hide();
 $("#passwordError").hide();
 $("#confirmPasswordError").hide();
-$("#SubmitButton").hide();
+// $("#SubmitButton").hide();
 
 let fullNameSuccess=false;
 let emailSuccess=false;
@@ -35,7 +35,7 @@ function check_fullName(){
     $("#fullNameError").show();
     fullNameSuccess=false;
  }
- check_submission();
+//  check_submission();
 }
 function check_fullNameFocusout(){
     var fname =$('#fullName').val()
@@ -73,7 +73,7 @@ function check_email(){
     $("#emailError").show();
     emailSuccess=false;
  }
- check_submission();
+//  check_submission();
 }
 function check_emailFocusout(){
     var email =$('#email').val()
@@ -110,7 +110,7 @@ function check_phone(){
     $("#phoneError").show();
     phoneSuccess = false
  }
- check_submission();
+//  check_submission();
 }
 function check_phoneFocusout(){
     var phone =$('#phone').val()
@@ -148,7 +148,7 @@ function check_password(){
     $("#passwordError").show();
     passwordSuccess =false
  }
- check_submission();
+//  check_submission();
 }
 function check_passwordFocusout(){
     var password =$('#password').val()
@@ -188,7 +188,7 @@ function check_confirmPassword(){
     $("#confirmPasswordError").show();
     confirmPasswordSuccess = false
  }
- check_submission();
+//  check_submission();
 }
 
 function check_confirmPasswordFocusout(){
@@ -202,41 +202,39 @@ function check_confirmPasswordFocusout(){
     }
 }
 
- function check_submission(){
-    console.log(fullNameSuccess,emailSuccess,phoneSuccess,passwordSuccess,confirmPasswordSuccess)
-    if(fullNameSuccess===true && emailSuccess === true && phoneSuccess===true && passwordSuccess===true && confirmPasswordSuccess==true){
-          $("#SubmitButton").show();     
-    }else{
-        $("#SubmitButton").hide();
-    }
- }
+//  function check_submission(){
+//     console.log(fullNameSuccess,emailSuccess,phoneSuccess,passwordSuccess,confirmPasswordSuccess)
+//     if(fullNameSuccess===true && emailSuccess === true && phoneSuccess===true && passwordSuccess===true && confirmPasswordSuccess==true){
+//         //   $("#SubmitButton").show();
+
+//     }else{
+//         // $("#SubmitButton").hide();
+//     }
+//  }
 
 
 
 
-// $("#registrationForm").submit(function(){
-//     var fname =$('#fullName').val()
-//     var email =$('#email').val()
-//     var phone =$('#phone').val()
-//     var password =$('#password').val()
-//     var confirmPassword =$('#confirmPassword').val()
-//    if(fullNameSuccess===true && emailSuccess === true && phoneSuccess===true && passwordSuccess===true && confirmPasswordSuccess){
-//        $.ajax({
-//         url : "/register",
-//         method : "post",
-//         data :{
-//             userName : fname,
-//             email : email, 
-//             phone : phone,
-//             password : password,
-//             confirmPassword : confirmPassword,
-//         },
-//         response : (response)=>{
-//             console.log(response);
-//         }
-//     })
-//    }else{
-//        console.log("false");
-//    }
-// })
+$("#registrationForm").submit(function(e){
+   e.preventDefault();
+   console.log(fullNameSuccess,emailSuccess,phoneSuccess,passwordSuccess,confirmPasswordSuccess)
+   if(fullNameSuccess===true && emailSuccess === true && phoneSuccess===true && passwordSuccess===true && confirmPasswordSuccess){
+       $.ajax({
+        url : "/register",
+        method : "post",
+        data : $('#registrationForm').serialize(),
+        success : (response)=>{
+            console.log(response)
+            if(response.status==true){
+                location.href = '/check-user-verification'
+            }else{
+                $("#confirmPasswordError").html(response.status);
+                $("#confirmPasswordError").show();
+            }
+        }
+    })
+   }else{
+       console.log("false");
+   }
+})
 

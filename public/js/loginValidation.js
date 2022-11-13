@@ -108,6 +108,9 @@ $('#loginForm').submit((e)=>{
                                         location.href = '/'
                                     }else if(response.otp){
                                         location.href = '/check-user-verification'
+                                    }else{
+                                        document.getElementById('passwordError').innerHTML='Entered credential is invaliid'
+                                        $("#passwordError").show()
                                     }
                                 }
                             })

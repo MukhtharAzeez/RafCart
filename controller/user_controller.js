@@ -76,19 +76,22 @@ module.exports = {
     postSignup: async (req, res) => {
         try {
             let user = await userSchema.find({ email: req.body.email })
-            let userWithPhone = await userSchema.findOne({ email: req.body.phone })
-            if (user[0] || userWithPhone) {
-                res.redirect('/register')
+            let userWithPhone = await userSchema.findOne({ phone: req.body.phone })
+            if (user[0]) {
+                res.json({status : 'This email is already registered'})
+            }else if ( userWithPhone){
+                res.json({status:'This mobile number is already registered'})
             } else if (req.body.password !== req.body.confirmPassword) {
-                res.redirect('/register')
+                res.json({status : 'Password and confirm password must be same'})
             } else {
                 return new Promise(async (resolve, reject) => {
+
                     const userName = req.body.userName;
                     const email = req.body.email;
                     const phone = req.body.phone;
                     const password = await bcrypt.hash(req.body.password, 10);
                     let number = parseInt(phone)
-                    console.log(number);
+                  
 
                     const user = new userSchema({
                         userName: userName,
@@ -102,6 +105,7 @@ module.exports = {
                     });
 
                     mobileNumber = number;
+                   
 
                     user
                         .save()
@@ -110,7 +114,8 @@ module.exports = {
                             userDetails = result;
                             userSession.password = null
                             OtpCheck.sendOtp(number)
-                            res.render('user/otp-verification')
+                            // res.render('user/otp-verification')
+                            res.json({ status: true })
                         })
                         .catch((error) => {
                             console.log(error);
@@ -118,6 +123,7 @@ module.exports = {
                 })
             }
         } catch (error) {
+            console.log(error)
             res.redirect('/not-found')
         }
     },
