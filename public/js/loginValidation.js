@@ -1,6 +1,6 @@
 $("#emailError").hide();
 $("#passwordError").hide();
-$("#loginButton").hide();
+// $("#loginButton").hide();
 
 let emailSuccess=false;
 let phoneSuccess=false;
@@ -31,7 +31,7 @@ function check_email(){
     $("#emailError").show();
     emailSuccess=false;
  }
- check_submission();
+//  check_submission();
 }
 function check_emailFocusout(){
     var email =$('#email').val()
@@ -70,7 +70,7 @@ function check_password(){
     $("#passwordError").show();
     passwordSuccess =false
  }
- check_submission();
+ 
 }
 function check_passwordFocusout(){
     var password =$('#password').val()
@@ -82,42 +82,91 @@ function check_passwordFocusout(){
     }
 }
 
-function check_submission(){
+$('#loginForm').submit((e)=>{
+    e.preventDefault();
     if(emailSuccess === true && passwordSuccess===true){
     
-        var email =$('#email').val()
-        var password =$('#password').val()
-
-        $.ajax({
-            url : '/email-password-check',
-            method : 'post',
-            data : {
-                email : email,
-                password : password,
-            },
-            success : (response)=>{
-                if(response.email && response.password){
-                    $("#loginButton").show();  
-                }else if(response.email==false){
-                    document.getElementById('emailError').innerHTML='You didn not create a account yet! do signup'
-                    $("#emailError").show()
-                    $("#loginButton").hide();
-                  
-                }else if(response.password==false){
-                    $('#password').css("border","1px solid red")
-                    document.getElementById('passwordError').innerHTML='Entered password is incorrect'
-                    $("#passwordError").show()
-                }else if(response.userBlocked==true){
-                    document.getElementById('emailError').innerHTML='You did not have an access to login now'
-                    $("#emailError").show()
-                    $('#password').css("border","1px solid red")
-                }
-                
+                var email =$('#email').val()
+                var password =$('#password').val()
+        
+                $.ajax({
+                    url : '/email-password-check',
+                    method : 'post',
+                    data : {
+                        email : email,
+                        password : password,
+                    },
+                    success : (response)=>{
+                        console.log(response)
+                        if(response.email && response.password){
+                            $.ajax({
+                                url : '/login',
+                                method : 'post',
+                                data : $('#loginForm').serialize(),
+                                success : (response)=>{
+                                    if(response.status){
+                                        location.href = '/'
+                                    }else if(response.otp){
+                                        location.href = '/check-user-verification'
+                                    }
+                                }
+                            })
+                        }else if(response.email==false){
+                            document.getElementById('emailError').innerHTML='You did not create an account yet! do signup'
+                            $("#emailError").show() 
+                        }else if(response.password==false){
+                            $('#password').css("border","1px solid red")
+                            document.getElementById('passwordError').innerHTML='Entered credential is invaliid'
+                            $("#passwordError").show()
+                        }else if(response.userBlocked==true){
+                            document.getElementById('emailError').innerHTML='You did not have an access to login now'
+                            $("#emailError").show()
+                            $('#password').css("border","1px solid red")
+                        }
+                        
+                    }
+                })
+        
+                     
             }
-        })
+})
+
+// function check_submission(){
+//     if(emailSuccess === true && passwordSuccess===true){
+    
+//         var email =$('#email').val()
+//         var password =$('#password').val()
+
+//         $.ajax({
+//             url : '/email-password-check',
+//             method : 'post',
+//             data : {
+//                 email : email,
+//                 password : password,
+//             },
+//             success : (response)=>{
+//                 if(response.email && response.password){
+//                     $("#loginButton").show();  
+//                 }else if(response.email==false){
+//                     document.getElementById('emailError').innerHTML='You didn not create a account yet! do signup'
+//                     $("#emailError").show()
+//                     $("#loginButton").hide();
+                  
+//                 }else if(response.password==false){
+//                     $('#password').css("border","1px solid red")
+//                     document.getElementById('passwordError').innerHTML='Entered password is incorrect'
+//                     $("#passwordError").show()
+//                 }else if(response.userBlocked==true){
+//                     document.getElementById('emailError').innerHTML='You did not have an access to login now'
+//                     $("#emailError").show()
+//                     $('#password').css("border","1px solid red")
+//                 }
+                
+//             }
+//         })
 
              
-    }else{
-        $("#loginButton").hide();
-    }
- }
+//     }else{
+//         $("#loginButton").hide();
+//     }
+//  }
