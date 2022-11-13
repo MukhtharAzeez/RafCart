@@ -124,8 +124,8 @@ module.exports={
     edit_a_product : async(req,res) => {
       try {
         let products=await productSchema.findById(req.params.id) 
-        
-        if(req.file || req.files){
+        console.log(req.file,req.files)
+        if(req.file || req.files[0]){
             for(var i=0;i<products.images.length;i++){
                 await cloudinary.uploader.destroy(products.images[i].cloudinary_id)  
             }
