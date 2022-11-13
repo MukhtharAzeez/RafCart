@@ -16,6 +16,10 @@ const adminRouter = require('./routes/admin');
 
 const app = express();
 
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -51,10 +55,7 @@ app.use(session({
   resave : true,
 }))
 
-app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store')
-  next()
-})
+
 
 app.use('/admin', adminRouter);
 app.use('/', userRouter);
