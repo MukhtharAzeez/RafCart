@@ -28,7 +28,7 @@
   <!-- top header -->
 
   <!-- mobile bottom bar -->
-  <div class="mobile_bottombar d-block d-lg-none">
+  {{!-- <div class="mobile_bottombar d-block d-lg-none">
     <div class="header_icon">
       <a href="javascript:void(0)" class="icon_wrp text-center open_menu">
         <span class="icon">
@@ -516,7 +516,7 @@
         <span class="txt">Mobile</span>
       </a>
     </div>
-  </div>
+  </div> --}}
 
   <!-- breadcrumbs -->
   <div class="container">
@@ -572,7 +572,7 @@
             <div class="shop_filter">
               <h4 class="filter_title">Price</h4>
               <div class="price-range-slider">
-                <div id="slider-range" class="range-bar"></div>
+                <div id="slider-range" class="range-bar" onclick="filterByPrice()"></div>
                 <p class="range-value">
                   <input type="text" id="amount" readonly />
                 </p>

@@ -364,6 +364,12 @@ module.exports = {
     },
     getProductsByFilter: async (req, res) => {
         try {
+        
+            split = req.query.price.slice(1)
+            split=split.split(" ")
+            min=parseInt(split[0])
+            max=parseInt(split[2].slice(1))
+           
             let products
 
 
@@ -374,12 +380,16 @@ module.exports = {
                             $in: [
                                 ...req.body.category
                             ]
-                        }
+                        },
+                        
+                            $and : [ { price: { $gte: min } }, { price: { $lte: max } } ] 
+                        
+                        
                     }
                 ).lean()
 
             } else {
-                products = await productSchema.find({}).lean()
+                products = await productSchema.find({$and : [ { price: { $gte: min } }, { price: { $lte: max } } ] }).lean()
             }
 
             // To set favourite icon if user add any product as favourite
@@ -411,7 +421,7 @@ module.exports = {
                     }
                 }
             }
-
+            console.log(products)
             res.json(products)
         } catch (error) {
             res.redirect('/not-found')
@@ -429,7 +439,11 @@ module.exports = {
     },
     getAllProducts: async (req, res) => {
         try {
-            let products = await productSchema.find({}).lean()
+            split = req.query.price.slice(1)
+            split=split.split(" ")
+            min=parseInt(split[0])
+            max=parseInt(split[2].slice(1))
+            let products = await productSchema.find({$and : [ { price: { $gte: min } }, { price: { $lte: max } } ] }).lean()
             res.json(products)
         } catch (error) {
             res.redirect('/not-found')

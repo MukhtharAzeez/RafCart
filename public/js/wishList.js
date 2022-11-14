@@ -23,7 +23,6 @@ function addToWishList(id){
                       $('#removeFromWishListSecond'+id).removeClass("d-none");
                   }else{
                       Swal.fire({
-                         
                           html:'<a href="/login">Login Now!</a> ' ,
                           title: 'Not loggined Yet?',
                           text : 'Login now to continue shopping',
@@ -36,7 +35,6 @@ function addToWishList(id){
           })
           }else{
             Swal.fire({
-                         
               html:'<a href="/login">Login Now!</a> ' ,
               title: 'Not loggined Yet?',
               text : 'Login now to continue shopping',
