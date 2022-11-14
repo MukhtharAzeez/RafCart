@@ -17,7 +17,83 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 </head>
+ <style>
+    /* Basic styling */
 
+input[type=checkbox] {
+  width: 1rem;
+  height: 1rem;
+  color: rgb(112, 10, 10);
+  vertical-align: middle;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  outline: 0;
+  flex-grow: 0;
+  border-radius: 25%;
+  background-color: #FFFFFF;
+  transition: background 300ms;
+  cursor: pointer;
+}
+
+
+/* Pseudo element for check styling */
+
+input[type=checkbox]::before {
+  content: "";
+  color: transparent;
+  display: block;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  border: 0;
+  background-color: transparent;
+  background-size: contain;
+  box-shadow: inset 0 0 0 1px #CCD3D8;
+}
+
+
+/* Checked */
+
+input[type=checkbox]:checked {
+  background-color: currentcolor;
+}
+
+input[type=checkbox]:checked::before {
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+}
+
+
+/* Disabled */
+
+input[type=checkbox]:disabled {
+  background-color: #CCD3D8;
+  opacity: 0.84;
+  cursor: not-allowed;
+}
+
+
+/* IE */
+
+input[type=checkbox]::-ms-check {
+  content: "";
+  color: transparent;
+  display: block;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  border: 0;
+  background-color: transparent;
+  background-size: contain;
+  box-shadow: inset 0 0 0 1px #CCD3D8;
+}
+
+input[type=checkbox]:checked::-ms-check {
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+}
+  </style>
 <body>
 
   <!-- Preloader -->
@@ -58,23 +134,31 @@
               <h4 class="filter_title">Categories</h4>
               <div class="filter_list">
                 <div class=" d-flex align-items-center">
-                  <input type="checkbox" class="check_inp" id="all_category" onclick="getAllProductsByCategory()" />
+                  <input type="checkbox" class="check_inp me-3" id="all_category" onclick="getAllProductsByCategory()" />
                   <label for="cat-women">All</label>
                   <p class="mb-0 ms-auto">({{this.count}})</p>
-
                 </div>
 
                 {{!-- Each category --}}
                 {{#each category}}
                 <div class=" d-flex align-items-center">
 
-                  <input type="checkbox" class="check_inp" id="{{this.name}}"
+                  <input type="checkbox" class="check_inp me-3" id="{{this.name}}"
                     onclick="getProductsByCategory('{{this.name}}')" {{!--
                     onfocus="getProductsByCategory('{{this.name}}')" onchange="" --}} />
                   <label for="cat-women">{{this.name}}</label>
                   <p class="mb-0 ms-auto">({{this.count}})</p>
                 </div>
                 {{/each}}
+              </div>
+            </div>
+            <div class="shop_filter">
+              <h4 class="filter_title">Price</h4>
+              <div class="price-range-slider">
+                <div id="slider-range" class="range-bar" onclick="filterByPrice()"></div>
+                <p class="range-value">
+                  <input type="text" id="amount" readonly />
+                </p>
               </div>
             </div>
 

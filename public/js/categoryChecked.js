@@ -134,6 +134,9 @@ function getProductsByCategory(name){
 function getAllProductsByCategory (){
     var newDiv=document.getElementById('divForHideWhenUsingFilter')
     var html=''
+    if(price==undefined){
+      price = '₹0 - ₹1000000'
+    }
     $.ajax({
         url : `/get-all-products?price=${price}`,
         method : 'get',

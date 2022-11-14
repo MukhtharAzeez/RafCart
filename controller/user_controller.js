@@ -246,11 +246,11 @@ module.exports = {
     },
     shop: async (req, res) => {
         try {
+            
             let products = await productSchema.find({}).lean()
 
-            let category = await categorySchema.find({}).lean()
-
-
+            let category = await categorySchema.find({ count: {$gt : 0}}).lean()
+            productsCount=products.length
             let count = 0;
             var userWishListCount = 0
             let user
@@ -325,12 +325,11 @@ module.exports = {
                         }
                     }
                 }
-                console.log(categoryProducts);
                 products = categoryProducts
                 categoryProducts = null
-                res.render('user/shop-grid-2', { products, category, user: req.session.user, count, userWishListCount })
+                res.render('user/shop-grid-2', { products, productsCount, category, user: req.session.user, count, userWishListCount })
             } else {
-                res.render('user/shop-grid-2', { products, category, "user": req.session.user, count, userWishListCount })
+                res.render('user/shop-grid-2', { products, productsCount, category, "user": req.session.user, count, userWishListCount })
             }
         } catch (error) {
             res.redirect('/not-found')
@@ -371,8 +370,6 @@ module.exports = {
             max=parseInt(split[2].slice(1))
            
             let products
-
-
             if (Object.keys(req.body).length !== 0) {
                 products = await productSchema.find(
                     {
@@ -439,6 +436,7 @@ module.exports = {
     },
     getAllProducts: async (req, res) => {
         try {
+            console.log(req.query.price)
             split = req.query.price.slice(1)
             split=split.split(" ")
             min=parseInt(split[0])
