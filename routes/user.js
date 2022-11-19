@@ -60,7 +60,7 @@ router.get('/view-cart',userMiddleware.verifyLogin,userMiddleware.cartAndWishLis
 router.post('/change-product-total-price',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,cartController.updateCart)
 router.get('/add-to-cart/:id',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,cartController.addToCart)
 router.get('/check-exist-product-in-cart/:id',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,cartController.checkExistProductInCart)
-router.post('/change-cart-quantity',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,cartController.changeCartQuantity)
+router.post('/change-cart-quantity',userMiddleware.verifyLogin,cartController.changeCartQuantity)
 router.post('/removeCartItem',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,cartController.removeCartItem)
 router.post('/product-stock-check',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,productController.checkStockLeft)
 

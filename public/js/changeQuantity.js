@@ -21,15 +21,9 @@ function changeQuantity(cartId, productId, count) {
             if (response.status) {
               let removedProduct = document.getElementById("remove" + productId);
               count = parseInt(count);
-              // document
-              //   .getElementById("plusButtonCart" + productId)
-              //   .classList.add("d-none");
-              // document
-              //   .getElementById("minusButtonCart" + productId)
-              //   .classList.add("d-none");
-              // document.getElementById(productId).style.width = "110px";
               $.ajax({
                 url: "/change-cart-quantity",
+                method: "post",
                 data: {
                   cartId: cartId,
                   productId: productId,
@@ -37,27 +31,14 @@ function changeQuantity(cartId, productId, count) {
                   quantity: quantity,
                 },
       
-                method: "post",
+                
                 success: (response) => {
+                  console.log(response)
                   if (response.status) {
                     document.getElementById(productId).innerHTML = quantity + count;
-                    document.getElementById("totalAMount").innerHTML =
-                      response.result.total;
-                    document.getElementById("price" + productId).innerHTML =
-                      response.result.productTotal.productTotal;
-                    document.getElementById("subTotal").innerHTML =
-                      response.result.subTotal;
-                    // document
-                    //   .getElementById("plusButtonCart" + productId)
-                    //   .classList.remove("d-none");
-                    // document
-                    //   .getElementById("minusButtonCart" + productId)
-                    //   .classList.remove("d-none");
-                    // document.getElementById(productId).style.width = "40px";
-      
-      
-      
-      
+                    document.getElementById("totalAMount").innerHTML = response.result.total;
+                    document.getElementById("price" + productId).innerHTML = response.result.productTotal.productTotal;
+                    document.getElementById("subTotal").innerHTML = response.result.subTotal;
                     $.ajax({
                       url: "/change-product-total-price",
                       data: {
@@ -113,15 +94,8 @@ function changeQuantity(cartId, productId, count) {
           background : 'black'
         })
       }
-
-      
-
-
     }
   })
-
-  
-  
 }
 
 function removeProduct(cartId, productId) {
@@ -186,14 +160,9 @@ function removeProduct(cartId, productId) {
           title : 'Applied a Coupon?',
           text : 'either you remove that coupon or proceed to checkout?',
           background : 'black'
-
         })
       }
-
-     
     }})
-
-  
 }
 
 

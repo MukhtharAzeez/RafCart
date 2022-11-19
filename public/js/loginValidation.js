@@ -104,8 +104,13 @@ $('#loginForm').submit((e)=>{
                                 method : 'post',
                                 data : $('#loginForm').serialize(),
                                 success : (response)=>{
+                                    console.log(response)
                                     if(response.status){
-                                        location.href = '/'
+                                        if(response.status==true){
+                                            location.href = '/'
+                                        }else{
+                                            location.href=response.status
+                                        }
                                     }else if(response.otp){
                                         location.href = '/check-user-verification'
                                     }else{

@@ -169,7 +169,7 @@ module.exports = {
                                     req.session.loggedIn = true;
                                     userSession = req.session.user
                                     if (req.session.url) {
-                                        res.redirect(req.session.url)
+                                        res.json({status: req.session.url})
                                     } else {
                                         //    res.redirect('/')
                                         res.json({ status: true })

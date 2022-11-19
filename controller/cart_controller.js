@@ -329,9 +329,7 @@ module.exports = {
                         }
                     },
                 ])
-                let subTotal
                 let couponCheck = await couponSchema.findOne({ code: cartItems.coupon })
-                let discount
                 if (couponCheck && total[0]) {
                     total[0].subTotal = total[0].total
                     if (couponCheck.type == 'Percentage') {
