@@ -211,20 +211,26 @@ module.exports = {
             otp = otp.split(",").join('')
             let otpStatus = await OtpCheck.verifyOtp(mobileNumber, otp)
             if (otpStatus.valid) {
-                req.session.user = userDetails
-                req.session.loggedIn = true;
-                await userSchema.updateOne(
-                    {
-                        _id: mongoose.Types.ObjectId(req.session.user._id)
-                    },
-                    {
-                        $set: {
-                            verification: 'success'
+                console.log(req.session.forgotPassword)
+                if(req.session.forgotPassword){
+                    res.json({passwordStatus : true})
+                }else{
+                    req.session.user = userDetails
+                    req.session.loggedIn = true;
+                    await userSchema.updateOne(
+                        {
+                            _id: mongoose.Types.ObjectId(req.session.user._id)
+                        },
+                        {
+                            $set: {
+                                verification: 'success'
+                            }
                         }
-                    }
-                )
-
-                res.json({ status: true })
+                    )
+    
+                    res.json({ status: true })
+                }
+                
             } else {
                 req.session.destroy();
                 res.json({ status: false })
@@ -711,6 +717,18 @@ module.exports = {
         } catch (error) {
             res.redirect('/not-found')
         }
+    },
+    forgotPassword : async(req,res)=>{
+        res.render('user/forgot-password')
+    },
+    forgotPasswordOTP : async(req,res)=>{
+        OtpCheck.sendOtp(req.body.mobile)
+        req.session.forgotPassword = true;
+        mobileNumber = req.body.mobile
+        res.redirect('/check-user-verification')
+    },
+    passwordChangePage : async (req, res) => {
+        res.render('user/account-change-password')
     },
     postEditAddress: async (req, res) => {
 

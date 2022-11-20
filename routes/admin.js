@@ -7,7 +7,7 @@ const banner_controller = require('../controller/banner_controller')
 const multer = require('../utils/multer');
 const order_controller = require('../controller/order_controller');
 const coupon_controller = require('../controller/coupon_controller')
-const adminMiddleware=require('../middelwares/admin')
+const adminMiddleware=require('../middleware/admin')
 
 
 

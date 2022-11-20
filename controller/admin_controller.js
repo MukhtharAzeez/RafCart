@@ -243,7 +243,11 @@ module.exports = {
 
     },
     login : async(req,res)=>{
-        res.render('admin/auth-sign-in',{noHeader:true,noFooter:true})
+        if(req.session.admin){
+            res.redirect('/admin')
+        }else{
+            res.render('admin/auth-sign-in',{noHeader:true,noFooter:true})
+        }
     },
     postSignup : async(req,res)=>{
         try {

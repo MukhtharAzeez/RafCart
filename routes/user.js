@@ -7,7 +7,7 @@ const orderController=require('../controller/order_controller')
 const productController = require('../controller/product_controller')
 const couponController = require('../controller/coupon_controller')
 const reviewController = require('../controller/review_controller')
-const userMiddleware = require('../middelwares/user')
+const userMiddleware = require('../middleware/user')
 
 
 
@@ -42,7 +42,9 @@ router.post('/add-address/:id',userMiddleware.verifyLogin,controller.postAddAddr
 router.get('/account-edit-address',userMiddleware.verifyLogin,controller.editAddress)
 router.post('/edit-address/:id',userMiddleware.verifyLogin,controller.postEditAddress)
 router.get('/account-delete-address',userMiddleware.verifyLogin,controller.deleteAddress)
-
+router.get('/forgot_password',userMiddleware.cartAndWishList,controller.forgotPassword)
+router.post('/forgot-password-otp',userMiddleware.cartAndWishList,controller.forgotPasswordOTP)
+router.get('/password-change-page',userMiddleware.cartAndWishList,controller.passwordChangePage)
 
 // Shop
 router.get('/shop',controller.shop)

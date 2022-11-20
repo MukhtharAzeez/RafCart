@@ -8,6 +8,8 @@ $('#otpForm').submit((e)=>{
             console.log(response)
             if(response.status){
                 location.href ='/'
+            }else if (response.passwordStatus){
+                location.href = '/password-change-page'
             }else{
                 $('#otpAlert').removeClass('d-none')
             }
