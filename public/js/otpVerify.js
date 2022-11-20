@@ -5,11 +5,10 @@ $('#otpForm').submit((e)=>{
         method : 'post',
         data : $('#otpForm').serialize(),
         success : (response)=>{
-            console.log(response)
-            if(response.status){
-                location.href ='/'
-            }else if (response.passwordStatus){
-                location.href = '/password-change-page'
+            console.log("response",response)
+            if(response.status==true){
+                // location.href ='/'
+                console.log(response)
             }else{
                 $('#otpAlert').removeClass('d-none')
             }

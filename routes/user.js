@@ -44,8 +44,8 @@ router.post('/edit-address/:id',userMiddleware.verifyLogin,controller.postEditAd
 router.get('/account-delete-address',userMiddleware.verifyLogin,controller.deleteAddress)
 router.get('/forgot_password',userMiddleware.cartAndWishList,controller.forgotPassword)
 router.post('/forgot-password-otp',userMiddleware.cartAndWishList,controller.forgotPasswordOTP)
-router.get('/password-change-page',userMiddleware.cartAndWishList,controller.passwordChangePage)
-
+router.get('/password-change-page',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,controller.passwordChangePage)
+router.post('/password-change',userMiddleware.verifyLogin,userMiddleware.cartAndWishList,controller.passwordChange)
 // Shop
 router.get('/shop',controller.shop)
 router.get('/shop-list',controller.shoplist)

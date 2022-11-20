@@ -55,7 +55,11 @@ module.exports = {
             if (req.session.loggedIn) {
                 res.redirect('/')
             } else {
+                if(req.session.passwordChanged){
+                    res.locals.passwordChanged=true
+                }
                 res.render('user/login', { noHeader: true, noFooter: true });
+                req.session.passwordChanged=false
             }
         } catch (error) {
             res.redirect('/not-found')
@@ -198,7 +202,9 @@ module.exports = {
 
             })
         } catch (error) {
+            
             res.redirect('/not-found')
+           
         }
     },
     otpPage: (req, res) => {
@@ -213,7 +219,7 @@ module.exports = {
             if (otpStatus.valid) {
                 console.log(req.session.forgotPassword)
                 if(req.session.forgotPassword){
-                    res.json({passwordStatus : true})
+                    res.json({status : 'password'})
                 }else{
                     req.session.user = userDetails
                     req.session.loggedIn = true;
@@ -719,16 +725,44 @@ module.exports = {
         }
     },
     forgotPassword : async(req,res)=>{
+        if(req.session.numberError){
+            res.locals.numberError=true
+            req.session.numberError=false;
+        }
         res.render('user/forgot-password')
     },
-    forgotPasswordOTP : async(req,res)=>{
-        OtpCheck.sendOtp(req.body.mobile)
-        req.session.forgotPassword = true;
-        mobileNumber = req.body.mobile
-        res.redirect('/check-user-verification')
+    forgotPasswordOTP : async(req,res)=>{        
+        let accExistCheck = await userSchema.findOne({phone : req.body.mobile})
+        if(accExistCheck){
+            req.session.user=accExistCheck
+            OtpCheck.sendOtp(req.body.mobile)
+            req.session.forgotPassword = true;
+            mobileNumber = req.body.mobile
+            res.redirect('/check-user-verification')
+        }else{
+            req.session.numberError=true;
+            res.redirect('/forgot_password')
+        }
+        
     },
     passwordChangePage : async (req, res) => {
         res.render('user/account-change-password')
+    },
+    passwordChange : async (req, res) => {
+        console.log(req.body)
+        const changedPassword = await bcrypt.hash(req.body.password, 10);
+        await userSchema.updateOne(
+            {
+                _id : mongoose.Types.ObjectId(req.session.user._id)
+            },
+            {
+                $set : {
+                    password : changedPassword
+                }
+            }
+        )
+        req.session.passwordChanged=true
+        res.json({status : true})
     },
     postEditAddress: async (req, res) => {
 
